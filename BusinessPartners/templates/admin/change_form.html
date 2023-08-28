@@ -1,0 +1,14 @@
+{% extends 'admin/change_form.html' %}
+
+{% block content %}
+  <h2>Edit Business Partner</h2>
+  {{ block.super }}
+
+  <div class="custom-section">
+    <h3>Custom Information</h3>
+    <p>This is a custom section added to the form.</p>
+    <p>Name: {{ original.name }}</p>
+    <p>Code: {{ original.code }}</p>
+    <p>Address: {{ original.address }}</p>
+  </div>
+{% endblock %}
