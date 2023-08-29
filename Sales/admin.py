@@ -5,6 +5,63 @@ from .models import SalesOrderInfo, SalesOrderItem
 from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
 
+from reportlab.platypus import Table, TableStyle
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from io import BytesIO
+
+
+
+def generate_pdf(modeladmin, request, queryset):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="sales_report.pdf"'
+
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
+
+    for order_info in queryset:
+        p.drawString(100, 700, f"Order Number: {order_info.OrderNumber}")
+        p.drawString(100, 680, f"Customer: {order_info.CustomerName}")
+        p.drawString(100, 660, f"Address: {order_info.Address}")
+        # Calculate the y-coordinate for the table's top
+        y = 600        
+        data = []
+        total_amount = 0
+
+        for item in SalesOrderItem.objects.filter(OrderNumber=order_info):
+            data.append([item.ItemName, item.Quantity, item.Price, item.PriceTotal])
+            total_amount += item.PriceTotal
+        
+        # Create a table
+        table = Table(data, colWidths=[150, 80, 80, 80])
+        
+        # Apply table style
+        table_style = TableStyle([
+
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('LINEBELOW', (0, 0), (-1, 0), 1, (0, 0, 0)),
+            ('LINEABOVE', (0, -1), (-1, -1), 1, (0, 0, 0)),
+            ('GRID', (0, 0), (-1, -1), 1, (0, 0, 0)),
+        ])
+        table.setStyle(table_style)
+
+        # Draw the table on the canvas
+        table.wrapOn(p, 400, 600)
+        table.drawOn(p, 100, y)
+        
+        p.drawString(100, 460, f"Total Amount: {total_amount}")
+        p.showPage()
+
+    p.save()
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+    return response
+
+generate_pdf.short_description = "Generate PDF"
+
 class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
         return obj.name  
@@ -14,7 +71,7 @@ class SalesOrderItemForm(forms.ModelForm):
         model = SalesOrderItem
         fields = '__all__'
         widgets = {
-            'ItemName': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains'])
+            # 'ItemName': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains'])
         }
 
 class SalesOrderItemInline(admin.TabularInline):
@@ -49,7 +106,7 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
     form = SalesOrderInfoAdminForm
     inlines = [SalesOrderItemInline]
     
-
+    actions = [generate_pdf]
         
     class Media:
         js = ('js/salesorder.js',)

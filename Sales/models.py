@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from BusinessPartners.models import BusinessPartner 
 from ItemMasterData.models import Item
+
+
 # Create your models here.
 class SalesOrderInfo(models.Model):
     OrderNumber = models.PositiveIntegerField(default=1, unique=True)
