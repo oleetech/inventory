@@ -56,15 +56,3 @@
 })(jQuery);
 
 
-function initializeModelSelect2Widget() {
-  $('.model-select2-widget').djangoSelect2();  // Replace with the appropriate selector
-}
-
-// Example event delegation for adding new formsets
-$(document).on('click', '.add-formset-button', function() {
-  // Code to add a new formset
-  // ...
-
-  // Initialize the ModelSelect2Widget for the new formset
-  initializeModelSelect2Widget();
-});

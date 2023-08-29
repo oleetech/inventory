@@ -20,5 +20,9 @@ class BusinessPartner(models.Model):
     ]
     vendor_type = models.CharField(max_length=10, choices=VENDOR_TYPES,default='customer')
 
+    class Meta:
+        
+        verbose_name = 'Business Partners | Vendor'
+        verbose_name_plural = 'Business Partners | Vendor'
     def __str__(self):
         return self.name  

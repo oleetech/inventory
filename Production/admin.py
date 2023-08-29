@@ -56,12 +56,21 @@ admin.site.register(BillOfMaterials, BillOfMaterialsAdmin)
 from .models import Production, ProductionComponent
 from Sales.models import SalesOrderInfo,SalesOrderItem
 
-class ProductionComponentInline(admin.TabularInline):
-    model = ProductionComponent
-    extra = 1  # Set the desired value for the 'extra' attribute
+
+
+class  ProductionComponentInlineForm(forms.ModelForm) :
+    class Meta:
+        model = ProductionComponent
+        fields = ['name','uom','quantity' ]
+        widgets = {
+
+            'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
+        }
+    
 class ProductionForm(forms.ModelForm):
     docno = forms.IntegerField(disabled=True)  # Add this line to the form
-    code = forms.ChoiceField(choices=[])
+
     
     class Meta:
         model = Production
@@ -86,7 +95,11 @@ class ProductionForm(forms.ModelForm):
             self.initial['docno'] = next_docno
             
             
-            
+class ProductionComponentInline(admin.TabularInline):
+    model = ProductionComponent
+    extra = 1  
+    form = ProductionComponentInlineForm   
+@admin.register(Production)             
 class ProductionAdmin(admin.ModelAdmin):
     form = ProductionForm
     inlines = [ProductionComponentInline]
@@ -94,4 +107,36 @@ class ProductionAdmin(admin.ModelAdmin):
         js = ('js/productionorder.js',)
         defer = True  # Add the defer attribute
 
-admin.site.register(Production, ProductionAdmin)
+'''
+  ____                         _           _       _____                                ____                       _                  _     _                 
+ |  _ \    ___    ___    ___  (_)  _ __   | |_    |  ___|  _ __    ___    _ __ ___     |  _ \   _ __    ___     __| |  _   _    ___  | |_  (_)   ___    _ __  
+ | |_) |  / _ \  / __|  / _ \ | | | '_ \  | __|   | |_    | '__|  / _ \  | '_ ` _ \    | |_) | | '__|  / _ \   / _` | | | | |  / __| | __| | |  / _ \  | '_ \ 
+ |  _ <  |  __/ | (__  |  __/ | | | |_) | | |_    |  _|   | |    | (_) | | | | | | |   |  __/  | |    | (_) | | (_| | | |_| | | (__  | |_  | | | (_) | | | | |
+ |_| \_\  \___|  \___|  \___| |_| | .__/   \__|   |_|     |_|     \___/  |_| |_| |_|   |_|     |_|     \___/   \__,_|  \__,_|  \___|  \__| |_|  \___/  |_| |_|
+                                  |_|                                                                                                                         
+'''
+from .models import ProductionReceipt,ProductionReceiptItem
+
+
+class  ProductionReceiptItemInlineForm(forms.ModelForm) :
+    class Meta:
+        model = ProductionReceiptItem
+        fields = ['ProductionNo','ItemName','Quantity','Price','PriceTotal' ]
+        widgets = {
+
+            'ItemName': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
+        }
+        
+        
+class ProductionReceiptItemInline(admin.TabularInline):
+    model = ProductionReceiptItem
+    extra = 1  
+    form = ProductionReceiptItemInlineForm   
+@admin.register(ProductionReceipt) 
+class ProductionReceiptAdmin(admin.ModelAdmin):
+    inlines = [ProductionReceiptItemInline]
+    
+    class Media:
+        js = ('js/receiptfromproduction.js',)
+        defer = True  # Add the defer attribute    
