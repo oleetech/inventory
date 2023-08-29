@@ -19,8 +19,8 @@ class ChildComponentForm(forms.ModelForm):
         model = ChildComponent
         fields = '__all__'
         widgets = {
-            'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
-            'uom': CustomModelSelect2Widget(model=Unit, search_fields=['name__icontains']),            
+            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'uom': CustomModelSelect2Widget(model=Unit, search_fields=['name__icontains']),            
         }
 class ChildComponentInline(admin.TabularInline):
     model = ChildComponent
@@ -34,7 +34,7 @@ class BillOfMaterialsAdminForm(forms.ModelForm):
         model = BillOfMaterials
         fields = '__all__'
         widgets = {
-            'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
 
         }
         
@@ -64,7 +64,7 @@ class  ProductionComponentInlineForm(forms.ModelForm) :
         fields = ['name','uom','quantity' ]
         widgets = {
 
-            'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
             # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
         }
     
@@ -77,7 +77,7 @@ class ProductionForm(forms.ModelForm):
         fields = ['name', 'quantity', 'sales_order_no', 'docno']
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
             # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
         }
     def __init__(self, *args, **kwargs):

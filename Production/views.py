@@ -22,7 +22,7 @@ def ajax_view(request):
                 updated_quantity = format(updated_quantity, '.4f')
                 updated_components.append({
                     'id': component.id,
-
+                    'code': component.code,
                     'name': component.name,
                     'uom': component.uom,
                     'quantity': updated_quantity

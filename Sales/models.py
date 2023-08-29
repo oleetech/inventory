@@ -20,6 +20,7 @@ class SalesOrderInfo(models.Model):
 
 class SalesOrderItem(models.Model):
     OrderNumber = models.ForeignKey(SalesOrderInfo, on_delete=models.CASCADE, null=True, default=None)
+    
     ItemName = models.ForeignKey(Item, on_delete=models.CASCADE,  default=None)
     Quantity = models.PositiveIntegerField(default=0)
     Price = models.DecimalField(max_digits=10, decimal_places=4)

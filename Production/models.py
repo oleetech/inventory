@@ -3,16 +3,16 @@ from ItemMasterData.models import Item
 from GeneralSettings.models import Unit
 # Create your models here.
 class BillOfMaterials(models.Model):
-
-    name = models.ForeignKey(Item, on_delete=models.CASCADE,  default=None)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
 
 
 class ChildComponent(models.Model):
     bill_of_materials = models.ForeignKey(BillOfMaterials, on_delete=models.CASCADE, related_name='child_components')
-
-    name = models.ForeignKey(Item, on_delete=models.CASCADE,  default=None)
-    uom = models.ForeignKey(Unit, on_delete=models.CASCADE,  default=None)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)
+    uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     
 '''
@@ -29,7 +29,7 @@ from datetime import date
 from Sales.models import SalesOrderInfo,SalesOrderItem
 class Production(models.Model):
 
-    name = models.ForeignKey(Item, on_delete=models.CASCADE,  default=None)
+    name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     sales_order_no = models.ForeignKey(SalesOrderInfo,on_delete=models.CASCADE,related_name='sales_production_order',default=1)
     created_date = models.DateField(default=date.today)
@@ -45,12 +45,12 @@ class Production(models.Model):
 
 class ProductionComponent(models.Model):
     production = models.ForeignKey(Production, on_delete=models.CASCADE, related_name='production_components')
-    name = models.ForeignKey(Item, on_delete=models.CASCADE,  default=None)
-    uom = models.ForeignKey(Unit, on_delete=models.CASCADE,  default=None)
+    name =  models.CharField(max_length=100,default='',null=True)
+    uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
 
     def __str__(self):
-        return self.name.name   
+        return self.name   
     
     
     
