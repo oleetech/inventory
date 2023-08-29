@@ -125,7 +125,6 @@ class  ProductionReceiptItemInlineForm(forms.ModelForm) :
         widgets = {
 
             'ItemName': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
-            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
         }
         
         
