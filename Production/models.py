@@ -76,8 +76,16 @@ class ProductionComponent(models.Model):
 class ProductionReceipt(models.Model):
     receiptNumber = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=date.today)
+    DEPARTMENT_CHOICES = [
+        ('1', 'N/Z'),
+        ('2', 'V/z'),
+        ('3', 'ST'),
+        ('4', 'BT')
+        
+    ]
+    department = models.CharField(max_length=3, choices=DEPARTMENT_CHOICES,default='1')   
     def __str__(self):
-        return f"ReceiptNo{self.ReceiptNumber}"
+        return f"ReceiptNo{self.receiptNumber}"
 
 
             
@@ -89,9 +97,19 @@ class ProductionReceiptItem(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.PositiveIntegerField(default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=4)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4)
+    price = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
     size = models.CharField(max_length=50,default='')
     color = models.CharField(max_length=50,default='')
+    style = models.CharField(max_length=100,default='')   
+    po = models.CharField(max_length=100,default='')   
+    remarks = models.CharField(max_length=100,default='') 
+    department = models.CharField(max_length=50,default='')      
+    
+    def save(self, *args, **kwargs):
+        if self.receiptNumber:
+            self.department = self.receiptNumber.department
+        super().save(*args, **kwargs)    
+     
     def __str__(self):
-        return f": {self.ReceiptNumber}"    
+        return f": {self.receiptNumber}"    
