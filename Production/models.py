@@ -46,7 +46,10 @@ class Production(models.Model):
     due_date = models.DateField(default=date.today)
     docno = models.PositiveIntegerField(unique=True,default=1)
     
+    class Meta:
 
+        verbose_name = ' Production Order'
+        verbose_name_plural = 'Production Order'    
         
     def __str__(self):
         return f"{self.docno}"
@@ -84,13 +87,21 @@ class ProductionReceipt(models.Model):
         
     ]
     department = models.CharField(max_length=3, choices=DEPARTMENT_CHOICES,default='1')   
+    
+    class Meta:
+
+        verbose_name = 'Receipt From Production'
+        verbose_name_plural = 'Receipt From Production'    
     def __str__(self):
-        return f"ReceiptNo{self.receiptNumber}"
+        return f"ReceiptNo{self.id}"
 
 
             
             
-class ProductionReceiptItem(models.Model):
+class ProductionReceiptItem(models.Model): 
+    
+    lineNo = models.PositiveIntegerField(default=1)  # Add the lineNo field
+    
     receiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
     salesOrder = models.PositiveIntegerField(default=1)
     productionNo =  models.PositiveIntegerField(default=1)
@@ -109,6 +120,10 @@ class ProductionReceiptItem(models.Model):
     def save(self, *args, **kwargs):
         if self.receiptNumber:
             self.department = self.receiptNumber.department
+            
+            
+        
+            
         super().save(*args, **kwargs)    
      
     def __str__(self):

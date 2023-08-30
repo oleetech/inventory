@@ -76,3 +76,44 @@ function calculateTotalQty() {
 
   
   
+  (function($) {
+    $(document).ready(function() {
+
+        $('input[name^="deliveryitem_set-"][name$="-orderNo"]').each(function() {
+            $(this).on('change', function() {
+              const inputValue = parseInt($(this).val(), 10);
+              const receiptNo = $(this).closest('tr').find('.field-receiptNo input').val();
+              const inputElement = $(this);
+
+              $.ajax({
+                type: 'POST',
+                url: '/sales/delivery/',
+                data: {
+                    'receiptNo': receiptNo,
+                    'lineNo':inputValue
+                  
+                },
+                dataType: 'json',
+                success: function(response) {
+                  const tr = inputElement.closest('tr');
+                  const nameInput = tr.find('.field-name input');  
+                  const quantityInput = tr.find('.field-quantity input');                 
+
+                  
+                  // Update the value of the name input field
+                  nameInput.val(response.name); 
+                  quantityInput.val(response.quantity);                                  
+                    console.log(response);
+                }
+            });
+            
+        
+
+
+            });
+        });
+        
+
+    });
+})(jQuery);
+  

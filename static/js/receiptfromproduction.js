@@ -110,7 +110,29 @@ function calculateTotalQty() {
         });
         
 
+
+
+
+
+
+
+
+
     });
+})(jQuery);
+
+(function($) {
+  $(document).ready(function() {
+      $('.add-row-button').on('click', function() {
+          const rows = $('.dynamic-productionreceiptitem_set');
+
+          rows.each(function(index) {
+              const lineNoField = $(this).find('.field-lineNo input');
+              const currentLineNo = parseInt(lineNoField.val(), 10);
+              lineNoField.val(index + 1);
+          });
+      });
+  });
 })(jQuery);
   
 

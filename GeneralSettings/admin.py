@@ -9,7 +9,7 @@ admin.site.register(Unit)
 class CompanyAdmin(admin.ModelAdmin):
     # Define the fields to display and edit in the admin panel
     list_display = ('name', 'address')
-    fields = ('name', 'address')
+    fields = ('name', 'logo','address','phone_number','email','website','established_year')
     # Disable the "Add" button in the admin panel
     def has_add_permission(self, request):
         return False

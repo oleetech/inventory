@@ -34,7 +34,7 @@ class Company(models.Model):
 
     def save(self, *args, **kwargs):
         # Ensure that only one instance exists
-        if CompanyInfo.objects.exists() and not self.pk:
+        if Company.objects.exists() and not self.pk:
             raise ValueError("Only one CompanyInfo instance can be created.")
         super().save(*args, **kwargs)
 
