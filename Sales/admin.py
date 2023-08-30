@@ -5,67 +5,21 @@ from .models import SalesOrderInfo, SalesOrderItem
 from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
 
-from reportlab.platypus import Table, TableStyle
-from django.http import HttpResponse
-from reportlab.pdfgen import canvas
-from io import BytesIO
 
-
-
-def generate_pdf(modeladmin, request, queryset):
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="sales_report.pdf"'
-
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer)
-
-    for order_info in queryset:
-        p.drawString(100, 700, f"Order Number: {order_info.OrderNumber}")
-        p.drawString(100, 680, f"Customer: {order_info.CustomerName}")
-        p.drawString(100, 660, f"Address: {order_info.Address}")
-        # Calculate the y-coordinate for the table's top
-        y = 600        
-        data = []
-        total_amount = 0
-
-        for item in SalesOrderItem.objects.filter(OrderNumber=order_info):
-            data.append([item.ItemName, item.Quantity, item.Price, item.PriceTotal])
-            total_amount += item.PriceTotal
-        
-        # Create a table
-        table = Table(data, colWidths=[150, 80, 80, 80])
-        
-        # Apply table style
-        table_style = TableStyle([
-
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('LINEBELOW', (0, 0), (-1, 0), 1, (0, 0, 0)),
-            ('LINEABOVE', (0, -1), (-1, -1), 1, (0, 0, 0)),
-            ('GRID', (0, 0), (-1, -1), 1, (0, 0, 0)),
-        ])
-        table.setStyle(table_style)
-
-        # Draw the table on the canvas
-        table.wrapOn(p, 400, 600)
-        table.drawOn(p, 100, y)
-        
-        p.drawString(100, 460, f"Total Amount: {total_amount}")
-        p.showPage()
-
-    p.save()
-    pdf = buffer.getvalue()
-    buffer.close()
-    response.write(pdf)
-    return response
-
-generate_pdf.short_description = "Generate PDF"
-
+    
 class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
         return obj.name  
-
+    
+    
+'''
+  ____            _                   ___               _               
+ / ___|    __ _  | |   ___   ___     / _ \   _ __    __| |   ___   _ __ 
+ \___ \   / _` | | |  / _ \ / __|   | | | | | '__|  / _` |  / _ \ | '__|
+  ___) | | (_| | | | |  __/ \__ \   | |_| | | |    | (_| | |  __/ | |   
+ |____/   \__,_| |_|  \___| |___/    \___/  |_|     \__,_|  \___| |_|   
+                                                                        
+'''
 class SalesOrderItemForm(forms.ModelForm):
     class Meta:
         model = SalesOrderItem
@@ -84,39 +38,44 @@ class SalesOrderInfoAdminForm(forms.ModelForm):
         model = SalesOrderInfo
         fields = '__all__'
         widgets = {
-            'OrderNumber': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'TotalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'CustomerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),            
+            'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if not self.instance.pk:
-            last_order = SalesOrderInfo.objects.order_by('-OrderNumber').first()
+            last_order = SalesOrderInfo.objects.order_by('-docNo').first()
             if last_order:
-                next_order_number = last_order.OrderNumber + 1
+                next_order_number = last_order.docNo + 1
             else:
                 next_order_number = 1
 
-            self.initial['OrderNumber'] = next_order_number
+            self.initial['docNo'] = next_order_number
             
                     
 @admin.register(SalesOrderInfo)
 class SalesOrderInfoAdmin(admin.ModelAdmin):
     form = SalesOrderInfoAdminForm
     inlines = [SalesOrderItemInline]
-    
-    actions = [generate_pdf]
+    list_display = ('docNo','customerName', 'totalAmount', 'totalQty')
+    search_fields = ('docNo', )    
+
+
         
     class Media:
         js = ('js/salesorder.js',)
         defer = True
 
     def save_model(self, request, obj, form, change):
-        if not obj.Address:
-            if obj.CustomerName :
-                obj.Address = obj.CustomerName.address
+        if not obj.address:
+            if obj.customerName :
+                obj.address = obj.customerName.address
         super().save_model(request, obj, form, change)
+        
+        
 '''
   ____           _   _                               
  |  _ \    ___  | | (_) __   __   ___   _ __   _   _ 
@@ -130,7 +89,7 @@ from .models import DeliveryInfo,DeliveryItem
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
-        fields = ['docNo','salesOrder','customerName','address','totalAmount','totalQty']
+        fields = ['docNo','customerName','address','totalAmount','totalQty']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -157,7 +116,7 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
     list_display = ('docNo',  'totalQty','totalAmount')
     inlines = [DeliveryItemInline] 
     form = DeliveryInfoForm
-  
+
   
         
     class Media:
@@ -170,3 +129,75 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
             if obj.customerName :
                 obj.address = obj.customerName.address
         super().save_model(request, obj, form, change)
+        
+        
+        
+'''
+  ____            _                   ___                    _            _     _                 
+ / ___|    __ _  | |   ___   ___     / _ \   _   _    ___   | |_    ___  | |_  (_)   ___    _ __  
+ \___ \   / _` | | |  / _ \ / __|   | | | | | | | |  / _ \  | __|  / _ \ | __| | |  / _ \  | '_ \ 
+  ___) | | (_| | | | |  __/ \__ \   | |_| | | |_| | | (_) | | |_  |  __/ | |_  | | | (_) | | | | |
+ |____/   \__,_| |_|  \___| |___/    \__\_\  \__,_|  \___/   \__|  \___|  \__| |_|  \___/  |_| |_|
+'''
+              
+from .models import SalesQuotetionInfo, SalesQuotetionItem
+class SalesQuotetionItemForm(forms.ModelForm):
+    class Meta:
+        model = SalesQuotetionItem
+        fields = '__all__'
+
+class SalesQuotetionItemInline(admin.TabularInline):
+    model = SalesQuotetionItem
+    form = SalesQuotetionItemForm
+    extra = 1
+
+class SalesQuotetionInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = SalesQuotetionInfo
+        fields = '__all__'
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_quotation = SalesQuotetionInfo.objects.order_by('-docNo').first()
+            if last_quotation:
+                next_quotation_number = last_quotation.docNo + 1
+            else:
+                next_quotation_number = 1
+
+            self.initial['docNo'] = next_quotation_number
+
+@admin.register(SalesQuotetionInfo)
+class SalesQuotetionInfoAdmin(admin.ModelAdmin):
+    form = SalesQuotetionInfoAdminForm
+    inlines = [SalesQuotetionItemInline]
+
+    class Media:
+        js = ('js/salesquotetion.js',)
+        defer = True
+
+    def save_model(self, request, obj, form, change):
+        if not obj.address:
+            if obj.customerName:
+                obj.address = obj.customerName.address
+        super().save_model(request, obj, form, change)
+
+# Register other admin classes if needed
+
+# admin.site.register(SalesQuotetionInfo, SalesQuotetionInfoAdmin)        
+        
+        
+        
+        
+        
+        
+        
+        
+        

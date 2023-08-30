@@ -1,14 +1,22 @@
 
 
+
+
+
+
+
+
+
+
 (function($) {
     $(document).ready(function() {
       // Your code here
   
       // Example: Changing IDs with prefix
-      var prefix = '#id_deliveryitem_set-';
-      var pricePrefix = '#id_deliveryitem_set-{0}-price';
-      var quantityPrefix = '#id_deliveryitem_set-{0}-quantity';
-      var priceTotalPrefix = '#id_deliveryitem_set-{0}-priceTotal';
+      var prefix = '#id_salesquotetionitem_set-';
+      var pricePrefix = '#id_salesquotetionitem_set-{0}-price';
+      var quantityPrefix = '#id_salesquotetionitem_set-{0}-quantity';
+      var priceTotalPrefix = '#id_salesquotetionitem_set-{0}-priceTotal';
   
       // Example: Calculate PriceTotal
       function calculatePriceTotal(index) {
@@ -21,7 +29,7 @@
       // Example: Calculate the sum of all calculatePriceTotal values
       function calculateTotalAmount() {
         var total = 0;
-        $('input[name^="deliveryitem_set-"][name$="-priceTotal"]').each(function() {
+        $('input[name^="salesquotetionitem_set-"][name$="-priceTotal"]').each(function() {
           var priceTotal = parseFloat($(this).val());
           if (!isNaN(priceTotal)) {
             total += priceTotal;
@@ -40,20 +48,20 @@
       var totalQty = calculateTotalQty();
       $('#id_totalQty').val(totalQty);
     }
-
-function calculateTotalQty() {
+  
+  function calculateTotalQty() {
   var total = 0;
-  $('input[name^="deliveryitem_set-"][name$="-quantity"]').each(function() {
+  $('input[name^="salesquotetionitem_set-"][name$="-quantity"]').each(function() {
     var quantity = parseFloat($(this).val());
     if (!isNaN(quantity)) {
       total += quantity;
     }
   });
   return total.toFixed(4);
-} 
+  } 
       // Example: Handle changes in Price and Quantity fields
       function handleFieldChanges() {
-        $('input[name^="deliveryitem_set-"][name$="-price"], input[name^="deliveryitem_set-"][name$="-quantity"]').on('change', function() {
+        $('input[name^="salesquotetionitem_set-"][name$="-price"], input[name^="salesquotetionitem_set-"][name$="-quantity"]').on('change', function() {
           var index = $(this).attr('name').split('-')[1];
           calculatePriceTotal(index);
           setTotalAmount();
@@ -67,12 +75,13 @@ function calculateTotalQty() {
     });
   })(jQuery);
   
-
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
+  
   
   

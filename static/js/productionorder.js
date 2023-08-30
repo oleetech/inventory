@@ -63,7 +63,7 @@
           quantityInput.val(component.quantity);
           quantityCell.append(quantityInput);
   
-          var deleteCell = $('<td>');
+          var deleteCell = $('<td >');
           var deleteButton = $('<button>').text('Delete');
           deleteButton.addClass('delete-button');
           deleteButton.on('click', function() {
