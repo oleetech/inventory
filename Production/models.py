@@ -28,7 +28,15 @@ from datetime import date
 
 from Sales.models import SalesOrderInfo,SalesOrderItem
 class Production(models.Model):
-
+    Status_CHOICES = [
+        ('P', 'Planned'),
+        ('R', 'Released'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ]
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='P')
+    code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     sales_order_no = models.PositiveIntegerField(default=1)
@@ -45,7 +53,8 @@ class Production(models.Model):
 
 class ProductionComponent(models.Model):
     production = models.ForeignKey(Production, on_delete=models.CASCADE, related_name='production_components')
-    name =  models.CharField(max_length=100,default='',null=True)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)
     uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
 
@@ -64,8 +73,8 @@ class ProductionComponent(models.Model):
 '''
 
 class ProductionReceipt(models.Model):
-    ReceiptNumber = models.PositiveIntegerField(default=1, unique=True)
-    created_date = models.DateField(default=date.today)
+    receiptNumber = models.PositiveIntegerField(default=1, unique=True)
+    created = models.DateField(default=date.today)
     def __str__(self):
         return f"ReceiptNo{self.ReceiptNumber}"
 
@@ -73,14 +82,15 @@ class ProductionReceipt(models.Model):
             
             
 class ProductionReceiptItem(models.Model):
-    ReceiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
-    SalesOrderItem = models.ForeignKey(SalesOrderItem, on_delete=models.CASCADE, null=True, default=None)
-    ProductionNo = models.ForeignKey(Production, on_delete=models.CASCADE, related_name='production_receipt_components', null=True)
-    ItemName = models.ForeignKey(Item, on_delete=models.CASCADE,  default=None)
-    Quantity = models.PositiveIntegerField(default=0)
-    Price = models.DecimalField(max_digits=10, decimal_places=4)
-    PriceTotal = models.DecimalField(max_digits=10, decimal_places=4)
-    Size = models.CharField(max_length=50,default='')
-    Color = models.CharField(max_length=50,default='')
+    receiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
+    salesOrderItem = models.PositiveIntegerField(default=1)
+    productionNo =  models.PositiveIntegerField(default=1)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)
+    quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4)
+    size = models.CharField(max_length=50,default='')
+    color = models.CharField(max_length=50,default='')
     def __str__(self):
         return f": {self.ReceiptNumber}"    

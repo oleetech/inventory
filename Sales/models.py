@@ -68,7 +68,9 @@ class DeliveryInfo(models.Model):
 
 class DeliveryItem(models.Model):
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True)       
+    created = models.DateTimeField(auto_now_add=True) 
+    orderNo = models.PositiveIntegerField(default=1)
+    receiptNo =  models.PositiveIntegerField(default=1)      
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
     uom = models.CharField(max_length=20,default='',null=True)
