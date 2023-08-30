@@ -130,20 +130,20 @@ from .models import DeliveryInfo,DeliveryItem
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
-        fields = ['DocNo','SalesOrder','CustomerName','Address','TotalAmount','TotalQty']
+        fields = ['docNo','salesOrder','customerName','address','totalAmount','totalQty']
         widgets = {
-            'DocNo': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'TotalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'TotalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'CustomerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
-        fields = ['ItemName','Quantity','Price','PriceTotal']
+        fields = ['name','quantity','price','priceTotal']
         widgets = {
 
-            'TotalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'ItemName': DeliveryItemModelSelect2Widget(model=Item, search_fields=['name__icontains']),
         }
 class DeliveryItemInline(admin.TabularInline):
@@ -154,7 +154,7 @@ class DeliveryItemInline(admin.TabularInline):
     
 @admin.register(DeliveryInfo)
 class DeliveryInfoAdmin(admin.ModelAdmin):
-    list_display = ('DocNo',  'TotalQty','TotalAmount')
+    list_display = ('docNo',  'totalQty','totalAmount')
     inlines = [DeliveryItemInline] 
     form = DeliveryInfoForm
   
@@ -166,7 +166,7 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
         
      
     def save_model(self, request, obj, form, change):
-        if not obj.Address:
-            if obj.CustomerName :
-                obj.Address = obj.CustomerName.address
+        if not obj.address:
+            if obj.customerName :
+                obj.address = obj.customerName.address
         super().save_model(request, obj, form, change)
