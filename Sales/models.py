@@ -22,8 +22,8 @@ class SalesOrderInfo(models.Model):
 
     class Meta:
 
-        verbose_name = 'Order'
-        verbose_name_plural = 'Order'
+        verbose_name = 'Sales Order'
+        verbose_name_plural = 'Sales Order'
         
     def __str__(self):
         return f"{self.docNo}"
@@ -59,7 +59,7 @@ class DeliveryInfo(models.Model):
 
     class Meta:
 
-        verbose_name = 'Delivery'
+        verbose_name = ' Delivery'
         verbose_name_plural = 'Delivery'
 
     def __str__(self):

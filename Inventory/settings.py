@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'ItemMasterData',
     'Sales',
     'django_select2',
-    'Production',    
+    'Production',
+    'Purchasing',    
 ]
 
 MIDDLEWARE = [
