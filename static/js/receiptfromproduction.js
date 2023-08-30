@@ -76,35 +76,39 @@ function calculateTotalQty() {
 
         $('input[name^="productionreceiptitem_set-"][name$="-productionNo"]').each(function() {
             $(this).on('change', function() {
-              const inputValue = $(this).val();
-
-              
-              // Construct the URL for your AJAX endpoint
-              const url = '{% url "home" %}';
-
-              
-              // Construct the data to be sent in the request
-              const data = {
-                value: inputValue
-
-              };
-              
-              // Send the AJAX request using jQuery's $.ajax method
-              $.ajax({
-                url: url,
-                method: 'POST', // or 'GET', 'PUT', etc.
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                  // Handle the response data if needed
-                  console.log(response);
-                },
-                error: function(error) {
-                  console.error('Error:', error);
-                }
-              });
+                const inputValue = parseInt($(this).val(), 10); // Convert inputValue to an integer
+        
+                // Store a reference to the input element
+                const inputElement = $(this);
+        
+                // Send the AJAX request using jQuery's $.ajax method
+                $.ajax({
+                    type: 'POST',
+                    url: '/production/receiptproduction/',
+                    data: {
+                        'productionNo': inputValue
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        const tr = inputElement.closest('tr');
+                        const quantityInput = tr.find('.field-quantity input');
+                        const nameInput = tr.find('.field-name input');
+                        const salesorderInput = tr.find('.field-salesOrder input');
+                        
+                        // Update the value of the name input field
+                        nameInput.val(response.name);
+                        quantityInput.val(response.quantity);
+                        salesorderInput.val(response.salesOrder);
+        
+                        console.log(response.name);
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
             });
-          });
+        });
+        
 
     });
 })(jQuery);

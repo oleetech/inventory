@@ -39,7 +39,7 @@ class Production(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
-    sales_order_no = models.PositiveIntegerField(default=1)
+    salesOrder = models.PositiveIntegerField(default=1)
     created_date = models.DateField(default=date.today)
     order_date = models.DateField(default=date.today)
     start_date = models.DateField(default=date.today)
@@ -54,6 +54,7 @@ class Production(models.Model):
 class ProductionComponent(models.Model):
     production = models.ForeignKey(Production, on_delete=models.CASCADE, related_name='production_components')
     code = models.CharField(max_length=20,default='',null=True)
+    salesOrder= models.PositiveIntegerField(default=1)
     name = models.CharField(max_length=100,default='',null=True)
     uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
@@ -83,7 +84,7 @@ class ProductionReceipt(models.Model):
             
 class ProductionReceiptItem(models.Model):
     receiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
-    salesOrderItem = models.PositiveIntegerField(default=1)
+    salesOrder = models.PositiveIntegerField(default=1)
     productionNo =  models.PositiveIntegerField(default=1)
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)

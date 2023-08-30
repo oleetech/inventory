@@ -2,6 +2,8 @@ from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import BillOfMaterials,Production
+
+
 @csrf_exempt
 def ajax_view(request):
     if request.method == 'POST':
@@ -32,3 +34,25 @@ def ajax_view(request):
         return JsonResponse(updated_components, safe=False)
 
     return JsonResponse([], safe=False)
+
+
+from .models import ProductionReceipt,ProductionReceiptItem
+
+@csrf_exempt
+def ajax_view_receipt(request):
+    if request.method == 'POST':
+        production = request.POST.get('productionNo')
+      
+        try:
+            production_instance = Production.objects.get(docno=production)
+            
+            response_data = {
+                'name': production_instance.name,
+                'code': production_instance.code,
+                'quantity':production_instance.quantity,
+                'salesOrder': production_instance.salesOrder
+            }
+        except Production.DoesNotExist:
+            response_data = {'error': 'Production not found'}
+        
+        return JsonResponse(response_data)

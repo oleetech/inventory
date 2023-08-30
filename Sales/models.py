@@ -60,7 +60,7 @@ class DeliveryInfo(models.Model):
     class Meta:
 
         verbose_name = ' Delivery'
-        verbose_name_plural = 'Delivery'
+        verbose_name_plural = 'Delivery Info'
 
     def __str__(self):
         return f"Delivery for SalesOrderNo {self.docNo}"
