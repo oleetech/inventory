@@ -25,7 +25,7 @@
 
       function updateFormset(data) {
      
-        var formsetTable = $('table');
+        var formsetTable = $('fieldset table');
         formsetTable.empty();
   
         // Add table header

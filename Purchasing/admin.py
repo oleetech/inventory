@@ -106,3 +106,56 @@ class GoodsReceiptPoInfoAdmin(admin.ModelAdmin):
                 obj.address = obj.customerName.address
         super().save_model(request, obj, form, change)
 
+
+
+from .models import GoodsReturnInfo, GoodsReturnItem
+
+    
+    
+class GoodsReturnItemForm(forms.ModelForm):
+    class Meta:
+        model = GoodsReturnItem
+        fields = '__all__'
+
+class GoodsReturnItemInline(admin.TabularInline):
+    model = GoodsReturnItem
+    form = GoodsReturnItemForm
+    extra = 1
+
+class GoodsReturnInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = GoodsReturnInfo
+        fields = '__all__'
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_return = GoodsReturnInfo.objects.order_by('-docNo').first()
+            if last_return:
+                next_return_number = last_return.docNo + 1
+            else:
+                next_return_number = 1
+
+            self.initial['docNo'] = next_return_number
+
+@admin.register(GoodsReturnInfo)
+class GoodsReturnInfoAdmin(admin.ModelAdmin):
+    form = GoodsReturnInfoAdminForm
+    inlines = [GoodsReturnItemInline]
+
+    class Media:
+        js = ('js/goodsreturn.js',)
+        defer = True
+
+    def save_model(self, request, obj, form, change):
+        if not obj.address:
+            if obj.customerName:
+                obj.address = obj.customerName.address
+        super().save_model(request, obj, form, change)    

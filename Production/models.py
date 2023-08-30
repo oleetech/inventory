@@ -31,7 +31,7 @@ class Production(models.Model):
 
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
-    sales_order_no = models.ForeignKey(SalesOrderInfo,on_delete=models.CASCADE,related_name='sales_production_order',default=1)
+    sales_order_no = models.PositiveIntegerField(default=1)
     created_date = models.DateField(default=date.today)
     order_date = models.DateField(default=date.today)
     start_date = models.DateField(default=date.today)
