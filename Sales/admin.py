@@ -189,9 +189,71 @@ class SalesQuotetionInfoAdmin(admin.ModelAdmin):
                 obj.address = obj.customerName.address
         super().save_model(request, obj, form, change)
 
-# Register other admin classes if needed
+'''
+  ____           _                          
+ |  _ \    ___  | |_   _   _   _ __   _ __  
+ | |_) |  / _ \ | __| | | | | | '__| | '_ \ 
+ |  _ <  |  __/ | |_  | |_| | | |    | | | |
+ |_| \_\  \___|  \__|  \__,_| |_|    |_| |_|
+                                            
 
-# admin.site.register(SalesQuotetionInfo, SalesQuotetionInfoAdmin)        
+                                                                                                  
+''' 
+from django.contrib import admin
+from .models import ReturnInfo, ReturnItem
+from django import forms
+from django_select2.forms import ModelSelect2Widget
+from django.utils import timezone
+
+class ReturnItemForm(forms.ModelForm):
+    class Meta:
+        model = ReturnItem
+        fields = '__all__'
+
+class ReturnItemInline(admin.TabularInline):
+    model = ReturnItem
+    form = ReturnItemForm
+    extra = 1
+
+class ReturnInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = ReturnInfo
+        fields = '__all__'
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_return = ReturnInfo.objects.order_by('-docNo').first()
+            if last_return:
+                next_return_number = last_return.docNo + 1
+            else:
+                next_return_number = 1
+
+            self.initial['docNo'] = next_return_number
+
+@admin.register(ReturnInfo)
+class ReturnInfoAdmin(admin.ModelAdmin):
+    form = ReturnInfoAdminForm
+    inlines = [ReturnItemInline]
+
+    class Media:
+        js = ('js/returninfo.js',)
+        defer = True
+
+    def save_model(self, request, obj, form, change):
+        if not obj.address:
+            if obj.customerName:
+                obj.address = obj.customerName.address
+        super().save_model(request, obj, form, change)
+
+
         
         
         

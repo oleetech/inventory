@@ -115,4 +115,42 @@ class SalesQuotetionItem(models.Model):
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     def __str__(self):
         return f": {self.order}"
-      
+
+
+'''
+  ____           _                          
+ |  _ \    ___  | |_   _   _   _ __   _ __  
+ | |_) |  / _ \ | __| | | | | | '__| | '_ \ 
+ |  _ <  |  __/ | |_  | |_| | | |    | | | |
+ |_| \_\  \___|  \__|  \__,_| |_|    |_| |_|
+                                            
+
+                                                                                                  
+'''    
+class ReturnInfo(models.Model):
+    docNo = models.PositiveIntegerField(default=1, unique=True)
+    customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
+    address = models.CharField(max_length=250,blank=True)
+    created = models.DateField(default=timezone.now)
+    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+
+    class Meta:
+
+        verbose_name = 'Return'
+        verbose_name_plural = 'Return'
+        
+    def __str__(self):
+        return f"{self.docNo}"   
+    
+
+class ReturnItem(models.Model):
+    order = models.ForeignKey(ReturnInfo, on_delete=models.CASCADE, null=True, default=None)    
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)    
+    uom = models.CharField(max_length=20,default='',null=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    def __str__(self):
+        return f": {self.order}"      
