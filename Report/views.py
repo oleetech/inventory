@@ -11,9 +11,9 @@ from .forms import DateFilterForm
     
     
 def receipt_from_production_between_date(request):
-    form = DateFilterForm(request.GET)
+    form = DateFilterForm(request.POST)
     
-    if request.method == 'GET' and form.is_valid():
+    if request.method == 'POST' and form.is_valid():
         start_date = form.cleaned_data['start_date']
         end_date = form.cleaned_data['end_date']
         

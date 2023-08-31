@@ -1,107 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Date Wise Production Report </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
-<body>
-<div class="container">
-
-    <form method="get" action="{% url 'receipt_from_production_between_date' %}">
-
-        {% comment %} {{ form.start_date.label_tag }} {{ form.start_date }}<br><br>
-        {{ form.end_date.label_tag }} {{ form.end_date }}<br><br> {% endcomment %}
-
-        <label for="start_date">Start Date:</label>
-        <input type="date" id="start_date" name="start_date" required><br><br>
-        
-        <label for="end_date">End Date:</label>
-        <input type="date" id="end_date" name="end_date" required><br><br>
-        
-        <button class='btn btn-info' type="submit">Filter</button>
-
-    </form>
+{% extends 'basereport.html' %}
+{% load static %}
 
 
-    <h1>Date Wise Production Report </h1>
-  
-    <table id="itemsTable" class="table table-bordered" style="border-color:black;">
-        <thead class="table-dark">
+
+{% block content %}
+
+<form method="post" action="{% url 'receipt_from_production_between_date' %}" class="form-inline">
+    {% csrf_token %}
+    <div class="row">
+        {% for field in form %}
+        <div class="col-md-4 mb-4">
+          <div class="form-group">
+            <label for="{{ field.auto_id }}">{{ field.label }}</label>
+            <div class="input-group">
+
+              {{ field }}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+</form>
+
+<table id="itemsTable" class="table table-bordered" style="border-color:black;">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Created</th>
+            <th>Quantity</th>
+            <th>Department</th>
+            <th>Sales Order</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
             <tr>
-                <th>Name</th>
-                <th>Created</th>
-                <th>Quantity</th>
-                <th>Department</th>
-                <th>Sales Order </th>
+                <td>{{ item.name }}</td>
+                <td>{{ item.created }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    {% if item.department == '1' %}
+                        Nylon Zipper
+                    {% else %}
+                        {{ item.department }}
+                    {% endif %}
+                </td>
+                <td>{{ item.salesOrder }}</td>
             </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.created }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>
-                        {% if item.department == '1' %}
-                            Nylon Zipper
-                        {% else %}
-                            {{ item.department }}
-                        {% endif %}
-                    </td>
-                    <td>{{ item.salesOrder }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+        {% endfor %}
+    </tbody>
+</table>
 
-<!-- Export Button -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css">
-<script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<!-- Include PDFMake -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.70/vfs_fonts.js"></script>
-
-
-
-    <!-- Initialize DataTables -->
-    <script>
-        $(document).ready(function() {
-            $('#itemsTable').DataTable({
-                "bLengthChange": false,  // Disable the "Show [x] entries" dropdown
-                // Filter option
-                "initComplete": function () {
-                    this.api().columns().every(function () {
-                        var column = this;
-                        var input = $('<input type="text" placeholder="Search">')
-                            .appendTo($(column.header()))
-                            .on('keyup change clear', function () {
-                                if (column.search() !== this.value) {
-                                    column.search(this.value).draw();
-                                }
-                            });
-                    });
-                },
-                "paging": false,  // Disable pagination
-                "scrollY": "300px",  // Set a fixed height for the table body
-                "searching": false,  // Disable search
-
-                // Export Button
-                "dom": 'Bfrtip',
-                "buttons": [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
-
-            });
+<script>
+    $(document).ready(function() {
+        $('#itemsTable').DataTable({
+            "searching": false,  // Disable search box
+            "paging": false,  // Disable pagination
+            "dom": 'Bfrtip',
+            "buttons": [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+
+{% endblock %}
