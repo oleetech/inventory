@@ -45,7 +45,7 @@
             $('#itemsTable').DataTable({
                 "bLengthChange": false,  // Disable the "Show [x] entries" dropdown
                 // Filter option
-                "initComplete": function () {
+                {% comment %} "initComplete": function () {
                     this.api().columns().every(function () {
                         var column = this;
                         var input = $('<input type="text" placeholder="Search">')
@@ -55,7 +55,7 @@
                                     column.search(this.value).draw();
                                 }
                             });
-                    });
+                    }); {% endcomment %}
                 },
                 "paging": false,  // Disable pagination
                 "scrollY": "300px",  // Set a fixed height for the table body

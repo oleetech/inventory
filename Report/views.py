@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.db.models import Sum
 from datetime import datetime
 import pandas as pd
@@ -7,8 +7,20 @@ import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import BillOfMaterials, ChildComponent,Production, ProductionComponent,ProductionReceipt,ProductionReceiptItem
 from .forms import DateFilterForm,OrderFilterForm
+from .models import Post
+def index(request):
+    # Get the first record of the Post model.
+    post = Post.objects.first()
 
+    # Get the content of the first record.
+    content = post.content
 
+    context = {
+        'content': content,
+    }
+
+    return render(request, 'index.html', context)
+    return render(request, 'index.html', context)
     
     
 def receipt_from_production_between_date(request):

@@ -44,9 +44,42 @@ INSTALLED_APPS = [
     'django_select2',
     'Production',
     'Purchasing', 
-    'Report',   
+    'Report',
+    'tinymce',
 ]
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 400,
+    'width': 800,
+    'plugins': '''
+        advlist autolink lists link image charmap print preview hr anchor pagebreak
+        searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime
+        media nonbreaking save table contextmenu directionality emoticons template paste
+        textcolor codesample toc noneditable quickbars
+    ''',
+    'toolbar': '''
+        undo redo | formatselect | bold italic underline strikethrough | forecolor backcolor
+        alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | 
+        link image media | table | blockquote codesample | charmap emoticons | quickbars
+    ''',
+    'contextmenu': 'formats | link image',
+    'content_css': [
+        # Add your own content CSS files here
+    ],
+    'codesample_languages': [
+        { 'text': 'HTML/XML', 'value': 'markup' },
+        { 'text': 'JavaScript', 'value': 'javascript' },
+        { 'text': 'CSS', 'value': 'css' },
+        { 'text': 'Python', 'value': 'python' },
+        { 'text': 'Java', 'value': 'java' },
+        { 'text': 'Ruby', 'value': 'ruby' },
+        { 'text': 'PHP', 'value': 'php' }
+        # Add more languages if needed
+    ],
+    'init_instance_callback': 'tinymce_init_callback'
+}
 
+
+                               
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

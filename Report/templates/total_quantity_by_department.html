@@ -28,8 +28,8 @@
     {% if quantity_by_department %}
         <h2>Department Summary for Sales Order {{ form.cleaned_data.orderNo }}</h2>
 
-        <table id="itemsTable" class="table table-bordered" style="border-color:black;">
-            <thead class="table-dark">
+        <table id="itemsTable" class="table table-bordered" >
+            <thead class="">
                 <tr>
                     <th>Department</th>
                     <th>Total Quantity</th>
@@ -47,5 +47,3 @@
     {% endif %}
 
     {% endblock %}
-</body>
-</html>
