@@ -22,7 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('select2/', include('django_select2.urls', namespace='django_select2')),
     path('production/',include('Production.urls')),   
-    path('sales/',include('Sales.urls')),      
+    path('sales/',include('Sales.urls')),     
+    path('report/',include('Report.urls')),     
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

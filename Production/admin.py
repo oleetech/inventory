@@ -24,7 +24,7 @@ class ChildComponentForm(forms.ModelForm):
         }
 class ChildComponentInline(admin.TabularInline):
     model = ChildComponent
-    extra = 1 
+    extra = 0 
     form = ChildComponentForm  
 
 
@@ -97,7 +97,7 @@ class ProductionForm(forms.ModelForm):
             
 class ProductionComponentInline(admin.TabularInline):
     model = ProductionComponent
-    extra = 1  
+    extra = 0  
     form = ProductionComponentInlineForm   
 @admin.register(Production)             
 class ProductionAdmin(admin.ModelAdmin):
@@ -116,7 +116,29 @@ class ProductionAdmin(admin.ModelAdmin):
                                   |_|                                                                                                                         
 '''
 from .models import ProductionReceipt,ProductionReceiptItem
+class ProductionReceiptForm(forms.ModelForm):
 
+
+    
+    class Meta:
+        model = ProductionReceipt
+        fields = ['created', 'department','receiptNumber']
+        widgets = {
+
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        
+        if not self.instance.pk:
+            # Get the last inserted docno
+            last_docno = ProductionReceipt.objects.order_by('-receiptNumber').first()
+            if last_docno:
+                next_docno = last_docno.receiptNumber + 1
+            else:
+                next_docno = 1
+
+            self.initial['receiptNumber'] = next_docno
 
 class  ProductionReceiptItemInlineForm(forms.ModelForm) :
 
@@ -131,12 +153,12 @@ class  ProductionReceiptItemInlineForm(forms.ModelForm) :
         
 class ProductionReceiptItemInline(admin.TabularInline):
     model = ProductionReceiptItem
-    extra = 1  
+    extra = 0  
     form = ProductionReceiptItemInlineForm   
 @admin.register(ProductionReceipt) 
 class ProductionReceiptAdmin(admin.ModelAdmin):
     inlines = [ProductionReceiptItemInline]
-    
+    form =   ProductionReceiptForm  
     class Media:
         js = ('js/receiptfromproduction.js',)
         defer = True  # Add the defer attribute    

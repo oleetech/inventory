@@ -93,7 +93,7 @@ class ProductionReceipt(models.Model):
         verbose_name = 'Receipt From Production'
         verbose_name_plural = 'Receipt From Production'    
     def __str__(self):
-        return f"ReceiptNo{self.id}"
+        return f"{self.id}"
 
 
             
@@ -101,7 +101,6 @@ class ProductionReceipt(models.Model):
 class ProductionReceiptItem(models.Model): 
     
     lineNo = models.PositiveIntegerField(default=1)  # Add the lineNo field
-    
     receiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
     salesOrder = models.PositiveIntegerField(default=1)
     productionNo =  models.PositiveIntegerField(default=1)
@@ -115,7 +114,8 @@ class ProductionReceiptItem(models.Model):
     style = models.CharField(max_length=100,default='')   
     po = models.CharField(max_length=100,default='')   
     remarks = models.CharField(max_length=100,default='') 
-    department = models.CharField(max_length=50,default='')      
+    department = models.CharField(max_length=50,default='')
+    created = models.DateField(default=date.today)      
     
     def save(self, *args, **kwargs):
         if self.receiptNumber:

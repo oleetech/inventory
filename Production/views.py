@@ -1,7 +1,9 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse
+
 from django.views.decorators.csrf import csrf_exempt
 from .models import BillOfMaterials,Production
+
 
 
 @csrf_exempt
@@ -56,3 +58,5 @@ def ajax_view_receipt(request):
             response_data = {'error': 'Production not found'}
         
         return JsonResponse(response_data)
+    
+    

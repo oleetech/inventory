@@ -60,7 +60,7 @@ class DeliveryInfo(models.Model):
     class Meta:
 
         verbose_name = ' Delivery'
-        verbose_name_plural = 'Delivery Info'
+        verbose_name_plural = 'Delivery '
 
     def __str__(self):
         return f"Delivery for SalesOrderNo {self.docNo}"
@@ -69,7 +69,7 @@ class DeliveryInfo(models.Model):
 class DeliveryItem(models.Model):
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True) 
-    orderNo = models.PositiveIntegerField(default=1)
+    orderNo = models.PositiveIntegerField(default=0)
     receiptNo =  models.PositiveIntegerField(default=1)      
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    

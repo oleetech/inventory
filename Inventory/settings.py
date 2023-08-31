@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'Sales',
     'django_select2',
     'Production',
-    'Purchasing',    
+    'Purchasing', 
+    'Report',   
 ]
 
 MIDDLEWARE = [

@@ -31,7 +31,7 @@ class SalesOrderItemForm(forms.ModelForm):
 class SalesOrderItemInline(admin.TabularInline):
     model = SalesOrderItem
     form = SalesOrderItemForm
-    extra = 1
+    extra = 0
 
 class SalesOrderInfoAdminForm(forms.ModelForm):
     class Meta:
@@ -107,7 +107,7 @@ class DeliveryItemForm(forms.ModelForm):
         }
 class DeliveryItemInline(admin.TabularInline):
     model = DeliveryItem
-    extra = 1  
+    extra = 0  
     form = DeliveryItemForm
     
     
@@ -149,7 +149,7 @@ class SalesQuotetionItemForm(forms.ModelForm):
 class SalesQuotetionItemInline(admin.TabularInline):
     model = SalesQuotetionItem
     form = SalesQuotetionItemForm
-    extra = 1
+    extra = 0
 
 class SalesQuotetionInfoAdminForm(forms.ModelForm):
     class Meta:
@@ -213,7 +213,7 @@ class ReturnItemForm(forms.ModelForm):
 class ReturnItemInline(admin.TabularInline):
     model = ReturnItem
     form = ReturnItemForm
-    extra = 1
+    extra = 0
 
 class ReturnInfoAdminForm(forms.ModelForm):
     class Meta:

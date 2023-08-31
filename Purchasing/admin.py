@@ -15,7 +15,7 @@ class PurchaseItemForm(forms.ModelForm):
 class PurchaseItemInline(admin.TabularInline):
     model = PurchaseItem
     form = PurchaseItemForm
-    extra = 1
+    extra = 0
 
 class PurchaseOrderInfoAdminForm(forms.ModelForm):
     class Meta:
@@ -66,7 +66,7 @@ class GoodsReceiptPoItemForm(forms.ModelForm):
 class GoodsReceiptPoItemInline(admin.TabularInline):
     model = GoodsReceiptPoItem
     form = GoodsReceiptPoItemForm
-    extra = 1
+    extra = 0
 
 class GoodsReceiptPoInfoAdminForm(forms.ModelForm):
     class Meta:
@@ -120,7 +120,7 @@ class GoodsReturnItemForm(forms.ModelForm):
 class GoodsReturnItemInline(admin.TabularInline):
     model = GoodsReturnItem
     form = GoodsReturnItemForm
-    extra = 1
+    extra = 0
 
 class GoodsReturnInfoAdminForm(forms.ModelForm):
     class Meta:
