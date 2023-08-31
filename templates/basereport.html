@@ -59,7 +59,7 @@
                 },
                 "paging": false,  // Disable pagination
                 "scrollY": "300px",  // Set a fixed height for the table body
-                "searching": false,  // Disable search
+                //"searching": false,  // Disable search
 
                 // Export Button
                 "dom": 'Bfrtip',
@@ -85,6 +85,28 @@
         });
     </script>
     
+    <script>
+        
+        // Get all the <td> elements with class "number-cell"
+            const numberCells = document.querySelectorAll('.number-cell');
     
+            // Initialize a variable to store the sum
+            let sum = 0;
+        
+            // Loop through each number cell and add its value to the sum
+            numberCells.forEach(cell => {
+                const cellValue = parseInt(cell.textContent);
+                if (!isNaN(cellValue)) {
+                    sum += cellValue;
+                }
+            });
+    
+                // Display the sum in the designated <td> element
+        const sumCell = document.getElementById('sum-cell');
+        sumCell.textContent = sum;
+        console.log('Sum of number cells:', sum);
+    
+    
+    </script> 
 </body>
 </html>

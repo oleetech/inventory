@@ -5,23 +5,10 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'receipt_from_production_between_date' %}" class="form-inline">
+<form method="post">
     {% csrf_token %}
-    <div class="row">
-        {% for field in form %}
-        <div class="col-md-4 mb-4">
-          <div class="form-group">
-            <label for="{{ field.auto_id }}">{{ field.label }}</label>
-            <div class="input-group">
-
-              {{ field }}
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-
-    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+    {{ form.as_p }}
+    <button class='btn btn-info' type="submit">Filter</button>
 </form>
 
 <table id="itemsTable" class="table table-bordered" style="border-color:black;">

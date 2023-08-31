@@ -1,0 +1,51 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+    <h1>Total Quantity by Department</h1>
+    <form method="post"  class="form-inline">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in form %}
+            <div class="col-md-4 mb-4">
+              <div class="form-group">
+                <label for="{{ field.auto_id }}">{{ field.label }}</label>
+                <div class="input-group">
+    
+                  {{ field }}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          
+    <button class="btn btn-primary mb-2" type="submit">Submit</button>
+</form>
+    
+    {% if quantity_by_department %}
+        <h2>Department Summary for Sales Order {{ form.cleaned_data.orderNo }}</h2>
+
+        <table id="itemsTable" class="table table-bordered" style="border-color:black;">
+            <thead class="table-dark">
+                <tr>
+                    <th>Department</th>
+                    <th>Total Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in quantity_by_department %}
+                    <tr>
+                        <td>{{ item.department }}</td>
+                        <td>{{ item.total_quantity }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% endblock %}
+</body>
+</html>
