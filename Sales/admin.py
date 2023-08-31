@@ -96,6 +96,19 @@ class DeliveryInfoForm(forms.ModelForm):
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
             'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_order = DeliveryInfo.objects.order_by('-docNo').first()
+            if last_order:
+                next_order_number = last_order.docNo + 1
+            else:
+                next_order_number = 1
+
+            self.initial['docNo'] = next_order_number
+                    
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
