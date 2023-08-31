@@ -29,5 +29,10 @@ class Post(models.Model):
         if not self.author_id:
             self.author = User.objects.get(username='current_user_username')
         super().save(*args, **kwargs)
+        
+        
+        verbose_name = ''
+        verbose_name_plural = ''           
+        
 
 
