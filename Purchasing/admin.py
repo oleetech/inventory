@@ -159,3 +159,57 @@ class GoodsReturnInfoAdmin(admin.ModelAdmin):
             if obj.customerName:
                 obj.address = obj.customerName.address
         super().save_model(request, obj, form, change)    
+        
+        
+        
+        
+from .models import ApInvoiceInfo, ApInvoiceItem
+
+class ApInvoiceItemForm(forms.ModelForm):
+    class Meta:
+        model = ApInvoiceItem
+        fields = '__all__'
+
+class ApInvoiceItemInline(admin.TabularInline):
+    model = ApInvoiceItem
+    form = ApInvoiceItemForm
+    extra = 0
+
+class ApInvoiceInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = ApInvoiceInfo
+        fields = '__all__'
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_invoice = ApInvoiceInfo.objects.order_by('-docNo').first()
+            if last_invoice:
+                next_invoice_number = last_invoice.docNo + 1
+            else:
+                next_invoice_number = 1
+
+            self.initial['docNo'] = next_invoice_number
+
+@admin.register(ApInvoiceInfo)
+class ApInvoiceInfoAdmin(admin.ModelAdmin):
+    form = ApInvoiceInfoAdminForm
+    inlines = [ApInvoiceItemInline]
+
+    class Media:
+        js = ('js/apinvoice.js',)
+        defer = True
+
+    def save_model(self, request, obj, form, change):
+        if not obj.address:
+            if obj.customerName:
+                obj.address = obj.customerName.address
+        super().save_model(request, obj, form, change)
+        

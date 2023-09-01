@@ -63,8 +63,8 @@ class ProductionComponent(models.Model):
     uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
 
-    def __str__(self):
-        return self.name   
+    # def __str__(self):
+    #     return self.name   
     
     
     

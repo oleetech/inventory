@@ -2,8 +2,23 @@
 {% load i18n admin_urls static admin_modify %}
 
 {% block extrahead %}{{ block.super }}
+
+
 <script src="{% url 'admin:jsi18n' %}"></script>
 {{ media }}
+<script type="text/javascript">
+    // JavaScript to handle the dynamic URLs for Previous and Next buttons
+    const previousButton = document.getElementById("previous-button");
+    const nextButton = document.getElementById("next-button");
+
+    {% if has_previous %}
+      previousButton.href = "{% url 'admin:'|add:app_label|add:'_'|add:model_name|lower|add:'_change' %}".replace("{{ previous_instance_id }}", "");
+    {% endif %}
+
+    {% if has_next %}
+      nextButton.href = "{% url 'admin:'|add:app_label|add:'_'|add:model_name|lower|add:'_change' %}".replace("{{ next_instance_id }}", "");
+    {% endif %}
+  </script>
 {% endblock %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">{% endblock %}
@@ -14,7 +29,7 @@
 
 {% if not is_popup %}
 {% block breadcrumbs %}
-<div class="breadcrumbs">
+<div class="breadcrumbs ">
 <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
 &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
 &rsaquo; {% if has_view_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
@@ -27,12 +42,21 @@
 {% block object-tools %}
 {% if change and not is_popup %}
   <ul class="object-tools">
+
     {% block object-tools-items %}
       {% change_form_object_tools %}
     {% endblock %}
+
+    <li><a href="javascript:window.print();" class="print-button historylink">Print</a></li>
+
+
+
   </ul>
 {% endif %}
+
 {% endblock %}
+
+
 <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
 <div >
 {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}

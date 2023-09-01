@@ -36,7 +36,7 @@ class SalesOrderItemInline(admin.TabularInline):
 class SalesOrderInfoAdminForm(forms.ModelForm):
     class Meta:
         model = SalesOrderInfo
-        fields = '__all__'
+        fields = ['docNo','customerName','totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -62,13 +62,16 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
     inlines = [SalesOrderItemInline]
     list_display = ('docNo','customerName', 'totalAmount', 'totalQty')
     search_fields = ('docNo', )    
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
 
         
     class Media:
         js = ('js/salesorder.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName :
@@ -89,7 +92,7 @@ from .models import DeliveryInfo,DeliveryItem
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
-        fields = ['docNo','customerName','address','totalAmount','totalQty']
+        fields = ['docNo','customerName','totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -129,13 +132,16 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
     list_display = ('docNo',  'totalQty','totalAmount')
     inlines = [DeliveryItemInline] 
     form = DeliveryInfoForm
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
   
         
     class Media:
         js = ('js/delivery.js',)
         defer = True         
-        
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }         
      
     def save_model(self, request, obj, form, change):
         if not obj.address:
@@ -270,6 +276,55 @@ class ReturnInfoAdmin(admin.ModelAdmin):
         
         
         
+from .models import ARInvoiceInfo, ARInvoiceItem
+
+class ARInvoiceItemForm(forms.ModelForm):
+    class Meta:
+        model = ARInvoiceItem
+        fields = '__all__'
+
+class ARInvoiceItemInline(admin.TabularInline):
+    model = ARInvoiceItem
+    form = ARInvoiceItemForm
+    extra = 0
+
+class ARInvoiceInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = ARInvoiceInfo
+        fields = '__all__'
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_invoice = ARInvoiceInfo.objects.order_by('-docNo').first()
+            if last_invoice:
+                next_invoice_number = last_invoice.docNo + 1
+            else:
+                next_invoice_number = 1
+
+            self.initial['docNo'] = next_invoice_number
+
+@admin.register(ARInvoiceInfo)
+class ARInvoiceInfoAdmin(admin.ModelAdmin):
+    form = ARInvoiceInfoAdminForm
+    inlines = [ARInvoiceItemInline]
+
+    class Media:
+        js = ('js/arinvoice.js',)
+        defer = True
+
+    def save_model(self, request, obj, form, change):
+        if not obj.address:
+            if obj.customerName:
+                obj.address = obj.customerName.address
+        super().save_model(request, obj, form, change)
         
         
         

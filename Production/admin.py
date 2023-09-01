@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django import forms
 from django.db import models
+from django.urls import reverse
+
 
 from django.core.exceptions import ValidationError
 
@@ -44,7 +46,13 @@ class BillOfMaterialsAdminForm(forms.ModelForm):
         
 class BillOfMaterialsAdmin(admin.ModelAdmin):
     inlines = [ChildComponentInline]   
-    form = BillOfMaterialsAdminForm        
+    form = BillOfMaterialsAdminForm  
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+    class Media:   
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }      
+               
 admin.site.register(BillOfMaterials, BillOfMaterialsAdmin)
 
 
@@ -169,6 +177,11 @@ class ProductionReceiptItemInline(admin.TabularInline):
 class ProductionReceiptAdmin(admin.ModelAdmin):
     inlines = [ProductionReceiptItemInline]
     form =   ProductionReceiptForm  
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'          
     class Media:
         js = ('js/receiptfromproduction.js',)
         defer = True  # Add the defer attribute    
+        
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }   

@@ -2,8 +2,10 @@
 
 (function($) {
     $(document).ready(function() {
-      // Your code here
-  
+
+
+
+
       // Example: Changing IDs with prefix
       var prefix = '#id_deliveryitem_set-';
       var pricePrefix = '#id_deliveryitem_set-{0}-price';

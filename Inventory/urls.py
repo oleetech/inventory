@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views  # Import your views
 
 from django.views.generic import TemplateView
 class HomeView(TemplateView):
@@ -31,7 +32,9 @@ urlpatterns = [
     path('select2/', include('django_select2.urls', namespace='django_select2')),
     path('production/',include('Production.urls')),   
     path('sales/',include('Sales.urls')),     
-    path('report/',include('Report.urls')),     
+    path('report/',include('Report.urls')),  
+    path('send_data/', views.send_data, name='send_data'),
+      
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

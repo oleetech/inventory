@@ -53,7 +53,11 @@ class ItemReceiptinfoAdmin(admin.ModelAdmin):
     inlines = [ItemReceiptInline]
     form = ItemReceiptinfoForm
     
-    
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+    class Media:   
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }      
 class ItemDeliveryinfoForm(forms.ModelForm):
     class Meta:
         model = ItemDeliveryinfo
@@ -82,7 +86,11 @@ class ItemDeliveryInline(admin.TabularInline):
 class ItemDeliveryinfoAdmin(admin.ModelAdmin):
     inlines = [ItemDeliveryInline]
     form =  ItemDeliveryinfoForm
-
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+    class Media:   
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }  
 @admin.register(Warehouse)
 class PostAdmin(admin.ModelAdmin):
     list_display = ('name', 'location')
