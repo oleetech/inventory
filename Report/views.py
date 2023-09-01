@@ -20,9 +20,16 @@ def index(request):
     }
 
     return render(request, 'index.html', context)
-    return render(request, 'index.html', context)
     
-    
+'''
+            ____                       _                  _     _                     ____                                  _   
+            |  _ \   _ __    ___     __| |  _   _    ___  | |_  (_)   ___    _ __     |  _ \    ___   _ __     ___    _ __  | |_ 
+            | |_) | | '__|  / _ \   / _` | | | | |  / __| | __| | |  / _ \  | '_ \    | |_) |  / _ \ | '_ \   / _ \  | '__| | __|
+            |  __/  | |    | (_) | | (_| | | |_| | | (__  | |_  | | | (_) | | | | |   |  _ <  |  __/ | |_) | | (_) | | |    | |_ 
+            |_|     |_|     \___/   \__,_|  \__,_|  \___|  \__| |_|  \___/  |_| |_|   |_| \_\  \___| | .__/   \___/  |_|     \__|
+                                                                                                    |_|                         
+                
+'''    
 def receipt_from_production_between_date(request):
     form = DateFilterForm(request.POST)
     
@@ -34,12 +41,36 @@ def receipt_from_production_between_date(request):
             try:
                 items_within_range = ProductionReceiptItem.objects.filter(created__range=(start_date, end_date))
                 
-                return render(request, 'receipt_from_production_between_date.html', {'items': items_within_range})
+                return render(request, 'production/receipt_from_production_between_date.html', {'items': items_within_range})
             except ValueError:
                 # Handle invalid date format
                 pass
     
-    return render(request, 'receipt_from_production_between_date.html', {'form': form})
+    return render(request, 'production/receipt_from_production_between_date.html', {'form': form})
+
+
+def department_summary_by_dates(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                # Retrieve total quantity grouped by department based on the given order number and dates
+                quantity_by_department = ProductionReceiptItem.objects.filter(
+                   created__range=(start_date, end_date)
+                ).values('department').annotate(total_quantity=Sum('quantity'))
+                
+                return render(request, 'production/department_summary_by_dates.html', {'quantity_by_department': quantity_by_department})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'production/department_summary_by_dates.html', {'form': form})
+
+
 
 def receipt_from_production_based_on_order_no(request):
     form = OrderFilterForm(request.POST)  # Initialize form whether it's a POST or GET request
@@ -50,9 +81,9 @@ def receipt_from_production_based_on_order_no(request):
         # Retrieve ProductionReceiptItems based on the salesOrder
         receipt_items = ProductionReceiptItem.objects.filter(salesOrder=order_no)
         
-        return render(request, 'receipt_from_production_based_on_order_no.html', {'form': form, 'items': receipt_items})
+        return render(request, 'production/receipt_from_production_based_on_order_no.html', {'form': form, 'items': receipt_items})
     
-    return render(request, 'receipt_from_production_based_on_order_no.html', {'form': form})
+    return render(request, 'production/receipt_from_production_based_on_order_no.html', {'form': form})
 
 
 def total_quantity_by_department(request):
@@ -64,6 +95,8 @@ def total_quantity_by_department(request):
         # Retrieve total quantity grouped by department based on the salesOrder
         quantity_by_department = ProductionReceiptItem.objects.filter(salesOrder=order_no).values('department').annotate(total_quantity=Sum('quantity'))
 
-        return render(request, 'total_quantity_by_department.html', {'form': form, 'quantity_by_department': quantity_by_department})
+        return render(request, 'production/total_quantity_by_department.html', {'form': form, 'quantity_by_department': quantity_by_department})
 
-    return render(request, 'total_quantity_by_department.html', {'form': form})
+    return render(request, 'production/total_quantity_by_department.html', {'form': form})
+
+

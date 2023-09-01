@@ -1,0 +1,25 @@
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+
+
+        {% for field in form %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="md-form md-outline">
+                {{ field }}
+              <label class="active" for="{{ field.auto_id }}">{{ field.label }}</label>
+            </div>
+
+          </div>
+
+
+
+
+        {% endfor %}
+      </div>
+<div class="text-center">
+    <button class="btn blue-gradient btn-rounded waves-effect waves-light btn-sm" type="submit">Submit</button>
+</div>    
+</form>

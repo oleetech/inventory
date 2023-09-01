@@ -4,28 +4,15 @@
 
 
 {% block content %}
+<section class="section card mb-5">
+    <a class='btn blue-gradient btn-rounded waves-effect waves-light' href="{% url 'report' %}">report</a>
 
-<form method="post" action="{% url 'receipt_from_production_between_date' %}" class="form-inline">
-    {% csrf_token %}
-    <div class="row">
-        {% for field in form %}
-        <div class="col-md-4 mb-4">
-          <div class="form-group">
-            <label for="{{ field.auto_id }}">{{ field.label }}</label>
-            <div class="input-group">
+    <div class="card-body">
+{% include '../form.html'%}
 
-              {{ field }}
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-
-    <button class="btn btn-primary mb-2" type="submit">Submit</button>
-</form>
 {% if items %}
 <table id="itemsTable" class="table table-bordered" >
-    <thead class="">
+    <thead >
         <tr>
             <th>Name</th>
             <th>Created</th>
@@ -51,10 +38,12 @@
             </tr>
         {% endfor %}
     </tbody>
-
-
-
+    <tfoot>
+        <tr>
+            <td id="sum-cell" colspan="3"></td>
+        </tr>
+    </tfoot>
 </table>
-<p id="sum-cell" colspan="3"></p>
 {% endif %}
+
 {% endblock %}

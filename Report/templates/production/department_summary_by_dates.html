@@ -1,0 +1,36 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+<section class="section card mb-5">
+    <a class='btn blue-gradient btn-rounded waves-effect waves-light' href="{% url 'report' %}">report</a>
+
+    <div class="card-body">
+{% include '../form.html'%}
+
+    
+{% if quantity_by_department %}
+<h2>Department Summary for Sales Order {{ form.cleaned_data.orderNo }}</h2>
+
+<table id="itemsTable" class="table table-bordered" >
+    <thead class="">
+        <tr>
+            <th>Department</th>
+            <th>Total Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in quantity_by_department %}
+            <tr>
+                <td>{{ item.department }}</td>
+                <td>{{ item.total_quantity }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+    {% endblock %}

@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django import forms
+from django.db import models
+
+from django.core.exceptions import ValidationError
+
 from ItemMasterData.models import Item
 from GeneralSettings.models import Unit
 from django_select2.forms import ModelSelect2Widget
@@ -69,14 +73,14 @@ class  ProductionComponentInlineForm(forms.ModelForm) :
         }
     
 class ProductionForm(forms.ModelForm):
-    docno = forms.IntegerField(disabled=True)  # Add this line to the form
+    # docno = forms.IntegerField(disabled=True)  # Add this line to the form
 
     
     class Meta:
         model = Production
-        fields = ['status','name', 'quantity', 'salesOrder', 'docno']
+        fields = ['status','name', 'quantity', 'salesOrder']
         widgets = {
-            'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
+            # 'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
             # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
         }
@@ -103,9 +107,14 @@ class ProductionComponentInline(admin.TabularInline):
 class ProductionAdmin(admin.ModelAdmin):
     form = ProductionForm
     inlines = [ProductionComponentInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'      
     class Media:
         js = ('js/productionorder.js',)
         defer = True  # Add the defer attribute
+        
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }        
 
 '''
   ____                         _           _       _____                                ____                       _                  _     _                 
@@ -117,12 +126,13 @@ class ProductionAdmin(admin.ModelAdmin):
 '''
 from .models import ProductionReceipt,ProductionReceiptItem
 class ProductionReceiptForm(forms.ModelForm):
+    docno = forms.IntegerField(disabled=True)  # Add this line to the form
 
 
     
     class Meta:
         model = ProductionReceipt
-        fields = ['created', 'department','receiptNumber']
+        fields = ['created', 'department','docno']
         widgets = {
 
         }
@@ -132,13 +142,13 @@ class ProductionReceiptForm(forms.ModelForm):
         
         if not self.instance.pk:
             # Get the last inserted docno
-            last_docno = ProductionReceipt.objects.order_by('-receiptNumber').first()
+            last_docno = ProductionReceipt.objects.order_by('-docno').first()
             if last_docno:
-                next_docno = last_docno.receiptNumber + 1
+                next_docno = last_docno.docno + 1
             else:
                 next_docno = 1
 
-            self.initial['receiptNumber'] = next_docno
+            self.initial['docno'] = next_docno
 
 class  ProductionReceiptItemInlineForm(forms.ModelForm) :
 
@@ -150,7 +160,7 @@ class  ProductionReceiptItemInlineForm(forms.ModelForm) :
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
         }
       
-        
+                
 class ProductionReceiptItemInline(admin.TabularInline):
     model = ProductionReceiptItem
     extra = 0  

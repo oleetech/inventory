@@ -18,7 +18,15 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+
+from django.views.generic import TemplateView
+class HomeView(TemplateView):
+    template_name = 'home.html'  
+admin.site.site_header = "OleeTech"
+admin.site.site_title = "OleeTech Industry Automation System"
+admin.site.index_title = "Welcome to the OleeTech Admin Site"
 urlpatterns = [
+    path('', HomeView.as_view(), name='home'),    
     path('admin/', admin.site.urls),
     path('select2/', include('django_select2.urls', namespace='django_select2')),
     path('production/',include('Production.urls')),   

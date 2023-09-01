@@ -8,7 +8,7 @@ class DateFilterForm(forms.Form):
         super(DateFilterForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({
-                'class': 'form-control',
+                'class': 'form-control form-control-sm',
                 'id': f"{field_name}",
             })    
 
@@ -21,6 +21,6 @@ class OrderFilterForm(forms.Form):
         super(OrderFilterForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({
-                'class': 'form-control',
+                'class': 'form-control form-control-sm',
                 'id': f"{field_name}",
             })    
