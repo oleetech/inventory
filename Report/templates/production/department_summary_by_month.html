@@ -1,0 +1,36 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+<section class="section card mb-5">
+
+
+    <div class="card-body">
+{% include '../form.html'%}
+
+    
+    {% if quantity_by_department_monthly %}
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Department</th>
+                <th>Total Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in quantity_by_department_monthly %}
+            <tr>
+                <td>{{ entry.month }}</td>
+                <td>{{ entry.department }}</td>
+                <td>{{ entry.total_quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {% endblock %}
