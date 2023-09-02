@@ -36,7 +36,7 @@ class SalesOrderItemInline(admin.TabularInline):
 class SalesOrderInfoAdminForm(forms.ModelForm):
     class Meta:
         model = SalesOrderInfo
-        fields = ['docNo','customerName','totalQty','totalAmount']
+        fields = ['customerName','docNo', 'totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -92,7 +92,7 @@ from .models import DeliveryInfo,DeliveryItem
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
-        fields = ['docNo','customerName','totalQty','totalAmount']
+        fields = ['customerName','docNo','totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),

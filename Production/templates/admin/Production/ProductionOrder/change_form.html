@@ -80,10 +80,11 @@
             {% endif %}
             {% for line in fieldset %}
             {% if forloop.first %}
-            <div class="row">
+            <div class="row ">
               {% else %}
               {% if forloop.counter0|divisibleby:2 %}
-            </div><div class="row ">
+            </div>
+            <div class="row ">
           {% endif %}
         {% endif %}
 

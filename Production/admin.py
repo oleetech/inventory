@@ -69,16 +69,6 @@ from .models import Production, ProductionComponent
 from Sales.models import SalesOrderInfo,SalesOrderItem
 
 
-
-class  ProductionComponentInlineForm(forms.ModelForm) :
-    class Meta:
-        model = ProductionComponent
-        fields = ['code','name','uom','quantity' ]
-        widgets = {
-
-            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
-            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
-        }
     
 class ProductionForm(forms.ModelForm):
     # docno = forms.IntegerField(disabled=True)  # Add this line to the form
@@ -86,7 +76,7 @@ class ProductionForm(forms.ModelForm):
     
     class Meta:
         model = Production
-        fields = ['status','name', 'quantity', 'salesOrder']
+        fields = ['status','docno', 'name', 'quantity',  'salesOrder']
         widgets = {
             # 'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
@@ -105,6 +95,17 @@ class ProductionForm(forms.ModelForm):
                 next_docno = 1
 
             self.initial['docno'] = next_docno
+
+class  ProductionComponentInlineForm(forms.ModelForm) :
+    class Meta:
+        model = ProductionComponent
+        fields = ['code','name','uom','quantity' ]
+        widgets = {
+
+            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
+        }
+
             
             
 class ProductionComponentInline(admin.TabularInline):
@@ -140,7 +141,7 @@ class ProductionReceiptForm(forms.ModelForm):
     
     class Meta:
         model = ProductionReceipt
-        fields = ['created', 'department','docno']
+        fields = ['department','docno','created']
         widgets = {
 
         }

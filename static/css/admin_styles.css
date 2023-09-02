@@ -15,5 +15,9 @@ td, th {
 
 .accordion {
     
-    width: 320px !important;
+    width: 330px !important;
+}
+
+.form-group  label{
+    float: left !important;
 }
