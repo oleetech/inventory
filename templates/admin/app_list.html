@@ -1,0 +1,35 @@
+{% load i18n %}
+
+{% if app_list %}
+<div class="accordion w3-light-gray">
+  {% for app in app_list %}
+    <button onclick="myFunction('Demo{{ forloop.counter }}')" class="w3-button w3-block w3-left-align">
+      {{ app.name }}
+    </button>
+
+    <div id="Demo{{ forloop.counter }}" class="w3-container w3-hide">
+      {% for model in app.models %}
+        <div class="model-container">
+          <a class='' href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a>
+
+          {% if model.add_url %}
+            <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
+          {% endif %}
+          
+          {% if model.admin_url and show_changelinks %}
+            {% if model.view_only %}
+              <a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a>
+            {% else %}
+              <a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a>
+            {% endif %}
+          {% elif show_changelinks %}
+            <!-- You can add a placeholder if needed -->
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+  <p>{% translate 'You don’t have permission to view or edit anything.' %}</p>
+{% endif %}

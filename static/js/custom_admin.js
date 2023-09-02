@@ -87,6 +87,34 @@
                 );
             }
      
-               
+                // Select the <td> element with the class "original"
+    var originalTd = document.querySelector('td.original');
 
+    // Check if the element exists before proceeding
+    if (originalTd) {
+        // Select the <p> element inside the <td>
+        var pElement = originalTd.querySelector('p');
+
+        // Check if the <p> element exists inside the <td>
+        if (pElement) {
+            // Remove the <p> element from the <td>
+            originalTd.removeChild(pElement);
+        }
+    }
+               
+    var fieldsets = document.querySelectorAll('fieldset');
+    for (var i = 0; i < fieldsets.length; i++) {
+        fieldsets[i].style.width = 'fit-content';
+    }
+
+    
 });
+function myFunction(id) {
+    var x = document.getElementById(id);
+    if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+    } else {
+      x.className = x.className.replace(" w3-show", "");
+    }
+  }
+  

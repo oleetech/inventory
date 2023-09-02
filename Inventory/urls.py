@@ -25,7 +25,7 @@ class HomeView(TemplateView):
     template_name = 'home.html'  
 admin.site.site_header = "OleeTech"
 admin.site.site_title = "OleeTech Industry Automation System"
-admin.site.index_title = "Welcome to the OleeTech Admin Site"
+admin.site.index_title = ""
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),    
     path('admin/', admin.site.urls),

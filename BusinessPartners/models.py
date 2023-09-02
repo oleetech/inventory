@@ -22,7 +22,7 @@ class BusinessPartner(models.Model):
 
     class Meta:
         
-        verbose_name = 'Business Partners | Vendor'
-        verbose_name_plural = 'Business Partners | Vendor'
+        verbose_name = 'Business Partners'
+        verbose_name_plural = 'Business Partners'
     def __str__(self):
         return self.name  
