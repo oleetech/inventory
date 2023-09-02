@@ -13,7 +13,6 @@ urlpatterns = [
     path('total_quantity_by_department/', views.total_quantity_by_department, name='total_quantity_by_department'),
     path('department_summary_by_dates/', views.department_summary_by_dates, name='department_summary_by_dates'),
     path('department_summary_by_month/', views.department_summary_by_month, name='department_summary_by_month'),
-    path('yearly_monthly_production_report/', views.yearly_monthly_production_report, name='yearly_monthly_production_report'),
     
     
 

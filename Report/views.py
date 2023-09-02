@@ -4,8 +4,11 @@ from django.db.models import Sum, F
 from django.db.models.functions import ExtractMonth
 from django.db.models import IntegerField
 from datetime import datetime
+import calendar
 
+import os
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import BillOfMaterials, ChildComponent,Production, ProductionComponent,ProductionReceipt,ProductionReceiptItem
@@ -107,27 +110,7 @@ def department_summary_by_month(request):
 
 
 
-def yearly_monthly_production_report(request):
-    if request.method == 'POST':
-        form = YearFilterForm(request.POST)
-        if form.is_valid():
-            year = form.cleaned_data.get('year')
-            # Query the database to get the data for the specified year
-            report_data = ProductionReceiptItem.objects.filter(created__year=year) \
-                .values('department', 'created__year', 'created__month') \
-                .annotate(total_quantity=Sum('quantity')) \
-                .order_by('created__year', 'created__month')
-            return render(request, 'production/yearly_monthly_production_report.html', {'report_data': report_data, 'selected_year': year})
-        else:
-            # Handle the case where the form is not valid
-            return render(request, 'production/yearly_monthly_production_report.html', {'error_message': 'Invalid form data'})
-    else:
-        # Render the initial form
-        form = YearFilterForm()
-        return render(request, 'production/yearly_monthly_production_report.html', {'form': form})
 
-    
-    
 
 def receipt_from_production_based_on_order_no(request):
     form = OrderFilterForm(request.POST)  # Initialize form whether it's a POST or GET request
@@ -155,5 +138,13 @@ def total_quantity_by_department(request):
         return render(request, 'production/total_quantity_by_department.html', {'form': form, 'quantity_by_department': quantity_by_department})
 
     return render(request, 'production/total_quantity_by_department.html', {'form': form})
+
+
+
+
+
+
+
+
 
 

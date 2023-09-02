@@ -1,7 +1,8 @@
 {% load i18n %}
 
-{% if app_list %}
-<div class="accordion w3-light-gray w3-border w3-border-blue	">
+{% if app_list  %}
+<div class="accordion w3-light-gray w3-border w3-border-blue 	">
+
   {% for app in app_list %}
     <button onclick="myFunction('Demo{{ forloop.counter }}')" class="w3-button w3-block w3-left-align" >
      <div class=" w3-border-bottom	" > {{ app.name }}</div>

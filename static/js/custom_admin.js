@@ -3,13 +3,13 @@
 
 
 
+
+
   document.addEventListener("DOMContentLoaded", function () {
 
-    var addButton = document.querySelector(".add-row");
 
-    if (addButton) {
-   alert('a')
-    }
+
+
 
     // Select the <div> element by its ID "header"
     var headerDiv = document.getElementById('header');
@@ -114,6 +114,9 @@
 
     
 });
+
+
+
 function myFunction(id) {
     var x = document.getElementById(id);
     if (x.className.indexOf("w3-show") == -1) {
