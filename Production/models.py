@@ -1,6 +1,6 @@
 from django.db import models
 from ItemMasterData.models import Item
-from GeneralSettings.models import Unit
+from GeneralSettings.models import Unit,Department
 
 # Create your models here.
 class BillOfMaterials(models.Model):
@@ -81,19 +81,23 @@ class ProductionComponent(models.Model):
 class ProductionReceipt(models.Model):
     docno = models.PositiveIntegerField(unique=True,default=1)
     created = models.DateField(default=date.today)
-    DEPARTMENT_CHOICES = [
-        ('1', 'N/Z'),
-        ('2', 'V/z'),
-        ('3', 'ST'),
-        ('4', 'BT')
-        
-    ]
-    department = models.CharField(max_length=3, choices=DEPARTMENT_CHOICES,default='1')   
-    
+
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.SET_DEFAULT,
+        default=None,  # Set the default to None initially
+    )    
     class Meta:
 
         verbose_name = 'Receipt From Production'
-        verbose_name_plural = 'Receipt From Production'    
+        verbose_name_plural = 'Receipt From Production'   
+        
+        
+    def save(self, *args, **kwargs):
+        if not self.department_id:
+            self.department = Department.objects.first()
+        super().save(*args, **kwargs)
+                 
     def __str__(self):
         return f"{self.id}"
 
@@ -121,7 +125,7 @@ class ProductionReceiptItem(models.Model):
     
     def save(self, *args, **kwargs):
         if self.receiptNumber:
-            self.department = self.receiptNumber.department
+            self.department = self.receiptNumber.department.id
             
 
                    

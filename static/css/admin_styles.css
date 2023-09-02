@@ -11,6 +11,11 @@ select {
     height: 30px !important;
 }
 
+.related-widget-wrapper{
+    font-size: 10px !important;
+    height: 20px !important;
+}
+
 
 td, th {
     padding: 0px !important;
@@ -24,4 +29,5 @@ td, th {
 
 .form-group  label{
     float: left !important;
+    width: 140px !important;
 }

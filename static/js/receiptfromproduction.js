@@ -74,6 +74,7 @@ function calculateTotalQty() {
   (function($) {
     $(document).ready(function() {
 
+    
         $('input[name^="productionreceiptitem_set-"][name$="-productionNo"]').each(function() {
             $(this).on('change', function() {
                 const inputValue = parseInt($(this).val(), 10); // Convert inputValue to an integer
@@ -121,20 +122,6 @@ function calculateTotalQty() {
     });
 })(jQuery);
 
-(function($) {
-  $(document).ready(function() {
-      $('.add-row-button').on('click', function() {
-          const rows = $('.dynamic-productionreceiptitem_set');
-
-          rows.each(function(index) {
-              const lineNoField = $(this).find('.field-lineNo input');
-              const currentLineNo = parseInt(lineNoField.val(), 10);
-              lineNoField.val(index + 1);
-          });
-      });
-  });
-})(jQuery);
-  
 
 
 
@@ -142,5 +129,5 @@ function calculateTotalQty() {
 
 
 
-  
-  
+
+

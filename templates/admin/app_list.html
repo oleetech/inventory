@@ -3,13 +3,13 @@
 {% if app_list %}
 <div class="accordion w3-light-gray w3-border w3-border-blue	">
   {% for app in app_list %}
-    <button onclick="myFunction('Demo{{ forloop.counter }}')" class="w3-button w3-block w3-left-align">
-     <div class=" w3-border-bottom	"> {{ app.name }}</div>
+    <button onclick="myFunction('Demo{{ forloop.counter }}')" class="w3-button w3-block w3-left-align" >
+     <div class=" w3-border-bottom	" > {{ app.name }}</div>
     </button>
 
     <div id="Demo{{ forloop.counter }}" class="w3-container w3-hide">
       {% for model in app.models %}
-        <div class="model-container w3-block w3-white w3-padding-small w3-border-left w3-border-blue" style="margin-top:5px">
+        <div class="model-container w3-block w3-white w3-padding-small w3-border-left w3-border-blue" style="margin-top:5px;">
           <a class='' href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a>
 
           <!-- {% if model.add_url %}

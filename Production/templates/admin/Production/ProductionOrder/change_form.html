@@ -87,16 +87,15 @@
                  
                 {% endif %}
                 {% for field in line %}
-                    {% if not field.is_readonly %}
-                        <div class="form-group col-md-6">
-                            {{ field.label_tag }}
-                            {{ field.field }}
-                            {% if field.field.help_text %}
-                                <small class="form-text text-muted">{{ field.field.help_text|safe }}</small>
-                            {% endif %}
-                        </div>
-                      
+                {% if not field.is_readonly %}
+                <div class="form-group col-md-6">
+                    <label class="border-bottom">{{ field.label_tag }}</label>
+                    {{ field.field }}
+                    {% if field.field.help_text %}
+                        <small class="form-text text-muted">{{ field.field.help_text|safe }}</small>
                     {% endif %}
+                </div>
+                {% endif %}
 
 
         

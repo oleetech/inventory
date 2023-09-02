@@ -44,3 +44,16 @@ class Company(models.Model):
 
     class Meta:
         verbose_name_plural = "Company Information"    
+        
+        
+class Department(models.Model):
+    name = models.CharField(max_length=100, unique=True, help_text="The name of the department")
+    description = models.TextField(blank=True, null=True, help_text="A description of the department")
+    created_at = models.DateTimeField(auto_now_add=True, help_text="The date and time when the department was created")
+    updated_at = models.DateTimeField(auto_now=True, help_text="The date and time when the department was last updated")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Departments"        
