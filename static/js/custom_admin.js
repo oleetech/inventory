@@ -86,21 +86,21 @@
                 
                 );
             }
-     
-                // Select the <td> element with the class "original"
-    var originalTd = document.querySelector('td.original');
 
-    // Check if the element exists before proceeding
-    if (originalTd) {
-        // Select the <p> element inside the <td>
-        var pElement = originalTd.querySelector('p');
 
-        // Check if the <p> element exists inside the <td>
-        if (pElement) {
-            // Remove the <p> element from the <td>
-            originalTd.removeChild(pElement);
-        }
-    }
+        // Get all <td> elements with the class "original"
+        var tdElements = document.querySelectorAll(".original");
+
+        // Loop through each <td> element
+        tdElements.forEach(function(tdElement) {
+            // Get all <p> elements inside the <td>
+            var pElements = tdElement.querySelectorAll("p");
+
+            // Loop through and remove each <p> element
+            pElements.forEach(function(pElement) {
+                pElement.remove();
+            });
+        });
                
     var fieldsets = document.querySelectorAll('fieldset');
     for (var i = 0; i < fieldsets.length; i++) {

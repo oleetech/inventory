@@ -60,7 +60,7 @@ class SalesOrderInfoAdminForm(forms.ModelForm):
 class SalesOrderInfoAdmin(admin.ModelAdmin):
     form = SalesOrderInfoAdminForm
     inlines = [SalesOrderItemInline]
-    list_display = ('docNo','customerName', 'totalAmount', 'totalQty')
+    list_display = ('docNo','customerName', 'totalAmount', 'totalQty','created')
     search_fields = ('docNo', )    
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 

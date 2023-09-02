@@ -16,6 +16,7 @@ class ChildComponent(models.Model):
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     
+    
 '''
   ____                       _                  _     _                      ___               _               
  |  _ \   _ __    ___     __| |  _   _    ___  | |_  (_)   ___    _ __      / _ \   _ __    __| |   ___   _ __ 

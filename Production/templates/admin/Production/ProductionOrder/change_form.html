@@ -6,20 +6,9 @@
 
 <script src="{% url 'admin:jsi18n' %}"></script>
 {{ media }}
-<script type="text/javascript">
-    // JavaScript to handle the dynamic URLs for Previous and Next buttons
-    const previousButton = document.getElementById("previous-button");
-    const nextButton = document.getElementById("next-button");
 
-    {% if has_previous %}
-      previousButton.href = "{% url 'admin:'|add:app_label|add:'_'|add:model_name|lower|add:'_change' %}".replace("{{ previous_instance_id }}", "");
-    {% endif %}
-
-    {% if has_next %}
-      nextButton.href = "{% url 'admin:'|add:app_label|add:'_'|add:model_name|lower|add:'_change' %}".replace("{{ next_instance_id }}", "");
-    {% endif %}
-  </script>
 {% endblock %}
+
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">{% endblock %}
 

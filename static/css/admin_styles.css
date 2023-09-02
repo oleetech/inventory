@@ -4,6 +4,9 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
 
 textarea{height: 60px!important;}
 
+.original p {
+    display: none !important;
+}
 select {
     height: 30px !important;
 }

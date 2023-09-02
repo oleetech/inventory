@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django import forms
 from .models import Warehouse, Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery
-
+from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem
 from django_select2.forms import ModelSelect2Widget
 class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
@@ -12,7 +12,10 @@ def calculate_instock(item):
     stock_quantity = Stock.objects.filter(item=item).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
     receipt_quantity = ItemReceipt.objects.filter(item=item).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
     delivery_quantity = ItemDelivery.objects.filter(item=item).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
-    instock = stock_quantity + receipt_quantity - delivery_quantity
+    purchase_order_goods_receipt = GoodsReceiptPoItem.objects.filter(code=item.code).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
+    purchase_order_goods_return = GoodsReturnItem.objects.filter(code=item.code).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
+
+    instock = stock_quantity + purchase_order_goods_receipt + receipt_quantity - delivery_quantity - purchase_order_goods_return
     return instock
 
 @admin.register(Item)
