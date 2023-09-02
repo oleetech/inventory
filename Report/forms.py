@@ -24,3 +24,17 @@ class OrderFilterForm(forms.Form):
                 'class': 'form-control form-control-sm',
                 'id': f"{field_name}",
             })    
+
+
+
+class YearFilterForm(forms.Form):
+    year = forms.IntegerField(label='Year', required=True,)
+
+    
+    def __init__(self, *args, **kwargs):
+        super(YearFilterForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })    
