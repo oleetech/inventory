@@ -67,10 +67,9 @@ class ProductionComponent(models.Model):
     
     def save(self, *args, **kwargs):
         if self.salesOrder:
-            self.salesOrder = self.Production.salesOrder
             
 
-            self.created = self.Production.created
+            self.created = self.production.created
                    
         super().save(*args, **kwargs)   
     # def __str__(self):

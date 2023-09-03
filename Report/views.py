@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import BillOfMaterials, ChildComponent,Production, ProductionComponent,ProductionReceipt,ProductionReceiptItem
-from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter
+from GeneralSettings.models import Department
+from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter
 from .models import Post
 def index(request):
     # Get the first record of the Post model.
@@ -35,7 +36,8 @@ def index(request):
             |_|     |_|     \___/   \__,_|  \__,_|  \___|  \__| |_|  \___/  |_| |_|   |_| \_\  \___| | .__/   \___/  |_|     \__|
                                                                                                     |_|                         
                 
-'''    
+'''  
+#ডেট অনুযায়ী প্রোডাকশন রিপোর্ট  
 def receipt_from_production_between_date(request):
     form = DateFilterForm(request.POST)
     
@@ -54,8 +56,8 @@ def receipt_from_production_between_date(request):
     
     return render(request, 'production/receipt_from_production_between_date.html', {'form': form})
 
-
-def department_summary_by_dates(request):
+#ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন রিপোর্ট
+def receipt_from_production_department_summary_by_dates(request):
     form = DateFilterForm(request.POST)
     
     if request.method == 'POST' and form.is_valid():
@@ -69,14 +71,15 @@ def department_summary_by_dates(request):
                    created__range=(start_date, end_date)
                 ).values('department').annotate(total_quantity=Sum('quantity'))
                 
-                return render(request, 'production/department_summary_by_dates.html', {'quantity_by_department': quantity_by_department})
+                return render(request, 'production/receipt_from_production_department_summary_by_dates.html', {'quantity_by_department': quantity_by_department})
             except ValueError:
                 # Handle invalid date format
                 pass
     
-    return render(request, 'production/department_summary_by_dates.html', {'form': form})
+    return render(request, 'production/receipt_from_production_department_summary_by_dates.html', {'form': form})
 
-def department_summary_by_month(request):
+# ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল প্রোডাকশন 
+def receipt_from_production_department_summary_by_month_based_on_date(request):
     form = DateFilterForm(request.POST)
     
     if request.method == 'POST' and form.is_valid():
@@ -100,18 +103,36 @@ def department_summary_by_month(request):
                 for entry in quantity_by_department_monthly:
                     entry['month'] = month_names.get(entry['month'], 'Unknown Month')
                 
-                return render(request, 'production/department_summary_by_month.html', {'quantity_by_department_monthly': quantity_by_department_monthly})
+                return render(request, 'production/receipt_from_production_department_summary_by_month_based_on_date.html', {'quantity_by_department_monthly': quantity_by_department_monthly})
             except ValueError:
                 # Handle invalid date format
                 pass
     
-    return render(request, 'production/department_summary_by_month.html', {'form': form})
+    return render(request, 'production/receipt_from_production_department_summary_by_month_based_on_date.html', {'form': form})
+
+#ডেট অনুযায়ী প্রোডাক্ট সামারি 
+def receipt_from_production_total_by_name_between_dates(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Query the database to get the total grouped by ProductionReceiptItem.name
+            totals = ProductionReceiptItem.objects.filter(
+                created__gte=start_date,
+                created__lte=end_date
+            ).values('name').annotate(total_quantity=Sum('quantity'))
+
+            return render(request, 'production/receipt_from_production_total_by_name_between_dates.html', {'totals': totals})
+
+    else:
+        form = DateFilterForm()
+
+    return render(request, 'production/receipt_from_production_total_by_name_between_dates.html', {'form': form})
 
 
-
-
-
-
+# অর্ডার অনুযায়ী প্রোডাকশন রিপোর্ট
 def receipt_from_production_based_on_order_no(request):
     form = OrderFilterForm(request.POST)  # Initialize form whether it's a POST or GET request
     
@@ -125,8 +146,8 @@ def receipt_from_production_based_on_order_no(request):
     
     return render(request, 'production/receipt_from_production_based_on_order_no.html', {'form': form})
 
-
-def total_quantity_by_department(request):
+# অর্ডার অনুযায়ী ডিপার্টমেন্ট প্রোডাকশন রিপোর্ট
+def receipt_from_production_total_quantity_by_department_by_order(request):
     form = OrderFilterForm(request.POST)
 
     if request.method == 'POST' and form.is_valid():
@@ -135,11 +156,11 @@ def total_quantity_by_department(request):
         # Retrieve total quantity grouped by department based on the salesOrder
         quantity_by_department = ProductionReceiptItem.objects.filter(salesOrder=order_no).values('department').annotate(total_quantity=Sum('quantity'))
 
-        return render(request, 'production/total_quantity_by_department.html', {'form': form, 'quantity_by_department': quantity_by_department})
+        return render(request, 'production/receipt_from_production_total_quantity_by_department_by_order.html', {'form': form, 'quantity_by_department': quantity_by_department})
 
-    return render(request, 'production/total_quantity_by_department.html', {'form': form})
+    return render(request, 'production/receipt_from_production_total_quantity_by_department_by_order.html', {'form': form})
 
-
+# ১ বছরের মাস অনুযায়ী রিপোর্ট 
 def receipt_from_production_monthly_data_view(request):
     year = None
     total_quantity = 0
@@ -175,7 +196,7 @@ def receipt_from_production_monthly_data_view(request):
     })
     
     
-    
+# ১ বছরের মাস অনুযায়ী রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে     
 def receipt_from_production_monthly_data_by_department_view(request):
     year = None
     department = None
@@ -215,7 +236,7 @@ def receipt_from_production_monthly_data_by_department_view(request):
         'year': year,
         'total_quantity': total_quantity,
         'monthly_totals_dict': monthly_totals_dict,
-        'form': form,
+        'form': form
     
     })    
     

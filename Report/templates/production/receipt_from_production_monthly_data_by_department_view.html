@@ -1,25 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Monthly Data</title>
-</head>
-<body>
-    <h1>Monthly Data</h1>
+{% extends 'basereport.html' %}
+{% load static %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+
+
+{% block content %}
+<section class="section card mb-5">
+
+
+    <div class="card-body">
+{% include '../form.html'%}
+
 
     {% if year %}
-        <h2>Data for Year {{ year }} {{ year }}</h2>
-        <p>Department: {{ department }}</p>
+        <h2>Data for Year {{ year }}</h2>
 
         <p>Total Quantity for {{ year }}: {{ total_quantity }}</p>
 
         <h2>Monthly Totals:</h2>
-        <table>
+        <table id="itemsTable" class="table table-bordered">
             <thead>
                 <tr>
                     <th>Month</th>
@@ -36,5 +34,5 @@
             </tbody>
         </table>
     {% endif %}
-</body>
-</html>
+    {% endblock %}
+

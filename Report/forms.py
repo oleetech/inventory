@@ -54,3 +54,30 @@ class DepartmentYearFilter(forms.Form):
         max_value=2099,  # Adjust this to your desired maximum year
         required=False,  # Make it optional
     )            
+    def __init__(self, *args, **kwargs):
+        super(DepartmentYearFilter, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })       
+            
+            
+            
+class DateDepartmentFilter(forms.Form):
+
+    start_date = forms.DateField(label='Start Date', required=True,)
+    end_date = forms.DateField(label='End Date', required=True)
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.all(),
+        label="Select a Department",
+        empty_label="All Departments",
+    )
+                
+    def __init__(self, *args, **kwargs):
+        super(DateDepartmentFilter, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })                
