@@ -107,10 +107,6 @@
             });
         });
                
-    var fieldsets = document.querySelectorAll('fieldset');
-    for (var i = 0; i < fieldsets.length; i++) {
-        fieldsets[i].style.width = 'fit-content';
-    }
 
     
 });

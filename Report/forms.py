@@ -80,4 +80,21 @@ class DateDepartmentFilter(forms.Form):
             field.widget.attrs.update({
                 'class': 'form-control form-control-sm',
                 'id': f"{field_name}",
-            })                
+            }) 
+              
+class OrderDepartmentFilter(forms.Form):
+    orderNo = forms.IntegerField(label='Order No', required=True,)
+
+    department = forms.ModelChoiceField(
+        queryset=Department.objects.all(),
+        label="Select a Department",
+        empty_label="All Departments",
+    )
+                
+    def __init__(self, *args, **kwargs):
+        super(OrderDepartmentFilter, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })                           

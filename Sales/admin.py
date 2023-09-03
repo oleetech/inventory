@@ -1,10 +1,17 @@
 from django.contrib import admin
 from django import forms
+from django.db import models
+from django.core.exceptions import ValidationError
+
 from django_select2.forms import ModelSelect2Widget
 from .models import SalesOrderInfo, SalesOrderItem 
 from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
+from .models import DeliveryInfo,DeliveryItem
 
+def calculate_delivery(salesOrderNo):
+    delivery_qty = DeliveryInfo.objects.filter(salesOrder=salesOrderNo).aggregate(total_quantity=models.Sum('totalQty'))['total_quantity'] or 0    
+    return delivery_qty  
 
     
 class CustomModelSelect2Widget(ModelSelect2Widget):
@@ -23,7 +30,7 @@ class CustomModelSelect2Widget(ModelSelect2Widget):
 class SalesOrderItemForm(forms.ModelForm):
     class Meta:
         model = SalesOrderItem
-        fields = '__all__'
+        fields = ['code','name', 'uom','quantity','price','priceTotal']
         widgets = {
             # 'ItemName': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains'])
         }
@@ -55,16 +62,21 @@ class SalesOrderInfoAdminForm(forms.ModelForm):
 
             self.initial['docNo'] = next_order_number
             
+          
                     
 @admin.register(SalesOrderInfo)
 class SalesOrderInfoAdmin(admin.ModelAdmin):
     form = SalesOrderInfoAdminForm
     inlines = [SalesOrderItemInline]
-    list_display = ('docNo','customerName', 'totalAmount', 'totalQty','created')
+    list_display = ('docNo','customerName', 'totalAmount', 'totalQty','created','delivery_qty')
     search_fields = ('docNo', )    
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+    readonly_fields = ('delivery_qty',)
+    
+    def delivery_qty(self, obj):
+        return calculate_delivery(obj.docNo)
 
-
+    delivery_qty.short_description = 'delivery_qty'
         
     class Media:
         js = ('js/salesorder.js',)
@@ -88,7 +100,7 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
                                                |___/ 
 '''
 
-from .models import DeliveryInfo,DeliveryItem
+
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
@@ -99,7 +111,19 @@ class DeliveryInfoForm(forms.ModelForm):
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
             'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
-        
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     sales_order = cleaned_data.get('salesOrder')
+    #     total_qty = cleaned_data.get('totalQty')
+
+    #     try:
+    #         sales_order_info = SalesOrderInfo.objects.get(docNo=sales_order)
+    #     except SalesOrderInfo.DoesNotExist:
+    #         raise ValidationError("No SalesOrderInfo found with docNo matching the salesOrder")
+
+    #     if total_qty > sales_order_info.totalQty:
+    #         raise ValidationError("DeliveryInfo totalQty should be less than or equal to SalesOrderInfo totalQty")
+                
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -147,9 +171,13 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName :
                 obj.address = obj.customerName.address
+                
+                
         super().save_model(request, obj, form, change)
         
-        
+    # def get_form(self, request, obj=None, **kwargs):
+    #     # Use the custom form class
+    #     return DeliveryInfoForm        
         
 '''
   ____            _                   ___                    _            _     _                 
@@ -197,11 +225,14 @@ class SalesQuotetionInfoAdminForm(forms.ModelForm):
 class SalesQuotetionInfoAdmin(admin.ModelAdmin):
     form = SalesQuotetionInfoAdminForm
     inlines = [SalesQuotetionItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/salesquotetion.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:

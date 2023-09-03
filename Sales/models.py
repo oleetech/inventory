@@ -67,7 +67,12 @@ class DeliveryInfo(models.Model):
     created = models.DateTimeField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    salesOrder = models.PositiveIntegerField(default=1)
+    SalesQuotetion = models.PositiveIntegerField(default=1)
+    
 
+        
+        
     class Meta:
 
         verbose_name = ' Delivery'

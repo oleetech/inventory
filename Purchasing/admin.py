@@ -44,11 +44,14 @@ class PurchaseOrderInfoAdminForm(forms.ModelForm):
 class PurchaseOrderInfoAdmin(admin.ModelAdmin):
     form = PurchaseOrderInfoAdminForm
     inlines = [PurchaseItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/purchaseorder.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }  
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:
@@ -95,11 +98,14 @@ class GoodsReceiptPoInfoAdminForm(forms.ModelForm):
 class GoodsReceiptPoInfoAdmin(admin.ModelAdmin):
     form = GoodsReceiptPoInfoAdminForm
     inlines = [GoodsReceiptPoItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/goodsreceiptpo.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:
@@ -149,11 +155,14 @@ class GoodsReturnInfoAdminForm(forms.ModelForm):
 class GoodsReturnInfoAdmin(admin.ModelAdmin):
     form = GoodsReturnInfoAdminForm
     inlines = [GoodsReturnItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/goodsreturn.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:
@@ -202,11 +211,14 @@ class ApInvoiceInfoAdminForm(forms.ModelForm):
 class ApInvoiceInfoAdmin(admin.ModelAdmin):
     form = ApInvoiceInfoAdminForm
     inlines = [ApInvoiceItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/apinvoice.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }  
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:

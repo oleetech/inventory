@@ -6,14 +6,12 @@ from django.db.models import IntegerField
 from datetime import datetime
 import calendar
 
-import os
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import BillOfMaterials, ChildComponent,Production, ProductionComponent,ProductionReceipt,ProductionReceiptItem
 from GeneralSettings.models import Department
-from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter
+from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter
 from .models import Post
 def index(request):
     # Get the first record of the Post model.
@@ -168,6 +166,23 @@ def receipt_from_production_based_on_order_no(request):
         return render(request, 'production/receipt_from_production_based_on_order_no.html', {'form': form, 'items': receipt_items})
     
     return render(request, 'production/receipt_from_production_based_on_order_no.html', {'form': form})
+
+# অর্ডার অনুযায়ী প্রোডাকশন রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে ডিটেলস রিপোর্ট
+def receipt_from_production_based_on_order_no_filter_by_department(request):
+    form = OrderDepartmentFilter(request.POST)  # Initialize form whether it's a POST or GET request
+    
+    if request.method == 'POST' and form.is_valid():
+        order_no = form.cleaned_data['orderNo']
+        department = form.cleaned_data['department']
+        
+        # Retrieve ProductionReceiptItems based on the salesOrder
+        receipt_items = ProductionReceiptItem.objects.filter(salesOrder=order_no,department=department.id)
+        
+        return render(request, 'production/receipt_from_production_based_on_order_no_filter_by_department.html', {'form': form, 'items': receipt_items})
+    
+    return render(request, 'production/receipt_from_production_based_on_order_no_filter_by_department.html', {'form': form})
+
+
 
 # অর্ডার অনুযায়ী ডিপার্টমেন্ট প্রোডাকশন রিপোর্ট
 def receipt_from_production_total_quantity_by_department_by_order(request):

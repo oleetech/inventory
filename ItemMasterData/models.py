@@ -56,8 +56,9 @@ class ItemReceipt(models.Model):
     quantity = models.PositiveIntegerField(default=0)
     
     def save(self, *args, **kwargs):
-        if self.created:            
-            self.created = self.item_info.created
+        if self.pk:        
+            if self.created:            
+                self.created = self.item_info.created
                    
         super().save(*args, **kwargs)   
         
@@ -90,8 +91,11 @@ class ItemDelivery(models.Model):
     quantity = models.PositiveIntegerField(default=0)
     
     def save(self, *args, **kwargs):
-        if self.created:         
-            self.created = self.item_info.created
+        if self.pk:        
+            if self.created:            
+                self.created = self.item_info.created
+                   
+        super().save(*args, **kwargs)   
                    
         super().save(*args, **kwargs)   
     def __str__(self):
