@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monthly Data</title>
+</head>
+<body>
+    <h1>Monthly Data</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if year %}
+        <h2>Data for Year {{ year }} {{ year }}</h2>
+        <p>Department: {{ department }}</p>
+
+        <p>Total Quantity for {{ year }}: {{ total_quantity }}</p>
+
+        <h2>Monthly Totals:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Total Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for month_num, monthly_qty in monthly_totals_dict.items %}
+                <tr>
+                    <td>Month {{ month_num }}</td>
+                    <td>{{ monthly_qty }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</body>
+</html>

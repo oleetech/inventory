@@ -1,6 +1,7 @@
 from django.db import models
 from ItemMasterData.models import Item
 from GeneralSettings.models import Unit,Department
+from datetime import date
 
 # Create your models here.
 class BillOfMaterials(models.Model):
@@ -25,7 +26,6 @@ class ChildComponent(models.Model):
  |_|     |_|     \___/   \__,_|  \__,_|  \___|  \__| |_|  \___/  |_| |_|    \___/  |_|     \__,_|  \___| |_|   
                                                                                                                
 '''
-from datetime import date
 
 
 from Sales.models import SalesOrderInfo,SalesOrderItem
@@ -42,7 +42,7 @@ class Production(models.Model):
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     salesOrder = models.PositiveIntegerField(default=1)
-    created_date = models.DateField(default=date.today)
+    created = models.DateField(default=date.today, editable=True)
     order_date = models.DateField(default=date.today)
     start_date = models.DateField(default=date.today)
     due_date = models.DateField(default=date.today)
@@ -63,7 +63,16 @@ class ProductionComponent(models.Model):
     name = models.CharField(max_length=100,default='',null=True)
     uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
+    created = models.DateField(default=date.today, editable=True)
+    
+    def save(self, *args, **kwargs):
+        if self.salesOrder:
+            self.salesOrder = self.Production.salesOrder
+            
 
+            self.created = self.Production.created
+                   
+        super().save(*args, **kwargs)   
     # def __str__(self):
     #     return self.name   
     
@@ -121,13 +130,14 @@ class ProductionReceiptItem(models.Model):
     po = models.CharField(max_length=100,default='')   
     remarks = models.CharField(max_length=100,default='') 
     department = models.CharField(max_length=50,default='')
-    created = models.DateField(default=date.today)      
+    created = models.DateField(default=date.today, editable=True)
     
     def save(self, *args, **kwargs):
         if self.receiptNumber:
             self.department = self.receiptNumber.department.id
             
 
+            self.created = self.receiptNumber.created
                    
         super().save(*args, **kwargs)    
      

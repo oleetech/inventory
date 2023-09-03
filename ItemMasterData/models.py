@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from GeneralSettings.models import Unit
+from datetime import date
 
 # Create your models here.
 class Warehouse(models.Model):
@@ -50,10 +51,16 @@ class ItemReceiptinfo(models.Model):
 
 class ItemReceipt(models.Model):
     item_info = models.ForeignKey(ItemReceiptinfo, on_delete=models.CASCADE, null=True, default=None)
-
+    created = models.DateField(default=date.today, editable=True)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
-
+    
+    def save(self, *args, **kwargs):
+        if self.created:            
+            self.created = self.item_info.created
+                   
+        super().save(*args, **kwargs)   
+        
     def __str__(self):
         return " {}".format(self.item_info.docno)
 
@@ -76,9 +83,16 @@ class ItemDeliveryinfo(models.Model):
 
 
 class ItemDelivery(models.Model):
+    created = models.DateField(default=date.today, editable=True)
+    
     item_info = models.ForeignKey(ItemDeliveryinfo, on_delete=models.CASCADE, null=True, default=None)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
-
+    
+    def save(self, *args, **kwargs):
+        if self.created:         
+            self.created = self.item_info.created
+                   
+        super().save(*args, **kwargs)   
     def __str__(self):
         return "ItemDelivery: {} - {}".format(self.item.name, self.quantity)

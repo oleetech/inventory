@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import BillOfMaterials, ChildComponent,Production, ProductionComponent,ProductionReceipt,ProductionReceiptItem
-from .forms import DateFilterForm,OrderFilterForm,YearFilterForm
+from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter
 from .models import Post
 def index(request):
     # Get the first record of the Post model.
@@ -140,8 +140,87 @@ def total_quantity_by_department(request):
     return render(request, 'production/total_quantity_by_department.html', {'form': form})
 
 
+def receipt_from_production_monthly_data_view(request):
+    year = None
+    total_quantity = 0
+    monthly_totals_dict = {i: 0 for i in range(1, 13)}
 
+    if request.method == 'POST':
+        form = YearFilterForm(request.POST)
+        if form.is_valid():
+            year = form.cleaned_data['year']
+            # Calculate the 12-month total quantity for the selected year
+            total_quantity = ProductionReceiptItem.objects.filter(
+                created__year=year
+            ).aggregate(total_qty=Sum('quantity'))['total_qty'] or 0
 
+            # Calculate monthly totals for the selected year
+            monthly_totals = ProductionReceiptItem.objects.filter(
+                created__year=year
+            ).values('created__month').annotate(monthly_qty=Sum('quantity'))
+
+            # Populate the dictionary with the monthly totals
+            for entry in monthly_totals:
+                month = entry['created__month']
+                qty = entry['monthly_qty']
+                monthly_totals_dict[month] = qty
+    else:
+        form = YearFilterForm()
+
+    return render(request, 'production/receipt_from_production_monthly_data_view.html', {
+        'year': year,
+        'total_quantity': total_quantity,
+        'monthly_totals_dict': monthly_totals_dict,
+        'form': form,
+    })
+    
+    
+    
+def receipt_from_production_monthly_data_by_department_view(request):
+    year = None
+    department = None
+
+    total_quantity = 0
+    monthly_totals_dict = {i: 0 for i in range(1, 13)}
+
+    if request.method == 'POST':
+        form = DepartmentYearFilter(request.POST)
+        if form.is_valid():
+            year = form.cleaned_data['year']
+            department = form.cleaned_data['department'].id
+            
+            # Calculate the 12-month total quantity for the selected year
+            total_quantity = ProductionReceiptItem.objects.filter(
+                created__year=year,
+                department=department  
+
+            ).aggregate(total_qty=Sum('quantity'))['total_qty'] or 0
+
+            # Calculate monthly totals for the selected year
+            monthly_totals = ProductionReceiptItem.objects.filter(
+                created__year=year,
+                department=department 
+                
+            ).values('created__month').annotate(monthly_qty=Sum('quantity'))
+
+            # Populate the dictionary with the monthly totals
+            for entry in monthly_totals:
+                month = entry['created__month']
+                qty = entry['monthly_qty']
+                monthly_totals_dict[month] = qty
+    else:
+        form = DepartmentYearFilter()
+
+    return render(request, 'production/receipt_from_production_monthly_data_by_department_view.html', {
+        'year': year,
+        'total_quantity': total_quantity,
+        'monthly_totals_dict': monthly_totals_dict,
+        'form': form,
+    
+    })    
+    
+    
+    
 
 
 

@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from BusinessPartners.models import BusinessPartner 
 from ItemMasterData.models import Item
+from datetime import date
 
 
 class PurchaseOrderInfo(models.Model):
@@ -21,6 +22,7 @@ class PurchaseOrderInfo(models.Model):
         return f"{self.docNo}"
 
 class PurchaseItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)    
     order = models.ForeignKey(PurchaseOrderInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -28,6 +30,13 @@ class PurchaseItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:            
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)  
+            
     def __str__(self):
         return f": {self.order}"
     
@@ -51,6 +60,7 @@ class GoodsReceiptPoInfo(models.Model):
     
 
 class GoodsReceiptPoItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)        
     order = models.ForeignKey(GoodsReceiptPoInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -58,6 +68,11 @@ class GoodsReceiptPoItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    def save(self, *args, **kwargs):
+        if self.created:            
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)      
     def __str__(self):
         return f": {self.order}"    
 
@@ -82,6 +97,7 @@ class GoodsReturnInfo(models.Model):
     
 
 class GoodsReturnItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)            
     order = models.ForeignKey(GoodsReturnInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -89,6 +105,12 @@ class GoodsReturnItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:            
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)      
     def __str__(self):
         return f": {self.order}"  
     
@@ -112,6 +134,7 @@ class ApInvoiceInfo(models.Model):
     
 
 class ApInvoiceItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)                
     order = models.ForeignKey(ApInvoiceInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -119,5 +142,10 @@ class ApInvoiceItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    def save(self, *args, **kwargs):
+        if self.created:            
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)       
     def __str__(self):
         return f": {self.order}"        

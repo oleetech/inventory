@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from BusinessPartners.models import BusinessPartner 
 from ItemMasterData.models import Item
+from datetime import date
 
 '''
   ____            _                   ___               _               
@@ -29,6 +30,7 @@ class SalesOrderInfo(models.Model):
         return f"{self.docNo}"
 
 class SalesOrderItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)
     order = models.ForeignKey(SalesOrderInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -36,6 +38,15 @@ class SalesOrderItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:
+
+
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)   
+            
     def __str__(self):
         return f": {self.order}"
     
@@ -66,9 +77,9 @@ class DeliveryInfo(models.Model):
         return f"Delivery for SalesOrderNo {self.docNo}"
 
 
-class DeliveryItem(models.Model):
+class DeliveryItem(models.Model):    
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True) 
+    created = models.DateField(default=date.today, editable=True)
     orderNo = models.PositiveIntegerField(default=0)
     receiptNo =  models.PositiveIntegerField(default=1)      
     code = models.CharField(max_length=20,default='',null=True)
@@ -77,6 +88,14 @@ class DeliveryItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:
+
+
+            self.created = self.delivery.created
+                   
+        super().save(*args, **kwargs)       
     def __str__(self):
         return f"{self.delivery}" 
     
@@ -108,6 +127,7 @@ class SalesQuotetionInfo(models.Model):
     
 
 class SalesQuotetionItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)
     order = models.ForeignKey(SalesQuotetionInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -115,6 +135,14 @@ class SalesQuotetionItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:
+
+
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)       
     def __str__(self):
         return f": {self.order}"
 
@@ -147,6 +175,7 @@ class ReturnInfo(models.Model):
     
 
 class ReturnItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)
     order = models.ForeignKey(ReturnInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -154,6 +183,14 @@ class ReturnItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:
+
+
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)      
     def __str__(self):
         return f": {self.order}"      
     
@@ -177,6 +214,7 @@ class ARInvoiceInfo(models.Model):
     
 
 class ARInvoiceItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)
     order = models.ForeignKey(ARInvoiceInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -184,5 +222,14 @@ class ARInvoiceItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    
+    def save(self, *args, **kwargs):
+        if self.created:
+
+
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)     
+            
     def __str__(self):
         return f": {self.order}"          

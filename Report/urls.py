@@ -14,6 +14,9 @@ urlpatterns = [
     path('department_summary_by_dates/', views.department_summary_by_dates, name='department_summary_by_dates'),
     path('department_summary_by_month/', views.department_summary_by_month, name='department_summary_by_month'),
     
+    path('receipt_from_production_monthly_data_view/', views.receipt_from_production_monthly_data_view, name='receipt_from_production_monthly_data_view'),
     
+    path('receipt_from_production_monthly_data_by_department_view/', views.receipt_from_production_monthly_data_by_department_view, name='receipt_from_production_monthly_data_by_department_view'),
+
 
 ]
