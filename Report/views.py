@@ -78,7 +78,7 @@ def receipt_from_production_department_summary_by_dates(request):
     
     return render(request, 'production/receipt_from_production_department_summary_by_dates.html', {'form': form})
 
-# ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল প্রোডাকশন 
+# ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল প্রোডাকশন ডেট সিলেক্ট করে  
 def receipt_from_production_department_summary_by_month_based_on_date(request):
     form = DateFilterForm(request.POST)
     
@@ -130,6 +130,29 @@ def receipt_from_production_total_by_name_between_dates(request):
         form = DateFilterForm()
 
     return render(request, 'production/receipt_from_production_total_by_name_between_dates.html', {'form': form})
+#ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট অনুযায়ী
+def receipt_from_production_total_by_name_between_dates_and_department(request):
+    if request.method == 'POST':
+        form = DateDepartmentFilter(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+
+            # Query the database to get the total grouped by ProductionReceiptItem.name
+            totals = ProductionReceiptItem.objects.filter(
+                created__gte=start_date,
+                created__lte=end_date,
+                department=department.id
+                
+            ).values('name').annotate(total_quantity=Sum('quantity'))
+
+            return render(request, 'production/receipt_from_production_total_by_name_between_dates_and_department.html', {'totals': totals})
+
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'production/receipt_from_production_total_by_name_between_dates_and_department.html', {'form': form})
 
 
 # অর্ডার অনুযায়ী প্রোডাকশন রিপোর্ট
