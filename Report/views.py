@@ -130,7 +130,7 @@ def receipt_from_production_total_by_name_between_dates(request):
         form = DateFilterForm()
 
     return render(request, 'production/receipt_from_production_total_by_name_between_dates.html', {'form': form})
-#ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট অনুযায়ী
+#ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে 
 def receipt_from_production_total_by_name_between_dates_and_department(request):
     if request.method == 'POST':
         form = DateDepartmentFilter(request.POST)
