@@ -63,10 +63,10 @@
 
 
         {% for fieldset in adminform %}
-            {% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %}
-            {% if fieldset.description %}
+            {% comment %} {% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %} {% endcomment %}
+            {% comment %} {% if fieldset.description %}
                 <div class="description">{{ fieldset.description|safe }}</div>
-            {% endif %}
+            {% endif %} {% endcomment %}
             {% for line in fieldset %}
             {% if forloop.first %}
             <div class="row ">

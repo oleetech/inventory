@@ -34,3 +34,19 @@ td, th {
     float: left !important;
     width: 140px !important;
 }
+
+.help, p.help, form p.help, div.help, form div.help, div.help li {
+
+    display: none !important;
+}
+
+fieldset.module{
+    width: auto !important;
+    white-space: nowrap;
+    overflow-x: scroll;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+fieldset.module h2{
+    width: auto!important;
+}

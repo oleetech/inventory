@@ -93,15 +93,17 @@ function calculateTotalQty() {
                     success: function(response) {
                         const tr = inputElement.closest('tr');
                         const quantityInput = tr.find('.field-quantity input');
+                        const codeInput = tr.find('.field-code input');                        
                         const nameInput = tr.find('.field-name input');
                         const salesorderInput = tr.find('.field-salesOrder input');
                         
                         // Update the value of the name input field
+                        codeInput.val(response.code);
                         nameInput.val(response.name);
                         quantityInput.val(response.quantity);
                         salesorderInput.val(response.salesOrder);
         
-                        console.log(response.name);
+                        console.log(response);
                     },
                     error: function(error) {
                         console.error('Error:', error);

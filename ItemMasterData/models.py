@@ -33,14 +33,20 @@ class Item(models.Model):
 class Stock(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)    
+    uom = models.CharField(max_length=20,default='',null=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
 
 
 class ItemReceiptinfo(models.Model):
 
     docno = models.PositiveIntegerField(default=1, unique=True)
-    created = models.DateTimeField(default=timezone.now)
-    
+    created = models.DateField(default=date.today, editable=True)
+    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)    
     class Meta:
     
         verbose_name = 'Goods Receipt'
@@ -51,9 +57,13 @@ class ItemReceiptinfo(models.Model):
 
 class ItemReceipt(models.Model):
     item_info = models.ForeignKey(ItemReceiptinfo, on_delete=models.CASCADE, null=True, default=None)
-    created = models.DateField(default=date.today, editable=True)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
+    created = models.DateField(default=timezone.now)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)    
+    uom = models.CharField(max_length=20,default='',null=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     
     def save(self, *args, **kwargs):
         if self.pk:        
@@ -73,8 +83,9 @@ class ItemReceipt(models.Model):
 class ItemDeliveryinfo(models.Model):
     
     docno = models.PositiveIntegerField(default=1, unique=True)
-    created = models.DateTimeField(default=timezone.now)
-    
+    created = models.DateField(default=timezone.now)
+    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)    
     class Meta:
         
         verbose_name = 'Goods Delivery'
@@ -85,10 +96,13 @@ class ItemDeliveryinfo(models.Model):
 
 class ItemDelivery(models.Model):
     created = models.DateField(default=date.today, editable=True)
-    
     item_info = models.ForeignKey(ItemDeliveryinfo, on_delete=models.CASCADE, null=True, default=None)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)    
+    uom = models.CharField(max_length=20,default='',null=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     
     def save(self, *args, **kwargs):
         if self.pk:        
@@ -99,4 +113,4 @@ class ItemDelivery(models.Model):
                    
         super().save(*args, **kwargs)   
     def __str__(self):
-        return "ItemDelivery: {} - {}".format(self.item.name, self.quantity)
+        return "ItemDelivery: {} - {}".format(self.id)

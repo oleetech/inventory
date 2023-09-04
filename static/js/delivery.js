@@ -99,13 +99,15 @@ function calculateTotalQty() {
                 dataType: 'json',
                 success: function(response) {
                   const tr = inputElement.closest('tr');
-                  const orderInput = tr.find('.field-orderNo input');                 
-
+                  const codeInput = tr.find('.field-code input');  
                   const nameInput = tr.find('.field-name input');  
-                  const quantityInput = tr.find('.field-quantity input');                 
+                  const quantityInput = tr.find('.field-quantity input'); 
+                  const orderInput = tr.find('.field-orderNo input');                 
+                
 
                   
                   // Update the value of the name input field
+                  codeInput.val(response.code); 
                   nameInput.val(response.name); 
                   quantityInput.val(response.quantity);
                   orderInput.val(response.salesOrder);                                    
@@ -145,10 +147,12 @@ function calculateTotalQty() {
               success: function(response) {
                 const tr = inputElement.closest('tr');              
                 const nameInput = tr.find('.field-name input');  
+                const uomInput = tr.find('.field-uom input');    
 
                 
                 // Update the value of the name input field
-                nameInput.val(response.name);                                    
+                nameInput.val(response.name);       
+                uomInput.val(response.unit_name);                                     
                   console.log(response);
               }
           });

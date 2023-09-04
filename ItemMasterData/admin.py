@@ -8,31 +8,20 @@ class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
         return obj.name  # Replace 'name' with the appropriate field
     
-def calculate_instock(item):
-    stock_quantity = Stock.objects.filter(item=item).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
-    receipt_quantity = ItemReceipt.objects.filter(item=item).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
-    delivery_quantity = ItemDelivery.objects.filter(item=item).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
-    purchase_order_goods_receipt = GoodsReceiptPoItem.objects.filter(code=item.code).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
-    purchase_order_goods_return = GoodsReturnItem.objects.filter(code=item.code).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0
 
-    instock = stock_quantity + purchase_order_goods_receipt + receipt_quantity - delivery_quantity - purchase_order_goods_return
-    return instock
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'instock', 'description', 'price', 'warehouse')
-    readonly_fields = ('instock',)
+    list_display = ('name',  'description', 'price', 'warehouse')
+
     search_fields = ('name',)  
 
-    def instock(self, obj):
-        return calculate_instock(obj)
 
-    instock.short_description = 'In Stock'
     
 class ItemReceiptinfoForm(forms.ModelForm):
     class Meta:
         model = ItemReceiptinfo
-        fields = ['docno',]
+        fields = '__all__'
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             
@@ -40,9 +29,8 @@ class ItemReceiptinfoForm(forms.ModelForm):
 class ItemReceiptInlineForm(forms.ModelForm):
     class Meta:
         model = ItemReceipt
-        fields = ['item','quantity']
+        fields = ['code','name', 'uom','quantity','price','priceTotal']
         widgets = {
-            'item': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
         } 
 class ItemReceiptInline(admin.TabularInline):
     model = ItemReceipt
@@ -58,13 +46,16 @@ class ItemReceiptinfoAdmin(admin.ModelAdmin):
     
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
     class Media:   
+        js = ('js/itemreceipt.js',)
+        defer = True
+                
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }      
 class ItemDeliveryinfoForm(forms.ModelForm):
     class Meta:
         model = ItemDeliveryinfo
-        fields = ['docno',]
+        fields = '__all__'
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             
@@ -73,9 +64,9 @@ class ItemDeliveryinfoForm(forms.ModelForm):
 class ItemDeliveryInlineForm(forms.ModelForm):
     class Meta:
         model = ItemDelivery
-        fields = ['item','quantity']
+        fields = ['code','name', 'uom','quantity','price','priceTotal']
         widgets = {
-            'item': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            
         } 
         
               
@@ -91,6 +82,9 @@ class ItemDeliveryinfoAdmin(admin.ModelAdmin):
     form =  ItemDeliveryinfoForm
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
     class Media:   
+        js = ('js/itemdelivery.js',)
+        defer = True
+                        
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }  

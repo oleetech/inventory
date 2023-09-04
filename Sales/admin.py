@@ -139,7 +139,7 @@ class DeliveryInfoForm(forms.ModelForm):
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
-        fields = ['receiptNo','lineNo','orderNo','code','name','quantity','price','priceTotal']
+        fields = ['receiptNo','lineNo','code','name', 'uom','quantity','price','priceTotal','orderNo']        
         widgets = {
             'orderNo': forms.TextInput(attrs={'readonly': 'readonly'}),
 
@@ -195,7 +195,7 @@ from .models import SalesQuotetionInfo, SalesQuotetionItem
 class SalesQuotetionItemForm(forms.ModelForm):
     class Meta:
         model = SalesQuotetionItem
-        fields = '__all__'
+        fields = ['code','name', 'uom','quantity','price','priceTotal']   
 
 class SalesQuotetionItemInline(admin.TabularInline):
     model = SalesQuotetionItem
@@ -262,7 +262,7 @@ from django.utils import timezone
 class ReturnItemForm(forms.ModelForm):
     class Meta:
         model = ReturnItem
-        fields = '__all__'
+        fields = ['code','name', 'uom','quantity','price','priceTotal']   
 
 class ReturnItemInline(admin.TabularInline):
     model = ReturnItem
@@ -296,11 +296,14 @@ class ReturnInfoAdminForm(forms.ModelForm):
 class ReturnInfoAdmin(admin.ModelAdmin):
     form = ReturnInfoAdminForm
     inlines = [ReturnItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/returninfo.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:
@@ -316,7 +319,7 @@ from .models import ARInvoiceInfo, ARInvoiceItem
 class ARInvoiceItemForm(forms.ModelForm):
     class Meta:
         model = ARInvoiceItem
-        fields = '__all__'
+        fields = ['code','name', 'uom','quantity','price','priceTotal']   
 
 class ARInvoiceItemInline(admin.TabularInline):
     model = ARInvoiceItem
@@ -350,11 +353,14 @@ class ARInvoiceInfoAdminForm(forms.ModelForm):
 class ARInvoiceInfoAdmin(admin.ModelAdmin):
     form = ARInvoiceInfoAdminForm
     inlines = [ARInvoiceItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
 
     class Media:
         js = ('js/arinvoice.js',)
         defer = True
-
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
     def save_model(self, request, obj, form, change):
         if not obj.address:
             if obj.customerName:
