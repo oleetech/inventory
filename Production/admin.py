@@ -48,7 +48,9 @@ class BillOfMaterialsAdmin(admin.ModelAdmin):
     inlines = [ChildComponentInline]   
     form = BillOfMaterialsAdminForm  
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
-    class Media:   
+    class Media: 
+        js = ('js/billofmaterials.js',)
+        defer = True  # Add the defer attribute          
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }      
