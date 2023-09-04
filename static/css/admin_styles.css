@@ -2,6 +2,7 @@ body{font-family: Roboto, sans-serif;}
 
 input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], input[type=tel]  {
     height: 20px !important;
+    width: auto !important;
 }
 
 textarea{height: 60px!important;}

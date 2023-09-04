@@ -78,7 +78,7 @@ class DeliveryInfo(models.Model):
         verbose_name_plural = 'Delivery '
 
     def __str__(self):
-        return f"Delivery for SalesOrderNo {self.docNo}"
+        return f" {self.docNo}"
 
 
 class DeliveryItem(models.Model):    

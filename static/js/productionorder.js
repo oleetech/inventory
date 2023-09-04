@@ -91,3 +91,45 @@
         
   });
 })(jQuery);
+
+
+  // আইটেম কোড লিখলে আইটেমের নাম ITEM মডেল থেকে অটো আসবে 
+  (function($) {
+    $(document).ready(function() {
+  
+       
+            $("#id_code").on('change', function() {
+              const code = $(this).val();
+              const inputElement = $(this);
+  
+              $.ajax({
+                type: 'POST',
+                url: '/itemMasterData/item/',
+                data: {
+                    'code': code
+       
+                  
+                },
+                dataType: 'json',
+                success: function(response) {
+                          
+                  const nameInput = $('#id_name');  
+                  const uomInput = $('#id_uom');  
+  
+                  
+                  // Update the value of the name input field
+                  nameInput.val(response.name);    
+                  uomInput.val(response.unit);                                  
+                    console.log(response);
+                }
+            });
+            
+        
+  
+  
+            });
+     
+        
+  
+    });
+  })(jQuery);

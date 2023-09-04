@@ -76,7 +76,7 @@ class ProductionForm(forms.ModelForm):
     
     class Meta:
         model = Production
-        fields = ['status','docno', 'name', 'quantity',  'salesOrder']
+        fields = ['status','docno','code',   'salesOrder','name', 'quantity','uom']
         widgets = {
             # 'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),

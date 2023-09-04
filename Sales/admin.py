@@ -139,7 +139,7 @@ class DeliveryInfoForm(forms.ModelForm):
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
-        fields = ['receiptNo','lineNo','orderNo','name','quantity','price','priceTotal']
+        fields = ['receiptNo','lineNo','orderNo','code','name','quantity','price','priceTotal']
         widgets = {
             'orderNo': forms.TextInput(attrs={'readonly': 'readonly'}),
 
@@ -148,28 +148,7 @@ class DeliveryItemForm(forms.ModelForm):
         }
         
         
-    def clean(self):
-        cleaned_data = super().clean()
 
-        # Get the orderNo from the form data
-        order_no = cleaned_data.get('orderNo')
-
-        if order_no:
-            # Calculate the total quantity delivered for the given orderNo
-            delivered_qty = calculate_delivery(order_no)
-
-            # Get the SalesOrderInfo for the corresponding docNo
-            sales_order_info = SalesOrderInfo.objects.get(docNo=order_no)
-
-            # Get the totalQty from SalesOrderInfo
-            total_qty = sales_order_info.totalQty
-
-            # Compare the totalQty with the sum of delivered quantities
-            if total_qty < delivered_qty:
-                raise forms.ValidationError(f"The total quantity delivered ({delivered_qty}) "
-                                            f"exceeds the available quantity ({total_qty}).")
-
-        return cleaned_data
             
 class DeliveryItemInline(admin.TabularInline):
     model = DeliveryItem
@@ -201,9 +180,8 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
                 
         super().save_model(request, obj, form, change)
         
-    # def get_form(self, request, obj=None, **kwargs):
-    #     # Use the custom form class
-    #     return DeliveryInfoForm        
+
+  
         
 '''
   ____            _                   ___                    _            _     _                 

@@ -123,3 +123,42 @@ function calculateTotalQty() {
     });
 })(jQuery);
   
+
+// আইটেম কোড লিখলে আইটেমের নাম ITEM মডেল থেকে অটো আসবে 
+(function($) {
+  $(document).ready(function() {
+
+      $('input[name^="deliveryitem_set-"][name$="-code"]').each(function() {
+          $(this).on('change', function() {
+            const code = $(this).val();
+            const inputElement = $(this);
+
+            $.ajax({
+              type: 'POST',
+              url: '/itemMasterData/item/',
+              data: {
+                  'code': code
+     
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                const tr = inputElement.closest('tr');              
+                const nameInput = tr.find('.field-name input');  
+
+                
+                // Update the value of the name input field
+                nameInput.val(response.name);                                    
+                  console.log(response);
+              }
+          });
+          
+      
+
+
+          });
+      });
+      
+
+  });
+})(jQuery);

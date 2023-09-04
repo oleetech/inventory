@@ -40,6 +40,7 @@ class Production(models.Model):
     status = models.CharField(max_length=1, choices=Status_CHOICES,default='P')
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
+    uom =  models.CharField(max_length=100,default='',null=True)    
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     salesOrder = models.PositiveIntegerField(default=1)
     created = models.DateField(default=date.today, editable=True)

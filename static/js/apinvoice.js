@@ -67,6 +67,90 @@ function calculateTotalQty() {
     });
   })(jQuery);
   
+  (function($) {
+    $(document).ready(function() {
+
+        $('input[name^="deliveryitem_set-"][name$="-lineNo"]').each(function() {
+            $(this).on('change', function() {
+              const inputValue = parseInt($(this).val(), 10);
+              const receiptNo = $(this).closest('tr').find('.field-receiptNo input').val();
+
+              const inputElement = $(this);
+
+              $.ajax({
+                type: 'POST',
+                url: '/sales/delivery/',
+                data: {
+                    'receiptNo': receiptNo,
+                    'lineNo':inputValue
+                  
+                },
+                dataType: 'json',
+                success: function(response) {
+                  const tr = inputElement.closest('tr');
+                  const orderInput = tr.find('.field-orderNo input');                 
+
+                  const nameInput = tr.find('.field-name input');  
+                  const quantityInput = tr.find('.field-quantity input');                 
+
+                  
+                  // Update the value of the name input field
+                  nameInput.val(response.name); 
+                  quantityInput.val(response.quantity);
+                  orderInput.val(response.salesOrder);                                    
+                    console.log(response);
+                }
+            });
+            
+        
+
+
+            });
+        });
+        
+
+    });
+})(jQuery);
+  
+
+// আইটেম কোড লিখলে আইটেমের নাম ITEM মডেল থেকে অটো আসবে 
+(function($) {
+  $(document).ready(function() {
+
+      $('input[name^="apinvoiceitem_set-"][name$="-code"]').each(function() {
+          $(this).on('change', function() {
+            const code = $(this).val();
+            const inputElement = $(this);
+
+            $.ajax({
+              type: 'POST',
+              url: '/itemMasterData/item/',
+              data: {
+                  'code': code
+     
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                const tr = inputElement.closest('tr');              
+                const nameInput = tr.find('.field-name input');  
+
+                
+                // Update the value of the name input field
+                nameInput.val(response.name);                                    
+                  console.log(response);
+              }
+          });
+          
+      
+
+
+          });
+      });
+      
+
+  });
+})(jQuery);
 
 
 
