@@ -3,6 +3,27 @@ from django.utils import timezone
 from BusinessPartners.models import BusinessPartner 
 from ItemMasterData.models import Item
 from datetime import date
+from django.contrib.auth.models import User
+
+
+
+
+
+
+
+class SalesEmployee(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=15)
+    hire_date = models.DateField()
+    active = models.BooleanField(default=False)  # New field for active status
+
+    # You can add more fields as needed, such as address, manager, etc.
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}" 
+
 
 '''
   ____            _                   ___               _               
@@ -14,12 +35,22 @@ from datetime import date
 '''
 # Create your models here.
 class SalesOrderInfo(models.Model):
+    Status_CHOICES = [
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ] 
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')       
     docNo = models.PositiveIntegerField(default=1, unique=True)
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -61,12 +92,22 @@ class SalesOrderItem(models.Model):
 '''
 
 class DeliveryInfo(models.Model):
+    Status_CHOICES = [
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ] 
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
     docNo = models.PositiveIntegerField(unique=True,default=1)    
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateTimeField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     
 
@@ -115,12 +156,22 @@ class DeliveryItem(models.Model):
                                                                                                   
 '''    
 class SalesQuotetionInfo(models.Model):
+    Status_CHOICES = [
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ] 
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
     docNo = models.PositiveIntegerField(default=1, unique=True)
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -163,12 +214,22 @@ class SalesQuotetionItem(models.Model):
                                                                                                   
 '''    
 class ReturnInfo(models.Model):
+    Status_CHOICES = [
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ] 
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
     docNo = models.PositiveIntegerField(default=1, unique=True)
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -202,12 +263,22 @@ class ReturnItem(models.Model):
     
     
 class ARInvoiceInfo(models.Model):
+    Status_CHOICES = [
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ] 
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
     docNo = models.PositiveIntegerField(default=1, unique=True)
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -238,3 +309,13 @@ class ARInvoiceItem(models.Model):
             
     def __str__(self):
         return f": {self.order}"          
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   

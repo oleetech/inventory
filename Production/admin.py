@@ -2,6 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 from django.core.exceptions import ValidationError
@@ -43,7 +44,7 @@ class BillOfMaterialsAdminForm(forms.ModelForm):
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
 
         }
-        
+@admin.register(BillOfMaterials)                     
 class BillOfMaterialsAdmin(admin.ModelAdmin):
     inlines = [ChildComponentInline]   
     form = BillOfMaterialsAdminForm  
@@ -54,8 +55,15 @@ class BillOfMaterialsAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }      
-               
-admin.site.register(BillOfMaterials, BillOfMaterialsAdmin)
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)     
+
+        
+     
+             
 
 
 
@@ -78,7 +86,7 @@ class ProductionForm(forms.ModelForm):
     
     class Meta:
         model = Production
-        fields = ['status','docno','code',   'salesOrder','name', 'quantity','uom']
+        fields = ['status','docno','code',   'salesOrder','name', 'owner','quantity','uom']
         widgets = {
             # 'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
@@ -125,7 +133,13 @@ class ProductionAdmin(admin.ModelAdmin):
         
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
-        }        
+        }     
+        
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)          
 
 '''
   ____                         _           _       _____                                ____                       _                  _     _                 
@@ -188,3 +202,8 @@ class ProductionReceiptAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }   
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)            

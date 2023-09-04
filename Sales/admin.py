@@ -2,6 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 from django_select2.forms import ModelSelect2Widget
 from .models import SalesOrderInfo, SalesOrderItem 
@@ -22,6 +23,12 @@ class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
         return obj.name  
     
+
+from .models import SalesEmployee        
+@admin.register(SalesEmployee)
+class SalesEmployeeAdmin(admin.ModelAdmin): 
+    list_display = ('first_name','last_name', 'email', 'phone_number', 'hire_date','active')
+    search_fields = ('first_name', )     
     
 '''
   ____            _                   ___               _               
@@ -47,7 +54,7 @@ class SalesOrderItemInline(admin.TabularInline):
 class SalesOrderInfoAdminForm(forms.ModelForm):
     class Meta:
         model = SalesOrderInfo
-        fields = ['customerName','docNo', 'totalQty','totalAmount']
+        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -99,6 +106,7 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName :
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None                         
         super().save_model(request, obj, form, change)
         
         
@@ -115,7 +123,7 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
-        fields = ['customerName','docNo','totalQty','totalAmount']
+        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -176,7 +184,7 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName :
                 obj.address = obj.customerName.address
-                
+        obj.owner = request.user if request.user.is_authenticated else None            
                 
         super().save_model(request, obj, form, change)
         
@@ -205,7 +213,7 @@ class SalesQuotetionItemInline(admin.TabularInline):
 class SalesQuotetionInfoAdminForm(forms.ModelForm):
     class Meta:
         model = SalesQuotetionInfo
-        fields = '__all__'
+        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -241,6 +249,7 @@ class SalesQuotetionInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None               
         super().save_model(request, obj, form, change)
 
 '''
@@ -272,7 +281,7 @@ class ReturnItemInline(admin.TabularInline):
 class ReturnInfoAdminForm(forms.ModelForm):
     class Meta:
         model = ReturnInfo
-        fields = '__all__'
+        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -308,6 +317,7 @@ class ReturnInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None              
         super().save_model(request, obj, form, change)
 
 
@@ -329,7 +339,7 @@ class ARInvoiceItemInline(admin.TabularInline):
 class ARInvoiceInfoAdminForm(forms.ModelForm):
     class Meta:
         model = ARInvoiceInfo
-        fields = '__all__'
+        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -365,10 +375,10 @@ class ARInvoiceInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None              
         super().save_model(request, obj, form, change)
         
         
-        
-        
+       
         
         
