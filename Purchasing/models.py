@@ -3,6 +3,7 @@ from django.utils import timezone
 from BusinessPartners.models import BusinessPartner 
 from ItemMasterData.models import Item
 from datetime import date
+from django.contrib.auth.models import User
 
 
 class PurchaseOrderInfo(models.Model):
@@ -12,6 +13,7 @@ class PurchaseOrderInfo(models.Model):
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -49,6 +51,7 @@ class GoodsReceiptPoInfo(models.Model):
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -86,6 +89,7 @@ class GoodsReturnInfo(models.Model):
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 
@@ -123,6 +127,7 @@ class ApInvoiceInfo(models.Model):
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
 

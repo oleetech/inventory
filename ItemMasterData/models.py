@@ -4,11 +4,14 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from GeneralSettings.models import Unit
 from datetime import date
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Warehouse(models.Model):
     name = models.CharField(max_length=100, unique=True)
     location = models.CharField(max_length=100)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
     # Add any other fields for the Warehouse model
 
     def __str__(self):
@@ -22,6 +25,8 @@ class Item(models.Model):
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, default=1)
     unit = models.ForeignKey(Unit, on_delete=models.SET_DEFAULT, default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
     class Meta:
     # Add any other fields you need
         verbose_name = 'Item Master Data'
@@ -39,6 +44,7 @@ class Stock(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class ItemReceiptinfo(models.Model):
@@ -47,6 +53,8 @@ class ItemReceiptinfo(models.Model):
     created = models.DateField(default=date.today, editable=True)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)    
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
     class Meta:
     
         verbose_name = 'Goods Receipt'
@@ -85,7 +93,9 @@ class ItemDeliveryinfo(models.Model):
     docno = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
-    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)    
+    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)  
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+      
     class Meta:
         
         verbose_name = 'Goods Delivery'
@@ -113,4 +123,4 @@ class ItemDelivery(models.Model):
                    
         super().save(*args, **kwargs)   
     def __str__(self):
-        return "ItemDelivery: {} - {}".format(self.id)
+        return f'{self.id}'

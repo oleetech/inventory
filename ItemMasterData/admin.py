@@ -27,7 +27,11 @@ class ItemAdmin(admin.ModelAdmin):
         return calculate_instock(obj.code)
 
     instock.short_description = 'In Stock'
+    def save_model(self, request, obj, form, change):
 
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)     
     
 class ItemReceiptinfoForm(forms.ModelForm):
     class Meta:
@@ -62,7 +66,12 @@ class ItemReceiptinfoAdmin(admin.ModelAdmin):
                 
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
-        }      
+        }    
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)               
 class ItemDeliveryinfoForm(forms.ModelForm):
     class Meta:
         model = ItemDeliveryinfo
@@ -99,12 +108,28 @@ class ItemDeliveryinfoAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }  
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)  
+                   
 @admin.register(Warehouse)
-class PostAdmin(admin.ModelAdmin):
+class Warehouse(admin.ModelAdmin):
     list_display = ('name', 'location')
     search_fields = ('name', 'location') 
+    def save_model(self, request, obj, form, change):
 
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)   
+        
 @admin.register(Stock)
-class PostAdmin(admin.ModelAdmin):
+class StockAdmin(admin.ModelAdmin):
     list_display = ('item', 'quantity')
     search_fields = ('item', ) 
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)     

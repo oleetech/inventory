@@ -56,6 +56,8 @@ class PurchaseOrderInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None
+                
         super().save_model(request, obj, form, change)
         
         
@@ -110,6 +112,8 @@ class GoodsReceiptPoInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None
+                
         super().save_model(request, obj, form, change)
 
 
@@ -167,6 +171,8 @@ class GoodsReturnInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None
+                
         super().save_model(request, obj, form, change)    
         
         
@@ -223,5 +229,7 @@ class ApInvoiceInfoAdmin(admin.ModelAdmin):
         if not obj.address:
             if obj.customerName:
                 obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None
+                
         super().save_model(request, obj, form, change)
         
