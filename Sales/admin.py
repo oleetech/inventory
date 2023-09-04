@@ -10,9 +10,13 @@ from ItemMasterData.models import Item
 from .models import DeliveryInfo,DeliveryItem
 
 def calculate_delivery(salesOrderNo):
-    delivery_qty = DeliveryInfo.objects.filter(salesOrder=salesOrderNo).aggregate(total_quantity=models.Sum('totalQty'))['total_quantity'] or 0    
+    delivery_qty = DeliveryItem.objects.filter(orderNo=salesOrderNo).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0    
     return delivery_qty  
 
+def calculate_delivery_balance(salesOrderNo):
+    sales_order = SalesOrderInfo.objects.get(docNo=salesOrderNo)
+    delivery_balance = sales_order.totalQty - calculate_delivery(salesOrderNo)
+    return delivery_balance
     
 class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
@@ -68,16 +72,23 @@ class SalesOrderInfoAdminForm(forms.ModelForm):
 class SalesOrderInfoAdmin(admin.ModelAdmin):
     form = SalesOrderInfoAdminForm
     inlines = [SalesOrderItemInline]
-    list_display = ('docNo','customerName', 'totalAmount', 'totalQty','created','delivery_qty')
+    list_display = ('docNo','customerName', 'totalAmount', 'totalQty', 'created', 'delivery_qty', 'deliveryBalance')
     search_fields = ('docNo', )    
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
-    readonly_fields = ('delivery_qty',)
+    readonly_fields = ('delivery_qty', 'deliveryBalance')  # Use field names instead of functions
     
     def delivery_qty(self, obj):
         return calculate_delivery(obj.docNo)
 
-    delivery_qty.short_description = 'delivery_qty'
-        
+    delivery_qty.short_description = 'delivery'
+    
+    
+    def deliveryBalance(self, obj):
+        return calculate_delivery_balance(obj.docNo)
+
+    deliveryBalance.short_description = 'deliveryBalance' 
+    
+           
     class Media:
         js = ('js/salesorder.js',)
         defer = True
@@ -111,18 +122,7 @@ class DeliveryInfoForm(forms.ModelForm):
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
             'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     sales_order = cleaned_data.get('salesOrder')
-    #     total_qty = cleaned_data.get('totalQty')
 
-    #     try:
-    #         sales_order_info = SalesOrderInfo.objects.get(docNo=sales_order)
-    #     except SalesOrderInfo.DoesNotExist:
-    #         raise ValidationError("No SalesOrderInfo found with docNo matching the salesOrder")
-
-    #     if total_qty > sales_order_info.totalQty:
-    #         raise ValidationError("DeliveryInfo totalQty should be less than or equal to SalesOrderInfo totalQty")
                 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -139,12 +139,38 @@ class DeliveryInfoForm(forms.ModelForm):
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
-        fields = ['receiptNo','orderNo','name','quantity','price','priceTotal']
+        fields = ['receiptNo','lineNo','orderNo','name','quantity','price','priceTotal']
         widgets = {
+            'orderNo': forms.TextInput(attrs={'readonly': 'readonly'}),
 
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'ItemName': DeliveryItemModelSelect2Widget(model=Item, search_fields=['name__icontains']),
         }
+        
+        
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Get the orderNo from the form data
+        order_no = cleaned_data.get('orderNo')
+
+        if order_no:
+            # Calculate the total quantity delivered for the given orderNo
+            delivered_qty = calculate_delivery(order_no)
+
+            # Get the SalesOrderInfo for the corresponding docNo
+            sales_order_info = SalesOrderInfo.objects.get(docNo=order_no)
+
+            # Get the totalQty from SalesOrderInfo
+            total_qty = sales_order_info.totalQty
+
+            # Compare the totalQty with the sum of delivered quantities
+            if total_qty < delivered_qty:
+                raise forms.ValidationError(f"The total quantity delivered ({delivered_qty}) "
+                                            f"exceeds the available quantity ({total_qty}).")
+
+        return cleaned_data
+            
 class DeliveryItemInline(admin.TabularInline):
     model = DeliveryItem
     extra = 0  

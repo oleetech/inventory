@@ -67,8 +67,7 @@ class DeliveryInfo(models.Model):
     created = models.DateTimeField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
-    salesOrder = models.PositiveIntegerField(default=1)
-    SalesQuotetion = models.PositiveIntegerField(default=1)
+
     
 
         
@@ -86,7 +85,8 @@ class DeliveryItem(models.Model):
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
     created = models.DateField(default=date.today, editable=True)
     orderNo = models.PositiveIntegerField(default=0)
-    receiptNo =  models.PositiveIntegerField(default=1)      
+    receiptNo =  models.PositiveIntegerField(default=0)
+    lineNo =  models.PositiveIntegerField(default=0)       
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
     uom = models.CharField(max_length=20,default='',null=True)

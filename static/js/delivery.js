@@ -81,10 +81,11 @@ function calculateTotalQty() {
   (function($) {
     $(document).ready(function() {
 
-        $('input[name^="deliveryitem_set-"][name$="-orderNo"]').each(function() {
+        $('input[name^="deliveryitem_set-"][name$="-lineNo"]').each(function() {
             $(this).on('change', function() {
               const inputValue = parseInt($(this).val(), 10);
               const receiptNo = $(this).closest('tr').find('.field-receiptNo input').val();
+
               const inputElement = $(this);
 
               $.ajax({
@@ -98,13 +99,16 @@ function calculateTotalQty() {
                 dataType: 'json',
                 success: function(response) {
                   const tr = inputElement.closest('tr');
+                  const orderInput = tr.find('.field-orderNo input');                 
+
                   const nameInput = tr.find('.field-name input');  
                   const quantityInput = tr.find('.field-quantity input');                 
 
                   
                   // Update the value of the name input field
                   nameInput.val(response.name); 
-                  quantityInput.val(response.quantity);                                  
+                  quantityInput.val(response.quantity);
+                  orderInput.val(response.salesOrder);                                    
                     console.log(response);
                 }
             });
