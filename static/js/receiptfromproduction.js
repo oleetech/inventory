@@ -269,13 +269,18 @@ jQuery.noConflict();
          // সেলস অর্ডার থেকে লাইন নম্বর অনুসারে ডেটা নিয়ে এসে ইনপুট এ সেট করি 
           (function($) {
             $(document).ready(function() {
-          
-                $('input[name^="productionreceiptitem_set-"][name$="-orderlineNo"]').each(function() {
-                    $(this).on('change', function() {
-                      var orderno = $(this).closest('tr').find('.field-salesOrder input').val();
-                       
-                      var  orderlineNo = $(this).val();
 
+
+                $('input[name^="productionreceiptitem_set-"][name$="-orderlineNo"]').each(function() {
+                  var self = $(this);  // Store reference to $(this)
+                      // Store the initial value
+                  var orderlineNo = self.val();
+                  self.on('change', function() {
+                      var orderno = self.closest('tr').find('.field-salesOrder input').val();
+                       
+                      var newOrderlineNo = self.val();
+                    // Update the previous value with the new value
+                    orderlineNo = newOrderlineNo;                      
           
                       $.ajax({
                         type: 'POST',
@@ -289,8 +294,10 @@ jQuery.noConflict();
                         },
                         dataType: 'json',
                         success: function(response) {
-
-                                         
+                      
+                          self.closest('tr').find('.field-size input').val(response.size);
+                          self.closest('tr').find('.field-color input').val(response.color);
+                                       
                             console.log(response);
                         }
                     });

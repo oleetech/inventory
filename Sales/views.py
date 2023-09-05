@@ -72,8 +72,8 @@ def orderline_by_data(request):
             order_item = SalesOrderItem.objects.get(docNo=orderno, lineNo=orderlineNo)
             response_data = {
                 
-                'code': order_item.code,
-                'names': order_item.name
+                'size': order_item.size,
+                'color': order_item.color
             }
             return JsonResponse(response_data)
         except SalesOrderItem.DoesNotExist:
