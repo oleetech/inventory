@@ -166,6 +166,7 @@ function calculateTotalQty() {
   });
 })(jQuery);
 jQuery.noConflict();
+
 (function($) {
   $(document).ready(function() {
 
@@ -189,7 +190,7 @@ jQuery.noConflict();
   
                                       // Add click event handler for the "icon" elements
                   $('span.icon').on('click', function() {
-                    constTr = $(this).closest('tr');
+                    var constTr = $(this).closest('tr');
                     var closestTd = $(this).closest('td');
                     var input = closestTd.find('input[name^="productionreceiptitem_set-"][name$="-lineNo"]');
                     var order = constTr.find('input[name^="productionreceiptitem_set-"][name$="-salesOrder"]');
@@ -243,7 +244,7 @@ jQuery.noConflict();
                   // Append the table to the "olee" element
                   $olee.html('').append($table);
                      
-                     
+          
               // Get the table element by its ID
               var table = document.getElementById("olee");
               table.getElementsByTagName("table")[0].classList.add("table","table-responsive",'table-bordered');
@@ -261,9 +262,45 @@ jQuery.noConflict();
 
 
 
-
             });
           })(jQuery);
           
 
+         // সেলস অর্ডার থেকে লাইন নম্বর অনুসারে ডেটা নিয়ে এসে ইনপুট এ সেট করি 
+          (function($) {
+            $(document).ready(function() {
+          
+                $('input[name^="productionreceiptitem_set-"][name$="-orderlineNo"]').each(function() {
+                    $(this).on('change', function() {
+                      var orderno = $(this).closest('tr').find('.field-salesOrder input').val();
+                       
+                      var  orderlineNo = $(this).val();
 
+          
+                      $.ajax({
+                        type: 'POST',
+                        url: '/sales/orderline_by_data/',
+                        data: {
+
+                            'orderno':orderno,
+                            'orderlineNo': orderlineNo,
+               
+                          
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+
+                                         
+                            console.log(response);
+                        }
+                    });
+                    
+                
+          
+          
+                    });
+                });
+                
+          
+            });
+          })(jQuery);

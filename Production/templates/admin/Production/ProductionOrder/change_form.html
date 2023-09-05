@@ -47,10 +47,9 @@
 {% endif %}
 
 {% endblock %}
-
-<!-- Modal -->
+<button id='close_table'>close</button> 
 <div id="olee">
-  
+
 </div>
 
 <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}

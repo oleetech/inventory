@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import ProductionReceiptItem
 
@@ -56,5 +56,28 @@ def get_sales_order_info(request):
             return JsonResponse(response_data)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'Sales order not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+
+@csrf_exempt
+def orderline_by_data(request):
+    if request.method == 'POST':
+        orderno = request.POST.get('orderno')
+        orderlineNo = request.POST.get('orderlineNo')
+
+        # Replace the filter conditions with the ones you need
+        try:
+            order_item = SalesOrderItem.objects.get(docNo=orderno, lineNo=orderlineNo)
+            response_data = {
+                
+                'code': order_item.code,
+                'names': order_item.name
+            }
+            return JsonResponse(response_data)
+        except SalesOrderItem.DoesNotExist:
+            return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
+    
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
