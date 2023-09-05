@@ -210,11 +210,14 @@ jQuery.noConflict();
                       dataType: 'json',
                       success: function(response) {
                       // Assuming response.data contains your code and names arrays
+                      var lineNoArray = response.lineNo;
                       var codeArray = response.code;
                       var namesArray = response.names;
                       
                   // Assuming you have an element with id "olee" where you want to insert the table
                   var $olee = $('#olee');
+
+
 
                   // Create a table element
                   var $table = $('<table>');
@@ -222,6 +225,7 @@ jQuery.noConflict();
                   // Create table headers
                   var $thead = $('<thead>').appendTo($table);
                   var $headerRow = $('<tr>').appendTo($thead);
+                  $('<th>').text('lineNo').appendTo($headerRow);
                   $('<th>').text('Code').appendTo($headerRow);
                   $('<th>').text('Name').appendTo($headerRow);
 
@@ -231,6 +235,7 @@ jQuery.noConflict();
                   // Loop through the arrays and populate the table rows
                   for (var i = 0; i < codeArray.length; i++) {
                     var $row = $('<tr>').appendTo($tbody);
+                    $('<td>').text(lineNoArray[i]).appendTo($row);
                     $('<td>').text(codeArray[i]).appendTo($row);
                     $('<td>').text(namesArray[i]).appendTo($row);
                   }
@@ -238,9 +243,12 @@ jQuery.noConflict();
                   // Append the table to the "olee" element
                   $olee.html('').append($table);
                      
-                          // Show the Bootstrap modal
-                   
-                                    
+                     
+              // Get the table element by its ID
+              var table = document.getElementById("olee");
+              table.getElementsByTagName("table")[0].classList.add("table","table-responsive",'table-bordered');
+              // Add a border to the table
+              table.getElementsByTagName("table")[0].style.border = "1px solid black";                              
                           console.log(response);
                       }
                   });

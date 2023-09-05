@@ -41,7 +41,7 @@ class SalesEmployeeAdmin(admin.ModelAdmin):
 class SalesOrderItemForm(forms.ModelForm):
     class Meta:
         model = SalesOrderItem
-        fields = ['code','name', 'uom','quantity','price','priceTotal']
+        fields = ['code','name', 'uom','quantity','price','priceTotal','lineNo']
         widgets = {
             # 'ItemName': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains'])
         }

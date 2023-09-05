@@ -55,17 +55,19 @@ fieldset.module h2{
 
 /* Add your desired styling here */
 .field-lineNo {
-    display: flex;
-    align-items: center; /* Vertically align content */
-}
+    position: relative;
+  }
+  
+  .icon {
+    position: absolute;
+    top: 50%; /* Adjust this value to vertically center the span */
+    right: 5px; /* Adjust this value to set the span's distance from the input */
+    transform: translateY(-50%); /* Vertically center the span */
+  }
 
-/* Add your desired styling for the input and icon here */
-.input-field {
-    width: 80%; /* Adjust the width as needed */
-    padding: 5px;
-}
 
-.icon {
-    cursor: pointer;
-    margin-left: 10px; /* Add spacing between input and icon */
-}
+  /* Set a maximum height for the table container */
+#olee {
+    max-height: 300px; /* Adjust the height as per your requirement */
+    overflow-y: auto; /* Add a vertical scrollbar if needed */
+  }

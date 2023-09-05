@@ -70,7 +70,8 @@ class SalesOrderItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    
+    lineNo = models.PositiveIntegerField(default=1)  # Add the lineNo field
+   
     def save(self, *args, **kwargs):
         if self.created:
             self.created = self.order.created

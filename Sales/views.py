@@ -43,6 +43,7 @@ def get_sales_order_info(request):
             if order_items.exists():  # Check if there are any results
                 # Assuming you want to return a list of 'name' values for all matching rows
                 response_data = {
+                    'lineNo': [item.lineNo for item in order_items],
                     'code': [item.code for item in order_items],
                     'names': [item.name for item in order_items]
                 }
