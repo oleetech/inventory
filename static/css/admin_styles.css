@@ -50,3 +50,22 @@ fieldset.module{
 fieldset.module h2{
     width: auto!important;
 }
+
+
+
+/* Add your desired styling here */
+.field-lineNo {
+    display: flex;
+    align-items: center; /* Vertically align content */
+}
+
+/* Add your desired styling for the input and icon here */
+.input-field {
+    width: 80%; /* Adjust the width as needed */
+    padding: 5px;
+}
+
+.icon {
+    cursor: pointer;
+    margin-left: 10px; /* Add spacing between input and icon */
+}

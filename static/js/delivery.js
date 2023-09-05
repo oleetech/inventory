@@ -164,62 +164,7 @@ function calculateTotalQty() {
       });
       
 
-      // ইনপুট এর পাশে ক্লিকেবল আইকন যোগ করা       
-                      // Find all input elements with the specified id format and add spans after them
-                      $('input[name^="deliveryitem_set-"][name$="-lineNo"]').each(function() {
-                        // Create a new <span> element
-                        var span = $("<span>")
-                        .attr("id", "icon")   // Set the id attribute to "icon"
-                        .addClass("icon")     // Add the "icon" class
-                        .text("🔍"); // Set the text content
-
-                        // Insert the <span> element after the current input element
-                        $(this).after(span);
-                      });
-
-
-                // Add click event handler for the "icon" elements
-              $('span.icon').on('click', function() {
-                constTr = $(this).closest('tr');
-                var closestTd = $(this).closest('td');
-                var input = closestTd.find('input[name^="deliveryitem_set-"][name$="-lineNo"]');
-                var order = constTr.find('input[name^="deliveryitem_set-"][name$="-orderNo"]');
-
-                // Get the value from the input field
-                var inputValue = input.val();
-                var orderNo = order.val();
-                alert(orderNo);
-
-
-
-              
-              
-                $.ajax({
-                  type: 'POST',
-                  url: '/sales/order/', 
-                  data: {
-                      'orderNo': orderNo
-         
-                    
-                  },
-                  dataType: 'json',                  
-                    success: function(response) {
-                        // Process the AJAX response and show autocomplete suggestions
-                        // input.autocomplete({
-                        //     source: response, // Use the data received from the AJAX response
-                        //     minLength: 2, // Minimum characters to trigger autocomplete
-                        // });
-
-                        console.log(response)
-                    },
-                    error: function() {
-                        // Handle errors if needed
-                    }
-                });
-
-
-
-              });                    
+                  
 
   });
 })(jQuery);

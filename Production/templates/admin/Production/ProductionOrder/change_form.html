@@ -10,7 +10,10 @@
 {% endblock %}
 
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">{% endblock %}
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">
+<script src="{% static "js/library/bootstrap.bundle.min.js" %}""></script>
+{% endblock %}
 
 {% block coltype %}colM{% endblock %}
 
@@ -45,6 +48,10 @@
 
 {% endblock %}
 
+<!-- Modal -->
+<div id="olee">
+  
+</div>
 
 <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>{% csrf_token %}{% block form_top %}{% endblock %}
 <div >

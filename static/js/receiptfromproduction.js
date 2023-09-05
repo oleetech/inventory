@@ -165,6 +165,88 @@ function calculateTotalQty() {
 
   });
 })(jQuery);
+jQuery.noConflict();
+(function($) {
+  $(document).ready(function() {
+
+      // ইনপুট এর পাশে ক্লিকেবল আইকন যোগ করা       
+                      // Find all input elements with the specified id format and add spans after them
+                      $('input[name^="productionreceiptitem_set-"][name$="-lineNo"]').each(function() {
+                        // Create a new <span> element
+                        var span = $("<span>")
+                        .attr("id", "icon")   // Set the id attribute to "icon"
+                        .addClass("icon")     // Add the "icon" class
+                        .text("🔍"); // Set the text content
+
+                        // Insert the <span> element after the current input element
+                          $(this).after(span);
+
+                   
+                
+                
+  
+                });
+  
+                                      // Add click event handler for the "icon" elements
+                  $('span.icon').on('click', function() {
+                    constTr = $(this).closest('tr');
+                    var closestTd = $(this).closest('td');
+                    var input = closestTd.find('input[name^="productionreceiptitem_set-"][name$="-lineNo"]');
+                    var order = constTr.find('input[name^="productionreceiptitem_set-"][name$="-salesOrder"]');
+    
+                    // Get the value from the input field
+                    var inputValue = input.val();
+                    var orderNo = order.val();
+                   
+    
+                    $.ajax({
+                      type: 'POST',
+                      url: '/sales/get_sales_order_info/',
+                      data: {
+                          'docNo': orderNo
+             
+                        
+                      },
+                      dataType: 'json',
+                      success: function(response) {
+                      // Assuming response.data contains your code and names arrays
+                      var codeArray = response.code;
+                      var namesArray = response.names;
+                      
+                  // Assuming you have an element with id "olee" where you want to insert the table
+                  var $olee = $('#olee');
+
+                  // Create a table element
+                  var $table = $('<table>');
+
+                  // Create table headers
+                  var $thead = $('<thead>').appendTo($table);
+                  var $headerRow = $('<tr>').appendTo($thead);
+                  $('<th>').text('Code').appendTo($headerRow);
+                  $('<th>').text('Name').appendTo($headerRow);
+
+                  // Create table body
+                  var $tbody = $('<tbody>').appendTo($table);
+
+                  // Loop through the arrays and populate the table rows
+                  for (var i = 0; i < codeArray.length; i++) {
+                    var $row = $('<tr>').appendTo($tbody);
+                    $('<td>').text(codeArray[i]).appendTo($row);
+                    $('<td>').text(namesArray[i]).appendTo($row);
+                  }
+
+                  // Append the table to the "olee" element
+                  $olee.html('').append($table);
+                     
+                          // Show the Bootstrap modal
+                   
+                                    
+                          console.log(response);
+                      }
+                  });
+                  
+                  
+                      });
 
 
 
@@ -172,5 +254,8 @@ function calculateTotalQty() {
 
 
 
+            });
+          })(jQuery);
+          
 
 

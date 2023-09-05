@@ -27,3 +27,33 @@ def ajax_view(request):
             return JsonResponse({'error': 'Item not found'})
 
     return JsonResponse({'error': 'Invalid request method'})
+
+
+from .models import SalesOrderItem
+from django.core.exceptions import ObjectDoesNotExist
+
+@csrf_exempt
+def get_sales_order_info(request):
+    if request.method == 'POST':
+        docNo = request.POST.get('docNo')
+        print("Received docNo:", docNo)  # Add this line for debugging
+        try:
+            order_items = SalesOrderItem.objects.filter(docNo=docNo)
+
+            if order_items.exists():  # Check if there are any results
+                # Assuming you want to return a list of 'name' values for all matching rows
+                response_data = {
+                    'code': [item.code for item in order_items],
+                    'names': [item.name for item in order_items]
+                }
+            else:
+                # Handle the case where no matching rows were found
+                response_data = {
+                    'message': 'No matching items found.'
+                }
+            print("Response data:", response_data)  # Add this line for debugging
+            return JsonResponse(response_data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Sales order not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
