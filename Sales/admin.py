@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django import forms
 from django.db import models
+from django.db.models import Sum
+
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
@@ -27,8 +29,15 @@ class CustomModelSelect2Widget(ModelSelect2Widget):
 from .models import SalesEmployee        
 @admin.register(SalesEmployee)
 class SalesEmployeeAdmin(admin.ModelAdmin): 
-    list_display = ('first_name','last_name', 'email', 'phone_number', 'hire_date','active')
-    search_fields = ('first_name', )     
+    list_display = ('first_name','last_name', 'email', 'phone_number', 'hire_date','active','total_order_amount')
+    search_fields = ('first_name', )  
+     
+    def total_order_amount(self, obj):
+        # Calculate the total sum of SalesOrderInfo.totalAmount for this SalesEmployee
+        total_amount = SalesOrderInfo.objects.filter(sales_employee=obj).aggregate(total_amount=Sum('totalAmount'))['total_amount']
+        return total_amount if total_amount is not None else 0
+    
+    total_order_amount.short_description = 'Total Order Amount'      
     
 '''
   ____            _                   ___               _               

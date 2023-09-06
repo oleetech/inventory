@@ -1,5 +1,6 @@
 body{font-family: Roboto, sans-serif;}
 
+/* Admin Panel */
 #header{
     background-color: #2e2e2e!important;
     color: #fff;
@@ -9,6 +10,14 @@ div.breadcrumbs {
     background: rgb(2,0,36);
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 75%);
 }
+/* Change_Form.html */
+
+.btn-elegant{
+    cursor: pointer;
+    border-radius: 10em;
+    background-color: #2e2e2e!important;
+    color: #fff;
+}
 input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], input[type=tel]  {
     height: 20px !important;
     width: auto !important;
@@ -16,12 +25,14 @@ input[type=text], input[type=password], input[type=email], input[type=url], inpu
 
 textarea{height: 60px!important;}
 
+
 .original p {
     display: none !important;
 }
 select {
     height: 30px !important;
 }
+
 
 .related-widget-wrapper{
     font-size: 10px !important;
@@ -34,10 +45,7 @@ td, th {
 }
 
 
-.accordion {
-    
-    width: 300px !important;
-}
+
 
 .form-group  label{
     float: left !important;
@@ -59,7 +67,11 @@ fieldset.module{
 fieldset.module h2{
     width: auto!important;
 }
-
+/* Menu */
+.accordion {
+    
+    width: 300px !important;
+}
 
 
 /* Add your desired styling here */
