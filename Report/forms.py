@@ -104,4 +104,14 @@ class OrderDepartmentFilter(forms.Form):
 from Sales.models import SalesEmployee
 
 class SalesEmployeeForm(forms.Form):
-    sales_employee = forms.ModelChoiceField(queryset=SalesEmployee.objects.all(), empty_label=None)                                       
+    sales_employee = forms.ModelChoiceField(queryset=SalesEmployee.objects.all(), empty_label=None)    
+    
+    def __init__(self, *args, **kwargs):
+        super(SalesEmployeeForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })
+            
+                                               

@@ -69,7 +69,10 @@ urlpatterns = [
 #        |____/   \__,_| |_|  \___| |___/   |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___|
 #                                                               |_|                  |___/               
 
+
+    # একজন মার্কেটিং এর ডেটা দেখা 
     path('sales_employee_data/', salesemployeeviews.sales_employee_data, name='sales_employee_data'),
+    # সব  মার্কেটিং এর ডেটা দেখা    
     path('all_sales_employee_data/', salesemployeeviews.all_sales_employee_data, name='all_sales_employee_data'),
 
 
