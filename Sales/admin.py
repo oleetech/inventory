@@ -25,19 +25,40 @@ class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
         return obj.name  
     
+'''
+  ____            _                  _____                       _                               
+ / ___|    __ _  | |   ___   ___    | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___ 
+ \___ \   / _` | | |  / _ \ / __|   |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \
+  ___) | | (_| | | | |  __/ \__ \   | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/
+ |____/   \__,_| |_|  \___| |___/   |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___|
+                                                        |_|                  |___/               
 
-from .models import SalesEmployee        
+'''  
+from .models import SalesEmployee      
 @admin.register(SalesEmployee)
 class SalesEmployeeAdmin(admin.ModelAdmin): 
-    list_display = ('first_name','last_name', 'email', 'phone_number', 'hire_date','active','total_order_amount')
+    list_display = ('first_name','last_name', 'email', 'phone_number', 'hire_date','active','total_order_amount','total_delivery_amount','balance_amount')
     search_fields = ('first_name', )  
      
     def total_order_amount(self, obj):
         # Calculate the total sum of SalesOrderInfo.totalAmount for this SalesEmployee
         total_amount = SalesOrderInfo.objects.filter(sales_employee=obj).aggregate(total_amount=Sum('totalAmount'))['total_amount']
         return total_amount if total_amount is not None else 0
+    total_order_amount.short_description = 'Total Order Amount'   
     
-    total_order_amount.short_description = 'Total Order Amount'      
+    def total_delivery_amount(self, obj):
+        # Calculate the total sum of SalesOrderInfo.totalAmount for this SalesEmployee
+        total_amount = DeliveryInfo.objects.filter(sales_employee=obj).aggregate(total_amount=Sum('totalAmount'))['total_amount']
+        return total_amount if total_amount is not None else 0
+    total_delivery_amount.short_description = 'Total Delivery Amount' 
+    
+    def balance_amount(self, obj):
+        total_order_amount = self.total_order_amount(obj)
+        total_delivery_amount = self.total_delivery_amount(obj)
+        return total_order_amount - total_delivery_amount
+    
+    balance_amount.short_description = 'Balance Amount'    
+           
     
 '''
   ____            _                   ___               _               
