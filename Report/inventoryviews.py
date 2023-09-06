@@ -42,9 +42,9 @@ def item_receipt_between_date_by_department(request):
             department = form.cleaned_data['department']
                         
             # Filter data based on form input
-            items = ItemDelivery.objects.filter(
+            items = ItemReceipt.objects.filter(
                 created__range=(start_date, end_date),
-                department=department
+                department=department.id
             )    
     
             return render(request, 'inventory/item_receipt_between_date_by_department.html', {'items': items})
@@ -52,6 +52,8 @@ def item_receipt_between_date_by_department(request):
         form = DateDepartmentFilter()
 
     return render(request, 'inventory/item_receipt_between_date_by_department.html', {'form': form})
+
+
 
 #ডেট অনুযায়ী আইটেম ডেলিভারি রিপোর্ট 
 def item_delivery_between_date(request):
@@ -72,5 +74,23 @@ def item_delivery_between_date(request):
     
     return render(request, 'inventory/item_delivery_between_date.html', {'form': form})
 
+#ডেট অনুযায়ী আইটেম ডেলিভারি রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে 
+def item_delivery_between_date_by_department(request):
+    form = DateDepartmentFilter(request.POST)
+    if request.method == 'POST' and form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+                        
+            # Filter data based on form input
+            items = ItemDelivery.objects.filter(
+                created__range=(start_date, end_date),
+                department=department.id
+            )    
+    
+            return render(request, 'inventory/item_delivery_between_date_by_department.html', {'items': items})
+    else:
+        form = DateDepartmentFilter()
 
+    return render(request, 'inventory/item_delivery_between_date_by_department.html', {'form': form})
 

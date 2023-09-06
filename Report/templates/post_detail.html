@@ -1,0 +1,17 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+  
+    <div class="card-body">
+<h1>{{ post.title }}</h1>
+
+<div>{{ post.content|safe }}</div>
+
+</div>
+</section>   
+{% endblock %}

@@ -4,9 +4,9 @@ from . import views,salesemployeeviews,inventoryviews
 
 urlpatterns = [
 
-    
-    #Report
-    path('',views.index,name='report'),
+    path('', views.post_list, name='post_list'),
+    path('<slug:slug>/', views.post_detail, name='post_detail'),    
+
     
  # ____                       _                  _     _                 
  #|  _ \   _ __    ___     __| |  _   _    ___  | |_  (_)   ___    _ __  
@@ -17,38 +17,42 @@ urlpatterns = [
     
     
     #ডেট অনুযায়ী প্রোডাকশন রিপোর্ট 
-    path('receipt_from_production_between_date/', views.receipt_from_production_between_date, name='receipt_from_production_between_date'),
+    path('Production/receipt_from_production_between_date/', views.receipt_from_production_between_date, name='receipt_from_production_between_date'),
     
     #ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন রিপোর্ট
-    path('receipt_from_production_department_summary_by_dates/', views.receipt_from_production_department_summary_by_dates, name='receipt_from_production_department_summary_by_dates'),
+    path('Production/receipt_from_production_department_summary_by_dates/', views.receipt_from_production_department_summary_by_dates, name='receipt_from_production_department_summary_by_dates'),
+    
+    #ডেট অনুযায়ী প্রোডাকশন রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে বিস্তারিত 
+    path('Production/receipt_from_production_between_date_by_department/', views.receipt_from_production_between_date_by_department, name='receipt_from_production_between_date_by_department'),
+
     
     # ১ বছরের মাস অনুযায়ী রিপোর্ট     
-    path('receipt_from_production_monthly_data_view/', views.receipt_from_production_monthly_data_view, name='receipt_from_production_monthly_data_view'),
+    path('Production/receipt_from_production_monthly_data_view/', views.receipt_from_production_monthly_data_view, name='receipt_from_production_monthly_data_view'),
    
     # ১ বছরের মাস অনুযায়ী রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে         
-    path('receipt_from_production_monthly_data_by_department_view/', views.receipt_from_production_monthly_data_by_department_view, name='receipt_from_production_monthly_data_by_department_view'),
+    path('Production/receipt_from_production_monthly_data_by_department_view/', views.receipt_from_production_monthly_data_by_department_view, name='receipt_from_production_monthly_data_by_department_view'),
     
            
     # অর্ডার অনুযায়ী প্রোডাকশন রিপোর্ট   
-    path('receipt_from_production_based_on_order_no/', views.receipt_from_production_based_on_order_no, name='receipt_from_production_based_on_order_no'),
+    path('Production/receipt_from_production_based_on_order_no/', views.receipt_from_production_based_on_order_no, name='receipt_from_production_based_on_order_no'),
     
     # অর্ডার অনুযায়ী ডিপার্টমেন্ট প্রোডাকশন রিপোর্ট   
-    path('receipt_from_production_total_quantity_by_department_by_order/', views.receipt_from_production_total_quantity_by_department_by_order, name='receipt_from_production_total_quantity_by_department_by_order'),
+    path('Production/receipt_from_production_total_quantity_by_department_by_order/', views.receipt_from_production_total_quantity_by_department_by_order, name='receipt_from_production_total_quantity_by_department_by_order'),
     
     # অর্ডার অনুযায়ী প্রোডাকশন রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে ডিটেলস রিপোর্ট
-    path('receipt_from_production_based_on_order_no_filter_by_department/', views.receipt_from_production_based_on_order_no_filter_by_department, name='receipt_from_production_based_on_order_no_filter_by_department'),
+    path('Production/receipt_from_production_based_on_order_no_filter_by_department/', views.receipt_from_production_based_on_order_no_filter_by_department, name='receipt_from_production_based_on_order_no_filter_by_department'),
     
    
     # ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল প্রোডাকশন ডেট সিলেক্ট করে  
-    path('receipt_from_production_department_summary_by_month_based_on_date/', views.receipt_from_production_department_summary_by_month_based_on_date, name='receipt_from_production_department_summary_by_month_based_on_date'),
+    path('Production/receipt_from_production_department_summary_by_month_based_on_date/', views.receipt_from_production_department_summary_by_month_based_on_date, name='receipt_from_production_department_summary_by_month_based_on_date'),
     
     
 
     #ডেট অনুযায়ী প্রোডাক্ট সামারি 
-    path('receipt_from_production_total_by_name_between_dates/', views.receipt_from_production_total_by_name_between_dates, name='receipt_from_production_total_by_name_between_dates'),
+    path('Production/receipt_from_production_total_by_name_between_dates/', views.receipt_from_production_total_by_name_between_dates, name='receipt_from_production_total_by_name_between_dates'),
     
     #ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে     
-    path('receipt_from_production_total_by_name_between_dates_and_department/', views.receipt_from_production_total_by_name_between_dates_and_department, name='receipt_from_production_total_by_name_between_dates_and_department'),
+    path('Production/receipt_from_production_total_by_name_between_dates_and_department/', views.receipt_from_production_total_by_name_between_dates_and_department, name='receipt_from_production_total_by_name_between_dates_and_department'),
 
 
 
@@ -61,18 +65,19 @@ urlpatterns = [
 
 
     # একজন মার্কেটিং এর ডেটা দেখা 
-    path('sales_employee_data/', salesemployeeviews.sales_employee_data, name='sales_employee_data'),
+    path('Marketing/sales_employee_data/', salesemployeeviews.sales_employee_data, name='sales_employee_data'),
     # সব  মার্কেটিং এর ডেটা দেখা    
-    path('all_sales_employee_data/', salesemployeeviews.all_sales_employee_data, name='all_sales_employee_data'),
+    path('Marketing/all_sales_employee_data/', salesemployeeviews.all_sales_employee_data, name='all_sales_employee_data'),
 
 
 
-    #ডেট অনুযায়ী আইটেম রিসিভ রিপোর্ট 
-    path('item_receipt_between_date/', inventoryviews.item_receipt_between_date, name='item_receipt_between_date'),
-    path('item_delivery_between_date/', inventoryviews.item_delivery_between_date, name='item_delivery_between_date'),
+    #ডেট অনুযায়ী আইটেম  রিপোর্ট 
+    path('Inventory/item_receipt_between_date/', inventoryviews.item_receipt_between_date, name='item_receipt_between_date'),
+    path('Inventory/item_delivery_between_date/', inventoryviews.item_delivery_between_date, name='item_delivery_between_date'),
     
-    #ডেট অনুযায়ী আইটেম রিসিভ রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে     
-    path('item_receipt_between_date_by_department/', inventoryviews.item_receipt_between_date_by_department, name='item_receipt_between_date_by_department'),
+    #ডেট অনুযায়ী আইটেম  রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে     
+    path('Inventory/item_delivery_between_date_by_department/', inventoryviews.item_delivery_between_date_by_department, name='item_delivery_between_date_by_department'),
+    path('Inventory/item_receipt_between_date_by_department/', inventoryviews.item_receipt_between_date_by_department, name='item_receipt_between_date_by_department'),
 
 
 ]

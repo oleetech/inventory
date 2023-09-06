@@ -17,6 +17,7 @@ class Post(models.Model):
     content = HTMLField() # Change This Line
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
+    logo = models.ImageField(upload_to='reportlogo/', null=True, blank=True)
 
     class Meta:
         ordering = ['-created_on']

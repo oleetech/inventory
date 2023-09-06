@@ -13,6 +13,16 @@ from Production.models import BillOfMaterials, ChildComponent,Production, Produc
 from GeneralSettings.models import Department
 from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter
 from .models import Post
+
+def post_list(request):
+    posts = Post.objects.filter(status=1).order_by('-created_on')
+    return render(request, 'post_list.html', {'posts': posts})
+
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    return render(request, 'post_detail.html', {'post': post})
+
+
 def index(request):
     # Get the first record of the Post model.
     post = Post.objects.first()
@@ -53,6 +63,31 @@ def receipt_from_production_between_date(request):
                 pass
     
     return render(request, 'production/receipt_from_production_between_date.html', {'form': form})
+
+#ডেট অনুযায়ী প্রোডাকশন রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে বিস্তারিত 
+def receipt_from_production_between_date_by_department(request):
+    form = DateDepartmentFilter(request.POST)
+    if request.method == 'POST' and form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+                        
+            # Filter data based on form input
+            items = ProductionReceiptItem.objects.filter(
+                created__range=(start_date, end_date),
+                department=department.id
+            )    
+    
+            return render(request, 'production/receipt_from_production_between_date_by_department.html', {'items': items})
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'production/receipt_from_production_between_date_by_department.html', {'form': form})
+
+
+
+
+
 
 #ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন টোটাল  রিপোর্ট
 def receipt_from_production_department_summary_by_dates(request):
