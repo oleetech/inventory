@@ -1,0 +1,33 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+<table id="itemsTable" class="table table-bordered" >
+    <thead >
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Order Amount</th>
+            <th>Delivery Amount</th>
+            <th>Balance Amount </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ selected_sales_employee.first_name }}</td>
+            <td>{{ selected_sales_employee.last_name }}</td>
+            <td>{{ total_order_amount }}</td>
+            <td>{{ total_delivery_amount }}</td>
+            <td>{{ balance_amount }}</td>
+
+        </tr>
+    </tbody>
+</table>
+
+    {% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+
+    <h1>All Sales Employee Data</h1>
+    <table  id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Total Order Amount</th>
+                <th>Total Delivery Amount</th>
+                <th>Balance Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sales_employee in sales_employees %}
+                <tr>
+                    <td>{{ sales_employee.id }}</td>
+                    <td>{{ sales_employee.first_name }}</td>
+                    <td>{{ sales_employee.last_name }}</td>
+                    <td>{{ sales_employee.total_order_amount }}</td>
+                    <td>{{ sales_employee.total_delivery_amount }}</td>
+                    <td>{{ sales_employee.balance_amount }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

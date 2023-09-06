@@ -1,11 +1,20 @@
 from django.urls import path
 from . import views
+from . import salesemployeeviews
 
 urlpatterns = [
 
     
     #Report
     path('',views.index,name='report'),
+    
+ # ____                       _                  _     _                 
+ #|  _ \   _ __    ___     __| |  _   _    ___  | |_  (_)   ___    _ __  
+ #| |_) | | '__|  / _ \   / _` | | | | |  / __| | __| | |  / _ \  | '_ \ 
+ #|  __/  | |    | (_) | | (_| | | |_| | | (__  | |_  | | | (_) | | | | |
+ #|_|     |_|     \___/   \__,_|  \__,_|  \___|  \__| |_|  \___/  |_| |_|
+                                                                        
+    
     
     #ডেট অনুযায়ী প্রোডাকশন রিপোর্ট 
     path('receipt_from_production_between_date/', views.receipt_from_production_between_date, name='receipt_from_production_between_date'),
@@ -40,6 +49,28 @@ urlpatterns = [
     
     #ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে     
     path('receipt_from_production_total_by_name_between_dates_and_department/', views.receipt_from_production_total_by_name_between_dates_and_department, name='receipt_from_production_total_by_name_between_dates_and_department'),
+
+
+
+
+
+
+
+
+
+
+
+
+
+#         ____            _                  _____                       _                               
+#        / ___|    __ _  | |   ___   ___    | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___ 
+#        \___ \   / _` | | |  / _ \ / __|   |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \
+#         ___) | | (_| | | | |  __/ \__ \   | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/
+#        |____/   \__,_| |_|  \___| |___/   |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___|
+#                                                               |_|                  |___/               
+
+    path('sales_employee_data/', salesemployeeviews.sales_employee_data, name='sales_employee_data'),
+    path('all_sales_employee_data/', salesemployeeviews.all_sales_employee_data, name='all_sales_employee_data'),
 
 
 
