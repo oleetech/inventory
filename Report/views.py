@@ -54,7 +54,7 @@ def receipt_from_production_between_date(request):
     
     return render(request, 'production/receipt_from_production_between_date.html', {'form': form})
 
-#ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন রিপোর্ট
+#ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন টোটাল  রিপোর্ট
 def receipt_from_production_department_summary_by_dates(request):
     form = DateFilterForm(request.POST)
     
@@ -128,6 +128,8 @@ def receipt_from_production_total_by_name_between_dates(request):
         form = DateFilterForm()
 
     return render(request, 'production/receipt_from_production_total_by_name_between_dates.html', {'form': form})
+
+
 #ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে 
 def receipt_from_production_total_by_name_between_dates_and_department(request):
     if request.method == 'POST':

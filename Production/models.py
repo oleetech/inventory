@@ -139,7 +139,7 @@ class ProductionReceiptItem(models.Model):
     nweight = models.CharField(max_length=100,default='',null=True) 
     ctnno = models.CharField(max_length=100,default='',null=True)    
     remarks = models.CharField(max_length=100,default='') 
-    department = models.CharField(max_length=50,default='')
+    department = models.CharField(max_length=50,default='1')
     created = models.DateField(default=date.today, editable=True)
     
     def save(self, *args, **kwargs):

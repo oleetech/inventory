@@ -2,7 +2,7 @@ from os import name
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from GeneralSettings.models import Unit
+from GeneralSettings.models import Unit,Department
 from datetime import date
 from django.contrib.auth.models import User
 
@@ -48,7 +48,7 @@ class Stock(models.Model):
 
 
 class ItemReceiptinfo(models.Model):
-
+ 
     docno = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=date.today, editable=True)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
@@ -89,13 +89,18 @@ class ItemReceipt(models.Model):
 
 
 class ItemDeliveryinfo(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.SET_DEFAULT, default=None, blank=True)
     
     docno = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)  
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-      
+    
+    def save(self, *args, **kwargs):
+        if not self.department_id:
+            self.department = Department.objects.first()
+        super().save(*args, **kwargs)
     class Meta:
         
         verbose_name = 'Goods Delivery'
@@ -113,14 +118,13 @@ class ItemDelivery(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    
-    def save(self, *args, **kwargs):
-        if self.pk:        
-            if self.created:            
-                self.created = self.item_info.created
-                   
-        super().save(*args, **kwargs)   
-                   
+    department = models.CharField(max_length=50,default='1')    
+    def save(self, *args, **kwargs):      
+        if self.created:            
+            self.created = self.item_info.created
+        if self.department:            
+            self.department = self.item_info.department.id            
+                                      
         super().save(*args, **kwargs)   
     def __str__(self):
         return f'{self.id}'

@@ -1,0 +1,39 @@
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Filter</button>
+  </form>
+  
+  {% if item_delivery_list %}
+    <table>
+      <thead>
+        <tr>
+          <th>Created</th>
+          <th>Item Info</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>UOM</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Price Total</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in item_delivery_list %}
+          <tr>
+            <td>{{ item.created }}</td>
+            <td>{{ item.item_info }}</td>
+            <td>{{ item.code }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.uom }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.priceTotal }}</td>
+            <td>{{ item.department }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+  

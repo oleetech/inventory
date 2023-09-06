@@ -140,10 +140,13 @@ class ItemDeliveryinfoAdmin(admin.ModelAdmin):
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }  
     def save_model(self, request, obj, form, change):
+       
 
         obj.owner = request.user if request.user.is_authenticated else None
           
         super().save_model(request, obj, form, change)  
+        
+        
                    
 @admin.register(Warehouse)
 class Warehouse(admin.ModelAdmin):

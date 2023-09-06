@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
-from . import salesemployeeviews
+from . import views,salesemployeeviews,inventoryviews
+
 
 urlpatterns = [
 
@@ -52,16 +52,6 @@ urlpatterns = [
 
 
 
-
-
-
-
-
-
-
-
-
-
 #         ____            _                  _____                       _                               
 #        / ___|    __ _  | |   ___   ___    | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___ 
 #        \___ \   / _` | | |  / _ \ / __|   |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \
@@ -75,6 +65,14 @@ urlpatterns = [
     # সব  মার্কেটিং এর ডেটা দেখা    
     path('all_sales_employee_data/', salesemployeeviews.all_sales_employee_data, name='all_sales_employee_data'),
 
+
+
+    #ডেট অনুযায়ী আইটেম রিসিভ রিপোর্ট 
+    path('item_receipt_between_date/', inventoryviews.item_receipt_between_date, name='item_receipt_between_date'),
+    path('item_delivery_between_date/', inventoryviews.item_delivery_between_date, name='item_delivery_between_date'),
+    
+    #ডেট অনুযায়ী আইটেম রিসিভ রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে     
+    path('item_receipt_between_date_by_department/', inventoryviews.item_receipt_between_date_by_department, name='item_receipt_between_date_by_department'),
 
 
 ]
