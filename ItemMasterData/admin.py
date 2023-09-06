@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.db import models
 from django import forms
 from .models import Warehouse, Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery
-from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem
+from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem,PurchaseItem
+from Sales.models import SalesOrderItem,DeliveryItem
+from django.db.models import Sum
+
 from django_select2.forms import ModelSelect2Widget
 class CustomModelSelect2Widget(ModelSelect2Widget):
     def label_from_instance(self, obj):
@@ -18,11 +21,35 @@ def calculate_instock(code):
     instock = stock_quantity + purchase_order_goods_receipt + receipt_quantity - delivery_quantity - purchase_order_goods_return
     return instock
 
+
+
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('name',  'description', 'price', 'warehouse','instock')
+    list_display = ('name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
     readonly_fields = ('instock',)
     search_fields = ('name',)  
+    
+    def total_sales_quantity(self,obj):
+        # Calculate the total sum of SalesOrderItem.quantity for this Item's code
+        total_quantity = SalesOrderItem.objects.filter(code=obj.code).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        # Handle the case where there are no related SalesOrderItem instances
+        return total_quantity if total_quantity is not None else 0
+    total_sales_quantity.short_description = 'Order Qty'  
+    
+    def total_delivery_quantity(self,obj):
+        # Calculate the total sum of SalesOrderItem.quantity for this Item's code
+        total_quantity = DeliveryItem.objects.filter(code=obj.code).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        # Handle the case where there are no related SalesOrderItem instances
+        return total_quantity if total_quantity is not None else 0
+    total_delivery_quantity.short_description = 'Delivery Qty'      
+    
+    def total_purchase_quantity(self,obj):
+        # Calculate the total sum of SalesOrderItem.quantity for this Item's code
+        total_quantity = PurchaseItem.objects.filter(code=obj.code).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        # Handle the case where there are no related SalesOrderItem instances
+        return total_quantity if total_quantity is not None else 0
+    total_purchase_quantity.short_description = 'Purchase Qty'      
+        
     def instock(self, obj):
         return calculate_instock(obj.code)
 
