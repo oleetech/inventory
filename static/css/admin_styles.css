@@ -1,5 +1,14 @@
 body{font-family: Roboto, sans-serif;}
 
+#header{
+    background-color: #2e2e2e!important;
+    color: #fff;
+}
+
+div.breadcrumbs {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 75%);
+}
 input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], input[type=tel]  {
     height: 20px !important;
     width: auto !important;
