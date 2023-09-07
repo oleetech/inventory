@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views,salesemployeeviews,inventoryviews
+from . import views,salesemployeeviews,inventoryviews,salesorderviews
 
 
 urlpatterns = [
@@ -115,5 +115,15 @@ urlpatterns = [
     #নির্দিষ্ট আইটেমের ডেট অনুযায়ী রিপোর্ট 
     path('Inventory/item_receipt_between_date_by_name/', inventoryviews.item_receipt_between_date_by_name, name='item_receipt_between_date_by_name'),
     path('Inventory/item_delivery_between_date_by_name/', inventoryviews.item_delivery_between_date_by_name, name='item_delivery_between_date_by_name'),
-    
+  
+#  ____            _                   ___               _               
+# / ___|    __ _  | |   ___   ___     / _ \   _ __    __| |   ___   _ __ 
+# \___ \   / _` | | |  / _ \ / __|   | | | | | '__|  / _` |  / _ \ | '__|
+#  ___) | | (_| | | | |  __/ \__ \   | |_| | | |    | (_| | |  __/ | |   
+# |____/   \__,_| |_|  \___| |___/    \___/  |_|     \__,_|  \___| |_|   
+#  
+    #কাস্টমার অর্ডার সামারি রিপোর্ট 
+    path('Sales/customer_summary/', salesorderviews.customer_summary, name='customer_summary'),
+                                                                      
+  
 ]

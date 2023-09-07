@@ -1,0 +1,32 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+
+    <h1>Customer Summary</h1>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Total Amount</th>
+                <th>Total Qty</th>
+                <th>Total Doc No</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in customer_summary_data %}
+            <tr>
+                <td>{{ entry.customerName__name }}</td>
+                <td>{{ entry.total_amount }}</td>
+                <td>{{ entry.total_qty }}</td>
+                <td>{{ entry.total_doc_no }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
