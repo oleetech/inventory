@@ -1,0 +1,35 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+    {% if total_qty %}
+    <h2>Total Quantity from SalesOrderInfo: {{ total_qty }}</h2>
+    {% endif %}
+
+    {% if balance_data %}
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Total Quantity from ProductionReceiptItem</th>
+                <th>Balance Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in balance_data %}
+                <tr>
+                    <td>{{ data.department }}</td>
+                    <td>{{ data.total_qty_pr }}</td>
+                    <td>{{ data.balance_quantity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% endblock %}

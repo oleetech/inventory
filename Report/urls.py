@@ -14,8 +14,7 @@ urlpatterns = [
  #|  __/  | |    | (_) | | (_| | | |_| | | (__  | |_  | | | (_) | | | | |
  #|_|     |_|     \___/   \__,_|  \__,_|  \___|  \__| |_|  \___/  |_| |_|
                                                                         
-    
-    
+
     #ডেট অনুযায়ী প্রোডাকশন রিপোর্ট 
     path('Production/receipt_from_production_between_date/', views.receipt_from_production_between_date, name='receipt_from_production_between_date'),
     
@@ -42,6 +41,9 @@ urlpatterns = [
     # অর্ডার অনুযায়ী প্রোডাকশন রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে ডিটেলস রিপোর্ট
     path('Production/receipt_from_production_based_on_order_no_filter_by_department/', views.receipt_from_production_based_on_order_no_filter_by_department, name='receipt_from_production_based_on_order_no_filter_by_department'),
     
+    #অর্ডার অনুযায়ী সব ডিপার্টমেন্ট প্রোডাকশন ব্যালেন্স রিপোর্ট  
+    path('Production/production_balance_based_on_orderNo_every_department/', views.production_balance_based_on_orderNo_every_department, name='production_balance_based_on_orderNo_every_department'),
+   
    
     # ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল প্রোডাকশন ডেট সিলেক্ট করে  
     path('Production/receipt_from_production_department_summary_by_month_based_on_date/', views.receipt_from_production_department_summary_by_month_based_on_date, name='receipt_from_production_department_summary_by_month_based_on_date'),

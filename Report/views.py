@@ -5,8 +5,8 @@ from django.db.models.functions import ExtractMonth
 from django.db.models import IntegerField
 from datetime import datetime
 import calendar
-
-
+from decimal import Decimal
+from Sales.models import SalesOrderInfo
 
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import BillOfMaterials, ChildComponent,Production, ProductionComponent,ProductionReceipt,ProductionReceiptItem
@@ -234,6 +234,46 @@ def receipt_from_production_total_quantity_by_department_by_order(request):
         return render(request, 'production/receipt_from_production_total_quantity_by_department_by_order.html', {'form': form, 'quantity_by_department': quantity_by_department})
 
     return render(request, 'production/receipt_from_production_total_quantity_by_department_by_order.html', {'form': form})
+
+
+
+# অর্ডার অনুযায়ী সব ডিপার্টমেন্ট প্রোডাকশন ব্যালেন্স রিপোর্ট  
+def production_balance_based_on_orderNo_every_department(request):
+    if request.method == 'POST':
+        form = OrderFilterForm(request.POST)
+        if form.is_valid():
+            order_no = form.cleaned_data['orderNo']
+
+            try:
+                sales_order = SalesOrderInfo.objects.get(docNo=order_no)
+                total_qty = sales_order.totalQty
+            except SalesOrderInfo.DoesNotExist:
+                total_qty = Decimal('0')
+
+            # Calculate the total quantity of ProductionReceiptItem items based on salesOrder and group by department
+            total_qty_pr_by_department = ProductionReceiptItem.objects.filter(salesOrder=order_no).values('department').annotate(total_qty_pr=Sum('quantity'))
+
+            # Create a dictionary to store the total quantity for each department
+            total_qty_pr_dict = {item['department']: item['total_qty_pr'] for item in total_qty_pr_by_department}
+
+            # Calculate the balance quantity for each department
+            balance_data = []
+            for department, total_qty_pr in total_qty_pr_dict.items():
+                balance_quantity = total_qty - total_qty_pr
+                balance_data.append({
+                    'department': department,
+                    'total_qty_pr': total_qty_pr,
+                    'balance_quantity': balance_quantity,
+                })
+
+            return render(request, 'production/production_balance_based_on_orderNo_every_department.html', {'form': form, 'total_qty': total_qty, 'balance_data': balance_data})
+
+    else:
+        form = OrderFilterForm()
+
+    return render(request, 'production/production_balance_based_on_orderNo_every_department.html', {'form': form})
+
+
 
 # ১ বছরের মাস অনুযায়ী রিপোর্ট 
 def receipt_from_production_monthly_data_view(request):
