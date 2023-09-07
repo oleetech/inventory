@@ -10,19 +10,35 @@
   
     <div class="card-body">
 
+        <div class="row">
+
+            
+      <!-- Grid column -->
+
+       
 
 
+            {% for post in posts %}
+            <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+        <!-- Card -->
+        <div class="card card-cascade cascading-admin-card">
+            <div class="admin-up text-center">
+                {% if post.logo %}
+                <img src="{{ post.logo.url }}" alt="{{ post.title }} Logo" width="50" height="65">
+                {% endif %}
+              <div class="data">
+               <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+            {% empty %}
+            <p>No posts available.</p>
+            {% endfor %}
 
-{% for post in posts %}
-{% if post.logo %}
-<img src="{{ post.logo.url }}" alt="{{ post.title }} Logo" width="100" height="100">
-{% endif %}
-<h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
-{% comment %} <p>{{ post.created_on|date }}</p>
-<p>{{ post.content|safe|truncatechars:200 }}</p> {% endcomment %}
-{% empty %}
-<p>No posts available.</p>
-{% endfor %}
+        </div>
+
+
 </div>
 </section>   
 {% endblock %}

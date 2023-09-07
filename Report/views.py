@@ -89,7 +89,7 @@ def receipt_from_production_between_date_by_department(request):
 
 
 
-#ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন টোটাল  রিপোর্ট
+#ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন টোটাল সামারি  রিপোর্ট
 def receipt_from_production_department_summary_by_dates(request):
     form = DateFilterForm(request.POST)
     

@@ -19,7 +19,7 @@ urlpatterns = [
     #ডেট অনুযায়ী প্রোডাকশন রিপোর্ট 
     path('Production/receipt_from_production_between_date/', views.receipt_from_production_between_date, name='receipt_from_production_between_date'),
     
-    #ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন রিপোর্ট
+    #ডেট অনুযায়ী ডিপার্টমেন্ট  প্রোডাকশন টোটাল সামারি  রিপোর্ট
     path('Production/receipt_from_production_department_summary_by_dates/', views.receipt_from_production_department_summary_by_dates, name='receipt_from_production_department_summary_by_dates'),
     
     #ডেট অনুযায়ী প্রোডাকশন রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে বিস্তারিত 
@@ -69,6 +69,12 @@ urlpatterns = [
     # সব  মার্কেটিং এর ডেটা দেখা    
     path('Marketing/all_sales_employee_data/', salesemployeeviews.all_sales_employee_data, name='all_sales_employee_data'),
 
+#  ___                                  _                          
+# |_ _|  _ __   __   __   ___   _ __   | |_    ___    _ __   _   _ 
+#  | |  | '_ \  \ \ / /  / _ \ | '_ \  | __|  / _ \  | '__| | | | |
+#  | |  | | | |  \ V /  |  __/ | | | | | |_  | (_) | | |    | |_| |
+# |___| |_| |_|   \_/    \___| |_| |_|  \__|  \___/  |_|     \__, |
+#                                                            |___/ 
 
 
     #ডেট অনুযায়ী আইটেম  রিপোর্ট 
@@ -79,5 +85,13 @@ urlpatterns = [
     path('Inventory/item_delivery_between_date_by_department/', inventoryviews.item_delivery_between_date_by_department, name='item_delivery_between_date_by_department'),
     path('Inventory/item_receipt_between_date_by_department/', inventoryviews.item_receipt_between_date_by_department, name='item_receipt_between_date_by_department'),
 
+    #ডেট অনুযায়ী ডিপার্টমেন্ট  আইটেম টোটাল সামারি  রিপোর্ট
+    path('Inventory/item_receipt_department_summary_by_dates/', inventoryviews.item_receipt_department_summary_by_dates, name='item_receipt_department_summary_by_dates'),
+    path('Inventory/item_delivery_department_summary_by_dates/', inventoryviews.item_delivery_department_summary_by_dates, name='item_delivery_department_summary_by_dates'),
 
+    
+    # ১ বছরের মাস অনুযায়ী রিপোর্ট     
+    path('Inventory/item_receipt_monthly_data/', inventoryviews.item_receipt_monthly_data, name='item_receipt_monthly_data'),
+    path('Inventory/item_delivery_monthly_data/', inventoryviews.item_delivery_monthly_data, name='item_delivery_monthly_data'),
+   
 ]
