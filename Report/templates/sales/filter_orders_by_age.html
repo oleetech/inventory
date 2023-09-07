@@ -1,0 +1,29 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+    <h1>Order Numbers Created in the Last {{ form.age_in_days.value }} Days</h1>
+
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>customer Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order_number in order_numbers %}
+            <tr>
+                <td>{{ order_number.docNo }}</td>
+                <td>{{ order_number.customerName }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

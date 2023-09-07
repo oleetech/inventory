@@ -124,6 +124,14 @@ urlpatterns = [
 #  
     #কাস্টমার অর্ডার সামারি রিপোর্ট 
     path('Sales/customer_summary/', salesorderviews.customer_summary, name='customer_summary'),
+    #সেলস অর্ডার এর বয়স দেখা     
+    path('Sales/sales_order_aging_report/', salesorderviews.sales_order_aging_report, name='sales_order_aging_report'),
+    #বয়স অনুযায়ী  সেলস অর্ডার দেখা     
+    path('Sales/filter_orders_by_age/', salesorderviews.filter_orders_by_age, name='filter_orders_by_age'),
+    #স্ট্যাটাস অনুযায়ী  সেলস অর্ডার দেখা     
+    path('Sales/sales_order_status_filter/', salesorderviews.sales_order_status_filter, name='sales_order_status_filter'),
+    
+    path('Sales/sales_order_by_product_report/', salesorderviews.sales_order_by_product_report, name='sales_order_by_product_report'),
                                                                       
   
 ]

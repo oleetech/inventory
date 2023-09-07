@@ -111,7 +111,18 @@ class ItemDeliveryinfoForm(forms.ModelForm):
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             
         }
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_order = ItemDeliveryinfo.objects.order_by('-docno').first()
+            if last_order:
+                next_order_number = last_order.docno + 1
+            else:
+                next_order_number = 1
+
+            self.initial['docno'] = next_order_number
+                    
 class ItemDeliveryInlineForm(forms.ModelForm):
     class Meta:
         model = ItemDelivery
@@ -139,6 +150,7 @@ class ItemDeliveryinfoAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         }  
+      
     def save_model(self, request, obj, form, change):
        
 

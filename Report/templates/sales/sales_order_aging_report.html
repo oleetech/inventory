@@ -1,0 +1,27 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    <h1>Sales Order Aging Report</h1>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Age Range</th>
+                <th>Number of Orders</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for range_name, count in aging_data.items %}
+            <tr>
+                <td>{{ range_name }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

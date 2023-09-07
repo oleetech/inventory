@@ -1,0 +1,33 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+{% if filtered_orders %}
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in filtered_orders %}
+            <tr>
+                <td>{{ order.docNo }}</td>
+                <td>{{ order.status }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No matching orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}    
+    {% endblock %}

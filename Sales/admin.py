@@ -84,7 +84,7 @@ class SalesOrderItemInline(admin.TabularInline):
 class SalesOrderInfoAdminForm(forms.ModelForm):
     class Meta:
         model = SalesOrderInfo
-        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
+        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee','status']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),

@@ -2,6 +2,7 @@ from django import forms
 
 from GeneralSettings.models import Department
 from ItemMasterData.models import Item
+from Sales.models import SalesEmployee
 class DateFilterForm(forms.Form):
     start_date = forms.DateField(label='Start Date', required=True,)
     end_date = forms.DateField(label='End Date', required=True)
@@ -102,7 +103,7 @@ class OrderDepartmentFilter(forms.Form):
             
             
             
-from Sales.models import SalesEmployee
+
 
 class SalesEmployeeForm(forms.Form):
     sales_employee = forms.ModelChoiceField(queryset=SalesEmployee.objects.all(), empty_label=None)    
@@ -128,4 +129,32 @@ class ItemNameForm(forms.Form):
                 'class': 'form-control form-control-sm',
                 'id': f"{field_name}",
             })  
-                                                
+class AgeFilterForm(forms.Form):
+    age_in_days = forms.IntegerField(label='Enter Age in Days')            
+    
+    def __init__(self, *args, **kwargs):
+        super(AgeFilterForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })                                         
+            
+
+class SalesOrderStatusFilterForm(forms.Form):
+    STATUS_CHOICES = [
+        ('', 'All'),  # Include an option to select all statuses
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled'),
+    ]
+
+    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, label='Select Status')
+    def __init__(self, *args, **kwargs):
+        super(SalesOrderStatusFilterForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })              
