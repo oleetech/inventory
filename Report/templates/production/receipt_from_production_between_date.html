@@ -29,11 +29,9 @@
                 <td>{{ item.created }}</td>
                 <td class="number-cell">{{ item.quantity }}</td>
                 <td>
-                    {% if item.department == '1' %}
-                        Nylon Zipper
-                    {% else %}
-                        {{ item.department }}
-                    {% endif %}
+                    {{item.department}} 
+                        
+                 
                 </td>
                 <td>{{ item.salesOrder }}</td>
             </tr>

@@ -48,8 +48,8 @@ class Stock(models.Model):
 
 
 class ItemReceiptinfo(models.Model):
+    
     department = models.ForeignKey(Department, on_delete=models.SET_DEFAULT, default=None, blank=True)
- 
     docno = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=date.today, editable=True)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
@@ -82,7 +82,7 @@ class ItemReceipt(models.Model):
         if self.created:            
             self.created = self.item_info.created
         if self.department:            
-            self.department = self.item_info.department.id            
+            self.department = self.item_info.department.name            
                                       
         super().save(*args, **kwargs) 
         
@@ -129,7 +129,7 @@ class ItemDelivery(models.Model):
         if self.created:            
             self.created = self.item_info.created
         if self.department:            
-            self.department = self.item_info.department.id            
+            self.department = self.item_info.department.name            
                                       
         super().save(*args, **kwargs)   
     def __str__(self):

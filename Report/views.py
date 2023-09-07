@@ -75,7 +75,7 @@ def receipt_from_production_between_date_by_department(request):
             # Filter data based on form input
             items = ProductionReceiptItem.objects.filter(
                 created__range=(start_date, end_date),
-                department=department.id
+                department=department.name
             )    
     
             return render(request, 'production/receipt_from_production_between_date_by_department.html', {'items': items})
@@ -178,7 +178,7 @@ def receipt_from_production_total_by_name_between_dates_and_department(request):
             totals = ProductionReceiptItem.objects.filter(
                 created__gte=start_date,
                 created__lte=end_date,
-                department=department.id
+                department=department.name
                 
             ).values('name').annotate(total_quantity=Sum('quantity'))
 
@@ -213,7 +213,7 @@ def receipt_from_production_based_on_order_no_filter_by_department(request):
         department = form.cleaned_data['department']
         
         # Retrieve ProductionReceiptItems based on the salesOrder
-        receipt_items = ProductionReceiptItem.objects.filter(salesOrder=order_no,department=department.id)
+        receipt_items = ProductionReceiptItem.objects.filter(salesOrder=order_no,department=department.name)
         
         return render(request, 'production/receipt_from_production_based_on_order_no_filter_by_department.html', {'form': form, 'items': receipt_items})
     
@@ -283,7 +283,7 @@ def receipt_from_production_monthly_data_by_department_view(request):
         form = DepartmentYearFilter(request.POST)
         if form.is_valid():
             year = form.cleaned_data['year']
-            department = form.cleaned_data['department'].id
+            department = form.cleaned_data['department'].name
             
             # Calculate the 12-month total quantity for the selected year
             total_quantity = ProductionReceiptItem.objects.filter(

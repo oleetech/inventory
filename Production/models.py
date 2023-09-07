@@ -144,7 +144,7 @@ class ProductionReceiptItem(models.Model):
     
     def save(self, *args, **kwargs):
         if self.receiptNumber:
-            self.department = self.receiptNumber.department.id
+            self.department = self.receiptNumber.department.name
             
 
             self.created = self.receiptNumber.created

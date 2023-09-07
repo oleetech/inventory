@@ -70,7 +70,7 @@ def item_receipt_between_date_by_department(request):
             # Filter data based on form input
             items = ItemReceipt.objects.filter(
                 created__range=(start_date, end_date),
-                department=department.id
+                department=department.name
             )    
     
             return render(request, 'inventory/item_receipt_between_date_by_department.html', {'items': items})
@@ -78,6 +78,27 @@ def item_receipt_between_date_by_department(request):
         form = DateDepartmentFilter()
 
     return render(request, 'inventory/item_receipt_between_date_by_department.html', {'form': form})
+
+
+#ডেট অনুযায়ী আইটেম ডেলিভারি রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে 
+def item_delivery_between_date_by_department(request):
+    form = DateDepartmentFilter(request.POST)
+    if request.method == 'POST' and form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+                        
+            # Filter data based on form input
+            items = ItemDelivery.objects.filter(
+                created__range=(start_date, end_date),
+                department=department.name
+            )    
+    
+            return render(request, 'inventory/item_delivery_between_date_by_department.html', {'items': items})
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'inventory/item_delivery_between_date_by_department.html', {'form': form})
 
 
 #ডেট অনুযায়ী ডিপার্টমেন্ট আইটেম রিসিভ টোটাল সামারি  রিপোর্ট
@@ -126,25 +147,7 @@ def item_delivery_department_summary_by_dates(request):
     return render(request, 'inventory/item_delivery_department_summary_by_dates.html', {'form': form})
 
 
-#ডেট অনুযায়ী আইটেম ডেলিভারি রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে 
-def item_delivery_between_date_by_department(request):
-    form = DateDepartmentFilter(request.POST)
-    if request.method == 'POST' and form.is_valid():
-            start_date = form.cleaned_data['start_date']
-            end_date = form.cleaned_data['end_date']
-            department = form.cleaned_data['department']
-                        
-            # Filter data based on form input
-            items = ItemDelivery.objects.filter(
-                created__range=(start_date, end_date),
-                department=department.id
-            )    
-    
-            return render(request, 'inventory/item_delivery_between_date_by_department.html', {'items': items})
-    else:
-        form = DateDepartmentFilter()
 
-    return render(request, 'inventory/item_delivery_between_date_by_department.html', {'form': form})
 
 
 # ১ বছরের মাস অনুযায়ী রিপোর্ট আইটেম রিসিভ 
@@ -230,7 +233,7 @@ def item_receipt_monthly_data_by_department(request):
         form = DepartmentYearFilter(request.POST)
         if form.is_valid():
             year = form.cleaned_data['year']
-            department = form.cleaned_data['department'].id
+            department = form.cleaned_data['department']
             
             # Calculate the 12-month total quantity for the selected year
             total_quantity = ItemReceipt.objects.filter(
@@ -242,7 +245,7 @@ def item_receipt_monthly_data_by_department(request):
             # Calculate monthly totals for the selected year
             monthly_totals = ItemReceipt.objects.filter(
                 created__year=year,
-                department=department 
+                department=department.name 
                 
             ).values('created__month').annotate(monthly_qty=Sum('quantity'))
 
@@ -275,7 +278,7 @@ def item_delivery_monthly_data_by_department(request):
         form = DepartmentYearFilter(request.POST)
         if form.is_valid():
             year = form.cleaned_data['year']
-            department = form.cleaned_data['department'].id
+            department = form.cleaned_data['department']
             
             # Calculate the 12-month total quantity for the selected year
             total_quantity = ItemDelivery.objects.filter(
@@ -287,7 +290,7 @@ def item_delivery_monthly_data_by_department(request):
             # Calculate monthly totals for the selected year
             monthly_totals = ItemDelivery.objects.filter(
                 created__year=year,
-                department=department 
+                department=department.name 
                 
             ).values('created__month').annotate(monthly_qty=Sum('quantity'))
 
@@ -432,7 +435,7 @@ def item_receipt_total_by_name_between_dates_and_department(request):
             totals = ItemReceipt.objects.filter(
                 created__gte=start_date,
                 created__lte=end_date,
-                department=department.id
+                department=department.name
                 
             ).values('name').annotate(total_quantity=Sum('quantity'))
 
@@ -457,7 +460,7 @@ def item_delivery_total_by_name_between_dates_and_department(request):
             totals = ItemDelivery.objects.filter(
                 created__gte=start_date,
                 created__lte=end_date,
-                department=department.id
+                department=department.name
                 
             ).values('name').annotate(total_quantity=Sum('quantity'))
 
