@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from .forms import SalesEmployeeForm
-from django.db.models import Sum
+from django.db.models import Sum, F
+from django.db.models.functions import ExtractMonth
+from django.db.models import IntegerField
+from datetime import datetime
+import calendar
+
 from ItemMasterData.models import Item,ItemReceiptinfo,ItemReceipt,ItemDeliveryinfo,ItemDelivery,Stock
 from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter
 
@@ -210,4 +215,255 @@ def item_delivery_monthly_data(request):
         'total_quantity': total_quantity,
         'monthly_totals_dict': monthly_totals_dict,
         'form': form,
-    })    
+    })  
+    
+    
+# ১ বছরের মাস অনুযায়ী রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে আইটেম রিসিভ    
+def item_receipt_monthly_data_by_department(request):
+    year = None
+    department = None
+
+    total_quantity = 0
+    monthly_totals_dict = {i: 0 for i in range(1, 13)}
+
+    if request.method == 'POST':
+        form = DepartmentYearFilter(request.POST)
+        if form.is_valid():
+            year = form.cleaned_data['year']
+            department = form.cleaned_data['department'].id
+            
+            # Calculate the 12-month total quantity for the selected year
+            total_quantity = ItemReceipt.objects.filter(
+                created__year=year,
+                department=department  
+
+            ).aggregate(total_qty=Sum('quantity'))['total_qty'] or 0
+
+            # Calculate monthly totals for the selected year
+            monthly_totals = ItemReceipt.objects.filter(
+                created__year=year,
+                department=department 
+                
+            ).values('created__month').annotate(monthly_qty=Sum('quantity'))
+
+            # Populate the dictionary with the monthly totals
+            for entry in monthly_totals:
+                month = entry['created__month']
+                qty = entry['monthly_qty']
+                monthly_totals_dict[month] = qty
+    else:
+        form = DepartmentYearFilter()
+
+    return render(request, 'inventory/item_receipt_monthly_data_by_department.html', {
+        'year': year,
+        'total_quantity': total_quantity,
+        'monthly_totals_dict': monthly_totals_dict,
+        'form': form
+    
+    })         
+    
+    
+# ১ বছরের মাস অনুযায়ী রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে আইটেম ডেলিভারি    
+def item_delivery_monthly_data_by_department(request):
+    year = None
+    department = None
+
+    total_quantity = 0
+    monthly_totals_dict = {i: 0 for i in range(1, 13)}
+
+    if request.method == 'POST':
+        form = DepartmentYearFilter(request.POST)
+        if form.is_valid():
+            year = form.cleaned_data['year']
+            department = form.cleaned_data['department'].id
+            
+            # Calculate the 12-month total quantity for the selected year
+            total_quantity = ItemDelivery.objects.filter(
+                created__year=year,
+                department=department  
+
+            ).aggregate(total_qty=Sum('quantity'))['total_qty'] or 0
+
+            # Calculate monthly totals for the selected year
+            monthly_totals = ItemDelivery.objects.filter(
+                created__year=year,
+                department=department 
+                
+            ).values('created__month').annotate(monthly_qty=Sum('quantity'))
+
+            # Populate the dictionary with the monthly totals
+            for entry in monthly_totals:
+                month = entry['created__month']
+                qty = entry['monthly_qty']
+                monthly_totals_dict[month] = qty
+    else:
+        form = DepartmentYearFilter()
+
+    return render(request, 'inventory/item_delivery_monthly_data_by_department.html', {
+        'year': year,
+        'total_quantity': total_quantity,
+        'monthly_totals_dict': monthly_totals_dict,
+        'form': form
+    
+    })     
+    
+    
+# ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল আইটেম রিসিভ ডেট সিলেক্ট করে  
+def item_receipt_department_summary_by_month_based_on_date(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                # Retrieve total quantity grouped by department and month
+                quantity_by_department_monthly = ItemReceipt.objects.filter(
+                   created__range=(start_date, end_date)
+                ).annotate(month=ExtractMonth('created')).values('month', 'department').annotate(total_quantity=Sum('quantity'))
+                
+                # Create a mapping of month numbers to month names
+                month_names = {
+                    1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
+                    7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'
+                }
+                
+                # Convert the month numbers to month names in the result
+                for entry in quantity_by_department_monthly:
+                    entry['month'] = month_names.get(entry['month'], 'Unknown Month')
+                
+                return render(request, 'inventory/item_receipt_department_summary_by_month_based_on_date.html', {'quantity_by_department_monthly': quantity_by_department_monthly})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'inventory/item_receipt_department_summary_by_month_based_on_date.html', {'form': form})           
+
+
+# ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল আইটেম ডেলিভারি ডেট সিলেক্ট করে  
+def item_delivery_department_summary_by_month_based_on_date(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                # Retrieve total quantity grouped by department and month
+                quantity_by_department_monthly = ItemDelivery.objects.filter(
+                   created__range=(start_date, end_date)
+                ).annotate(month=ExtractMonth('created')).values('month', 'department').annotate(total_quantity=Sum('quantity'))
+                
+                # Create a mapping of month numbers to month names
+                month_names = {
+                    1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June',
+                    7: 'July', 8: 'August', 9: 'September', 10: 'October', 11: 'November', 12: 'December'
+                }
+                
+                # Convert the month numbers to month names in the result
+                for entry in quantity_by_department_monthly:
+                    entry['month'] = month_names.get(entry['month'], 'Unknown Month')
+                
+                return render(request, 'inventory/item_delivery_department_summary_by_month_based_on_date.html', {'quantity_by_department_monthly': quantity_by_department_monthly})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'inventory/item_delivery_department_summary_by_month_based_on_date.html', {'form': form})    
+ 
+
+#ডেট অনুযায়ী প্রোডাক্ট সামারি আইটেম রিসিভ
+def item_receipt_total_by_name_between_dates(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Query the database to get the total grouped by ProductionReceiptItem.name
+            totals = ItemReceipt.objects.filter(
+                created__gte=start_date,
+                created__lte=end_date
+            ).values('name').annotate(total_quantity=Sum('quantity'))
+
+            return render(request, 'inventory/item_receipt_total_by_name_between_dates.html', {'totals': totals})
+
+    else:
+        form = DateFilterForm()
+
+    return render(request, 'inventory/item_receipt_total_by_name_between_dates.html', {'form': form}) 
+
+
+#ডেট অনুযায়ী প্রোডাক্ট সামারি আইটেম ডেলিভারি
+def item_delivery_total_by_name_between_dates(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Query the database to get the total grouped by ProductionReceiptItem.name
+            totals = ItemDelivery.objects.filter(
+                created__gte=start_date,
+                created__lte=end_date
+            ).values('name').annotate(total_quantity=Sum('quantity'))
+
+            return render(request, 'inventory/item_delivery_total_by_name_between_dates.html', {'totals': totals})
+
+    else:
+        form = DateFilterForm()
+
+    return render(request, 'inventory/item_delivery_total_by_name_between_dates.html', {'form': form}) 
+
+
+
+#ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে আইটেম রিসিভ
+def item_receipt_total_by_name_between_dates_and_department(request):
+    if request.method == 'POST':
+        form = DateDepartmentFilter(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+
+            # Query the database to get the total grouped by ProductionReceiptItem.name
+            totals = ItemReceipt.objects.filter(
+                created__gte=start_date,
+                created__lte=end_date,
+                department=department.id
+                
+            ).values('name').annotate(total_quantity=Sum('quantity'))
+
+            return render(request, 'inventory/item_receipt_total_by_name_between_dates_and_department.html', {'totals': totals})
+
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'inventory/item_receipt_total_by_name_between_dates_and_department.html', {'form': form})
+
+
+#ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে আইটেম ডেলিভারি
+def item_delivery_total_by_name_between_dates_and_department(request):
+    if request.method == 'POST':
+        form = DateDepartmentFilter(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+
+            # Query the database to get the total grouped by ProductionReceiptItem.name
+            totals = ItemDelivery.objects.filter(
+                created__gte=start_date,
+                created__lte=end_date,
+                department=department.id
+                
+            ).values('name').annotate(total_quantity=Sum('quantity'))
+
+            return render(request, 'inventory/item_delivery_total_by_name_between_dates_and_department.html', {'totals': totals})
+
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'inventory/item_delivery_total_by_name_between_dates_and_department.html', {'form': form})

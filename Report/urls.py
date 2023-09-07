@@ -93,5 +93,21 @@ urlpatterns = [
     # ১ বছরের মাস অনুযায়ী রিপোর্ট     
     path('Inventory/item_receipt_monthly_data/', inventoryviews.item_receipt_monthly_data, name='item_receipt_monthly_data'),
     path('Inventory/item_delivery_monthly_data/', inventoryviews.item_delivery_monthly_data, name='item_delivery_monthly_data'),
+    
+    # ১ বছরের মাস অনুযায়ী রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে       
+    path('Inventory/item_receipt_monthly_data_by_department/', inventoryviews.item_receipt_monthly_data_by_department, name='item_receipt_monthly_data_by_department'),
+    path('Inventory/item_delivery_monthly_data_by_department/', inventoryviews.item_delivery_monthly_data_by_department, name='item_delivery_monthly_data_by_department'),
    
+   # ১২ মাস আকারে প্রতিটি ডিপার্টমেন্ট টোটাল আইটেম ডেট সিলেক্ট করে  
+    path('Inventory/item_receipt_department_summary_by_month_based_on_date/', inventoryviews.item_receipt_department_summary_by_month_based_on_date, name='item_receipt_department_summary_by_month_based_on_date'),
+    path('Inventory/item_delivery_department_summary_by_month_based_on_date/', inventoryviews.item_delivery_department_summary_by_month_based_on_date, name='item_delivery_department_summary_by_month_based_on_date'),
+
+    #ডেট অনুযায়ী প্রোডাক্ট সামারি  
+    path('Inventory/item_receipt_total_by_name_between_dates/', inventoryviews.item_receipt_total_by_name_between_dates, name='item_receipt_total_by_name_between_dates'),
+    path('Inventory/item_delivery_total_by_name_between_dates/', inventoryviews.item_delivery_total_by_name_between_dates, name='item_delivery_total_by_name_between_dates'),
+    
+    #ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে 
+    path('Inventory/item_receipt_total_by_name_between_dates_and_department/', inventoryviews.item_receipt_total_by_name_between_dates_and_department, name='item_receipt_total_by_name_between_dates_and_department'),
+    path('Inventory/item_delivery_total_by_name_between_dates_and_department/', inventoryviews.item_delivery_total_by_name_between_dates_and_department, name='item_delivery_total_by_name_between_dates_and_department'),
+    
 ]
