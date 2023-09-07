@@ -7,7 +7,7 @@ from datetime import datetime
 import calendar
 
 from ItemMasterData.models import Item,ItemReceiptinfo,ItemReceipt,ItemDeliveryinfo,ItemDelivery,Stock
-from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter
+from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter,ItemNameForm
 
 '''
   ___   _                        ____                         _           _   
@@ -467,3 +467,49 @@ def item_delivery_total_by_name_between_dates_and_department(request):
         form = DateDepartmentFilter()
 
     return render(request, 'inventory/item_delivery_total_by_name_between_dates_and_department.html', {'form': form})
+
+
+# নির্দিষ্ট আইটেমের ডেট অনুযায়ী রিপোর্ট আইটেম রিসিভ 
+def item_receipt_between_date_by_name(request):
+    item_receipts = None
+
+    if request.method == 'POST':
+        form = ItemNameForm(request.POST)
+        if form.is_valid():
+            selected_item = form.cleaned_data['item_name']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            
+            # Filter ItemReceipt objects based on the selected item and date range
+            item_receipts = ItemReceipt.objects.filter(created__range=(start_date, end_date))
+            
+            if selected_item:
+                item_receipts = item_receipts.filter(name=selected_item.name)
+
+    else:
+        form = ItemNameForm()
+
+    return render(request, 'inventory/item_receipt_between_date_by_name.html', {'form': form, 'item_receipts': item_receipts})
+
+
+# নির্দিষ্ট আইটেমের ডেট অনুযায়ী রিপোর্ট আইটেম ডেলিভারি 
+def item_delivery_between_date_by_name(request):
+    item_receipts = None
+
+    if request.method == 'POST':
+        form = ItemNameForm(request.POST)
+        if form.is_valid():
+            selected_item = form.cleaned_data['item_name']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            
+            # Filter ItemReceipt objects based on the selected item and date range
+            item_receipts = ItemDelivery.objects.filter(created__range=(start_date, end_date))
+            
+            if selected_item:
+                item_receipts = item_receipts.filter(name=selected_item.name)
+
+    else:
+        form = ItemNameForm()
+
+    return render(request, 'inventory/item_delivery_between_date_by_name.html', {'form': form, 'item_receipts': item_receipts})

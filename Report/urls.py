@@ -109,5 +109,9 @@ urlpatterns = [
     #ডেট অনুযায়ী প্রোডাক্ট সামারি ডিপার্টমেন্ট সিলেক্ট করে 
     path('Inventory/item_receipt_total_by_name_between_dates_and_department/', inventoryviews.item_receipt_total_by_name_between_dates_and_department, name='item_receipt_total_by_name_between_dates_and_department'),
     path('Inventory/item_delivery_total_by_name_between_dates_and_department/', inventoryviews.item_delivery_total_by_name_between_dates_and_department, name='item_delivery_total_by_name_between_dates_and_department'),
+
+    #নির্দিষ্ট আইটেমের ডেট অনুযায়ী রিপোর্ট 
+    path('Inventory/item_receipt_between_date_by_name/', inventoryviews.item_receipt_between_date_by_name, name='item_receipt_between_date_by_name'),
+    path('Inventory/item_delivery_between_date_by_name/', inventoryviews.item_delivery_between_date_by_name, name='item_delivery_between_date_by_name'),
     
 ]

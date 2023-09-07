@@ -1,0 +1,39 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+<section class="section card mb-5">
+
+
+    <div class="card-body">
+{% include '../form.html'%}
+
+    {% if item_receipts %}
+    <h2>Item Receipts for "{{ form.cleaned_data.item_name }}"</h2>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Quantity</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for receipt in item_receipts %}
+                <tr>
+                    <td>{{ receipt.code }}</td>
+                    <td>{{ receipt.quantity }}</td>
+                    <td>{{ receipt.created }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No receipts found for "{{ form.cleaned_data.item_name }}" in the specified date range</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% endblock %}
