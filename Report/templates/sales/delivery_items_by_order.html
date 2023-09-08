@@ -1,0 +1,57 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+{% if delivery_items %}
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+              <th>Created</th>
+              <th>Order Number</th>
+
+              <th>Code</th>
+              <th>Name</th>
+              <th>Unit of Measure</th>
+              <th>Quantity</th>
+              <th>Size</th>
+              <th>Color</th>
+              <th>Style</th>
+              <th>Gross Weight</th>
+              <th>Net Weight</th>
+              <th>Carton Number</th>
+              <th>Price</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in delivery_items %}
+              <tr>
+                <td>{{ item.created }}</td>
+                <td>{{ item.orderNo }}</td>
+                <td>{{ item.code }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.uom }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.color }}</td>
+                <td>{{ item.style }}</td>
+                <td>{{ item.gweight }}</td>
+                <td>{{ item.nweight }}</td>
+                <td>{{ item.ctnno }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.priceTotal }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="17">No delivery items found for this order number.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+    {% endif %}    
+    {% endblock %}

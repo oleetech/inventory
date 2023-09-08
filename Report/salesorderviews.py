@@ -97,7 +97,7 @@ def sales_order_by_product_report(request):
     return render(request, 'sales/sales_order_by_product_report.html', {'product_data': product_data})
 
 
-
+#সাইজ অনুযায়ী প্রোডাকশন  ব্যালেন্স
 def calculate_production_balance(order_no):
     sales_orders = SalesOrderItem.objects.filter(docNo=order_no)
     balance_data = []
@@ -138,7 +138,7 @@ def production_balance_line_wise(request):
     return render(request, 'sales/production_balance_line_wise.html', {'order_no': order_no, 'balance_data': balance_data, 'form': form})
 
 
-
+#সাইজ অনুযায়ী প্রোডাকশন ও ডেলিভারি ব্যালেন্স 
 def calculate_order_balance(order_no):
     sales_orders = SalesOrderItem.objects.filter(docNo=order_no)
     balance_data = []
@@ -154,7 +154,7 @@ def calculate_order_balance(order_no):
         delivery_quantity_sum = DeliveryItem.objects.filter(orderNo=order_no, orderlineNo=order_line_no).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
         if delivery_quantity_sum is None:
             delivery_quantity_sum = 0
-        delivery_balance = delivery_quantity_sum
+        delivery_balance = sales_order_quantity - delivery_quantity_sum
 
         balance_data.append({
             'order_line_no': order_line_no,
@@ -184,3 +184,19 @@ def order_balance_production_delivery_line_wise(request):
         form = OrderFilterForm()
     
     return render(request, 'sales/order_balance_production_delivery_line_wise.html', {'order_no': order_no, 'balance_data': balance_data, 'form': form})
+
+# অর্ডার অনুযায়ী ডেলিভারি চালান বিস্তারিত 
+def delivery_items_by_order(request):
+    if request.method == 'POST':
+        form = OrderFilterForm(request.POST)
+        if form.is_valid():
+            order_no = form.cleaned_data['orderNo']
+            delivery_items = DeliveryItem.objects.filter(orderNo=order_no)
+            return render(request, 'sales/delivery_items_by_order.html', {'delivery_items': delivery_items})
+    else:
+        form = OrderFilterForm()
+
+    return render(request, 'sales/delivery_items_by_order.html', {'form': form})
+
+
+

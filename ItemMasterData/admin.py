@@ -22,14 +22,40 @@ def calculate_instock(code):
     instock = stock_quantity + purchase_order_goods_receipt + receipt_quantity - delivery_quantity - purchase_order_goods_return
     return instock
 
+# class ReadOnlyWidget(forms.Widget):
+#     def render(self, name, value, attrs=None, renderer=None):
+#         return value
+    
+# class ItemForm(forms.ModelForm):
 
+#     def __init__(self, *args, **kwargs):
+#         super(ItemForm, self).__init__(*args, **kwargs)
+#         instance = kwargs.get('instance')
+#         if instance:
+#             self.fields['instock'] = forms.CharField(
+#                 widget=ReadOnlyWidget(attrs={'readonly': 'readonly'}),
+#                 initial=calculate_instock(instance.code)
+#             )
 
+#     class Meta:
+#         model = Item
+#         fields = ['code','unit','name','warehouse','price']
+#         widgets = {
+#             'instock': forms.TextInput(attrs={'readonly': 'readonly'}),
+#         }
+#     class Media:   
+                
+#         css = {
+#             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+#         }          
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
     readonly_fields = ('instock',)
-    search_fields = ('name',)  
-    
+    search_fields = ('name',) 
+    # form = ItemForm     
+    # change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+   
     def total_sales_quantity(self,obj):
         # Calculate the total sum of SalesOrderItem.quantity for this Item's code
         total_quantity = SalesOrderItem.objects.filter(code=obj.code).aggregate(total_quantity=Sum('quantity'))['total_quantity']
@@ -71,7 +97,18 @@ class ItemReceiptinfoForm(forms.ModelForm):
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             
-        }    
+        } 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_order = ItemReceiptinfo.objects.order_by('-docno').first()
+            if last_order:
+                next_order_number = last_order.docno + 1
+            else:
+                next_order_number = 1
+
+            self.initial['docno'] = next_order_number           
 class ItemReceiptInlineForm(forms.ModelForm):
     class Meta:
         model = ItemReceipt

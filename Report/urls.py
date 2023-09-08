@@ -132,8 +132,12 @@ urlpatterns = [
     path('Sales/sales_order_status_filter/', salesorderviews.sales_order_status_filter, name='sales_order_status_filter'),
     #প্রোডাক্ট অনুযায়ী  সেলস অর্ডার     
     path('Sales/sales_order_by_product_report/', salesorderviews.sales_order_by_product_report, name='sales_order_by_product_report'),
+    #সাইজ অনুযায়ী প্রোডাকশন ব্যালেন্স 
     path('Sales/production_balance_line_wise/', salesorderviews.production_balance_line_wise, name='production_balance_line_wise'),
+    #সাইজ অনুযায়ী প্রোডাকশন ও ডেলিভারি ব্যালেন্স    
     path('Sales/order_balance_production_delivery_line_wise/', salesorderviews.order_balance_production_delivery_line_wise, name='order_balance_production_delivery_line_wise'),
+    #অর্ডার অনুযায়ী ডেলিভারি চালান বিস্তারিত   
+    path('Sales/delivery_items_by_order/', salesorderviews.delivery_items_by_order, name='delivery_items_by_order'),
                                                                       
   
 ]

@@ -125,8 +125,7 @@ class ProductionReceiptItem(models.Model):
     orderlineNo = models.CharField(max_length=4,default='0') # Add the lineNo field
     receiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
     salesOrder = models.PositiveIntegerField(default=0)
-    productionNo =  models.PositiveIntegerField(default=0)
-    
+    productionNo =  models.PositiveIntegerField(default=0)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.PositiveIntegerField(default=0)
