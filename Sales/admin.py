@@ -177,7 +177,7 @@ class DeliveryInfoForm(forms.ModelForm):
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
-        fields = ['receiptNo','lineNo','code','name', 'uom','quantity','size','color','price','priceTotal','orderNo']        
+        fields = ['receiptNo','lineNo','code','name', 'uom','quantity','size','color','price','priceTotal','orderNo','orderlineNo']        
         widgets = {
             'orderNo': forms.TextInput(attrs={'readonly': 'readonly'}),
 

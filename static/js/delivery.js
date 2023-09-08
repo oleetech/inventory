@@ -103,6 +103,7 @@ function calculateTotalQty() {
                   const nameInput = tr.find('.field-name input');  
                   const quantityInput = tr.find('.field-quantity input'); 
                   const orderInput = tr.find('.field-orderNo input');                 
+                  const orderlineNoInput = tr.find('.field-orderlineNo input');                 
                 
 
                   
@@ -110,7 +111,9 @@ function calculateTotalQty() {
                   codeInput.val(response.code); 
                   nameInput.val(response.name); 
                   quantityInput.val(response.quantity);
-                  orderInput.val(response.salesOrder);                                    
+                  orderInput.val(response.salesOrder);   
+                  orderlineNoInput.val(response.orderlineNo);   
+
                     console.log(response);
                 }
             });

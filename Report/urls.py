@@ -130,8 +130,10 @@ urlpatterns = [
     path('Sales/filter_orders_by_age/', salesorderviews.filter_orders_by_age, name='filter_orders_by_age'),
     #স্ট্যাটাস অনুযায়ী  সেলস অর্ডার দেখা     
     path('Sales/sales_order_status_filter/', salesorderviews.sales_order_status_filter, name='sales_order_status_filter'),
-    
+    #প্রোডাক্ট অনুযায়ী  সেলস অর্ডার     
     path('Sales/sales_order_by_product_report/', salesorderviews.sales_order_by_product_report, name='sales_order_by_product_report'),
+    path('Sales/production_balance_line_wise/', salesorderviews.production_balance_line_wise, name='production_balance_line_wise'),
+    path('Sales/order_balance_production_delivery_line_wise/', salesorderviews.order_balance_production_delivery_line_wise, name='order_balance_production_delivery_line_wise'),
                                                                       
   
 ]

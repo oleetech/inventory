@@ -1,0 +1,32 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+
+<h1>Order Balance Details for Order No {{ order_no }}:</h1>
+
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <th>Line No</th>
+            <th>Name</th>
+            <th>Quantity</th>  <!-- Add this column for the 'quantity' field -->
+            <th>Receipt Quantity Sum</th>
+            <th>Balance</th>
+        </thead>
+        {% for data in balance_data %}
+        <tr>
+            <td>{{ data.order_line_no }}</td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.quantity }}</td>
+            <td>{{ data.receipt_quantity_sum }}</td>
+            <td>{{ data.balance }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endblock %}
