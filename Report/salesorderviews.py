@@ -204,4 +204,12 @@ def delivery_items_by_order(request):
     return render(request, 'sales/delivery_items_by_order.html', {'form': form})
 
 
-
+    #অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী 
+def balance_report_view(request):
+    # Calculate the balance report using the method from your models
+    balance_report = ProductionReceiptItem.get_balance_report()
+    # Calculate the total sum of SalesOrderItem.quantity for each code
+    sales_order_totals = SalesOrderItem.objects.values('code').annotate(
+        sales_total=Sum('quantity')
+    )    
+    return render(request, 'sales/balance_report_view.html', {'balance_report': balance_report,'sales_order_totals': sales_order_totals})

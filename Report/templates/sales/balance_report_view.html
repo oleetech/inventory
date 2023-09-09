@@ -1,0 +1,35 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    <h1>Balance Report</h1>
+    <table id="itemsTable" class="table table-bordered">
+        <tr>
+            <th>Code</th>
+            <th>Department</th>
+            <th>Balance</th>
+            <th>Total In Sales Order </th>
+        </tr>
+        {% for code, department_data in balance_report.items %}
+            {% for department, balance in department_data.items %}
+                <tr>
+                    <td>{{ code }}</td>
+                    <td>{{ department }}</td>
+                    <td>{{ balance }}</td>
+                    <td>
+                        {% for item in sales_order_totals %}
+                            {% if item.code == code %}
+                                {{ item.sales_total }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+    {% endblock %}

@@ -88,9 +88,7 @@ class ProductionForm(forms.ModelForm):
         model = Production
         fields = ['status','docno','code',   'salesOrder','name', 'owner','quantity','uom']
         widgets = {
-            # 'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
-            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
-            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
+            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -179,7 +177,7 @@ class  ProductionReceiptItemInlineForm(forms.ModelForm) :
 
     class Meta:
         model = ProductionReceiptItem
-        fields = ['productionNo','lineNo','orderlineNo','code','name','uom','quantity','size','color','salesOrder' ]
+        fields = ['productionNo','orderlineNo','code','name','uom','quantity','size','color','salesOrder','lineNo' ]
         widgets = {
 
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),

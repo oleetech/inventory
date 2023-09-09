@@ -96,7 +96,8 @@ class ItemReceiptinfoForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
-            
+            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
+
         } 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -146,6 +147,8 @@ class ItemDeliveryinfoForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
+
             
         }
     def __init__(self, *args, **kwargs):

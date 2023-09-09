@@ -3,6 +3,8 @@ from ItemMasterData.models import Item
 from GeneralSettings.models import Unit,Department
 from datetime import date
 from django.contrib.auth.models import User
+from django.db.models import Sum
+from Sales.models import SalesOrderItem
 
 # Create your models here.
 class BillOfMaterials(models.Model):
@@ -153,3 +155,39 @@ class ProductionReceiptItem(models.Model):
      
     def __str__(self):
         return f": {self.receiptNumber}"    
+
+    @staticmethod
+    def get_balance_report():
+        # Calculate the total sum of SalesOrderItem.quantity for each code
+        sales_order_totals = SalesOrderItem.objects.values('code').annotate(
+            sales_total=Sum('quantity')
+        )
+
+        # Calculate the total sum of ProductionReceiptItem.quantity for each code grouped by department
+        production_receipt_totals = ProductionReceiptItem.objects.values('code', 'department').annotate(
+            production_total=Sum('quantity')
+        )
+
+        # Create a dictionary to store the balance report
+        balance_report = {}
+
+        # Calculate the balance for each code grouped by department
+        for production_receipt in production_receipt_totals:
+            code = production_receipt['code']
+            department = production_receipt['department']
+            production_total = production_receipt['production_total']
+            
+            sales_total = next(
+                (item['sales_total'] for item in sales_order_totals if item['code'] == code),
+                0
+            )
+
+            balance = sales_total - production_total
+
+            if code not in balance_report:
+                balance_report[code] = {}
+
+            balance_report[code][department] = balance
+
+        return balance_report    
+    
