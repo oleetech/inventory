@@ -156,6 +156,7 @@ def calculate_order_balance(order_no):
         if delivery_quantity_sum is None:
             delivery_quantity_sum = 0
         delivery_balance = sales_order_quantity - delivery_quantity_sum
+        ready_in_hand = receipt_quantity_sum - delivery_quantity_sum
 
         balance_data.append({
             'order_line_no': order_line_no,
@@ -168,6 +169,7 @@ def calculate_order_balance(order_no):
             'production_receipt_balance': production_receipt_balance,
             'delivery_quantity_sum': delivery_quantity_sum,
             'delivery_balance': delivery_balance,
+            'ready_in_hand':ready_in_hand,
         })
 
     return balance_data

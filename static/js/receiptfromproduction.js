@@ -217,7 +217,11 @@ jQuery.noConflict();
                       // Assuming response.data contains your code and names arrays
                       var lineNoArray = response.lineNo;
                       var codeArray = response.code;
-                      var namesArray = response.names;
+                      var nameArray = response.name;
+                      var sizeArray = response.size;
+                      var colorArray = response.color;
+                      var styleArray = response.style;
+
                       
                   // Assuming you have an element with id "olee" where you want to insert the table
                   var $olee = $('#olee');
@@ -233,6 +237,9 @@ jQuery.noConflict();
                   $('<th>').text('lineNo').appendTo($headerRow);
                   $('<th>').text('Code').appendTo($headerRow);
                   $('<th>').text('Name').appendTo($headerRow);
+                  $('<th>').text('Size').appendTo($headerRow);
+                  $('<th>').text('Color').appendTo($headerRow);
+                  $('<th>').text('Style').appendTo($headerRow);
 
                   // Create table body
                   var $tbody = $('<tbody>').appendTo($table);
@@ -242,7 +249,11 @@ jQuery.noConflict();
                     var $row = $('<tr>').appendTo($tbody);
                     $('<td>').text(lineNoArray[i]).appendTo($row);
                     $('<td>').text(codeArray[i]).appendTo($row);
-                    $('<td>').text(namesArray[i]).appendTo($row);
+                    $('<td>').text(nameArray[i]).appendTo($row);
+                    $('<td>').text(sizeArray[i]).appendTo($row);
+                    $('<td>').text(colorArray[i]).appendTo($row);
+                    $('<td>').text(styleArray[i]).appendTo($row);
+
                   }
 
                   // Append the table to the "olee" element

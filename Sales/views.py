@@ -48,7 +48,10 @@ def get_sales_order_info(request):
                 response_data = {
                     'lineNo': [item.lineNo for item in order_items],
                     'code': [item.code for item in order_items],
-                    'names': [item.name for item in order_items]
+                    'name': [item.name for item in order_items],
+                    'size': [item.size for item in order_items],
+                    'color': [item.color for item in order_items],
+                    'style': [item.style for item in order_items]
                 }
             else:
                 # Handle the case where no matching rows were found

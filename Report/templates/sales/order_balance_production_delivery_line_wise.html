@@ -23,6 +23,7 @@
             <th>Production Balance</th>
             <th>Delivery Quantity Sum</th>
             <th>Delivery Balance</th>
+            <th>Ready In Hand </th>            
         </thead>
         {% for data in balance_data %}
         <tr>
@@ -36,6 +37,7 @@
             <td>{{ data.production_receipt_balance }}</td>
             <td>{{ data.delivery_quantity_sum }}</td>
             <td>{{ data.delivery_balance }}</td>
+            <td>{{ data.ready_in_hand }}</td>
         </tr>
         {% endfor %}
     </table>
