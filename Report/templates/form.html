@@ -1,11 +1,11 @@
 <form method="post" class='text-center'>
     {% csrf_token %}
-    <div class="row">
+    <div class="row d-flex justify-content-center">
 
 
         {% for field in form %}
 
-        <div class="col-md-6 mb-4">
+        <div class="col-md-3 mb-4">
 
             <div class="md-form md-outline">
                 {{ field }}
@@ -13,13 +13,13 @@
             </div>
 
           </div>
-
+<div class="clear"></div>
 
 
 
         {% endfor %}
       </div>
 <div class="text-center">
-    <button class="btn btn-sm btn-elegant btn-rounded waves-effect waves-light" type="submit">Submit</button>
+    <button class="btn blue-gradient btn-rounded waves-effect waves-light" type="submit">Submit</button>
 </div>    
 </form>
