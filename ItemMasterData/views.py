@@ -26,3 +26,30 @@ def item(request):
             return JsonResponse({'error': 'Item not found'})
 
     return JsonResponse({'error': 'Invalid request method'})        
+
+
+@csrf_exempt
+def item_name(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        try:
+            item = Item.objects.get(name=name)
+
+            response_data = {
+                'code': item.code,
+                'name': item.name,
+                'description': item.description,
+                'warehouse_id': item.warehouse.id,
+                'warehouse_name': item.warehouse.name,  # Assuming you want to include warehouse information
+                'unit_id': item.unit.id,
+                'unit_name': item.unit.name,  # Assuming you want to include unit information
+                'price': str(item.price),  # Convert DecimalField to a string for JSON serialization
+
+            }
+            return JsonResponse(response_data)
+        except Item.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'})
+
+    return JsonResponse({'error': 'Invalid request method'})    
+
+  

@@ -20,7 +20,9 @@ def ajax_view(request):
                 'quantity': receipt_item.quantity,
                 'price': receipt_item.price,
                 'priceTotal': receipt_item.priceTotal,
-                'orderlineNo': receipt_item.orderlineNo,                
+                'orderlineNo': receipt_item.orderlineNo,   
+                'size': receipt_item.size,   
+                'color': receipt_item.color,              
                 # Include other fields you want to retrieve
             }
             return JsonResponse(response_data)

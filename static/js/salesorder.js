@@ -122,4 +122,45 @@ return total.toFixed(4);
 
 
 
+  // আইটেম নাম কোড লিখলে আইটেমের কোড ITEM মডেল থেকে অটো আসবে 
+  (function($) {
+    $(document).ready(function() {
+  
+        $('input[name^="salesorderitem_set-"][name$="-name"]').each(function() {
+            $(this).on('change', function() {
+              const name = $(this).val();
+              const inputElement = $(this);
+  
+              $.ajax({
+                type: 'POST',
+                url: '/itemMasterData/item_name/',
+                data: {
+                    'name': name
+       
+                  
+                },
+                dataType: 'json',
+                success: function(response) {
+                  const tr = inputElement.closest('tr');              
+                  const codeInput = tr.find('.field-code input');  
+                  const uomInput = tr.find('.field-uom input');    
+                  
+                  // Update the value of the name input field
+                  codeInput.val(response.code);      
+                  uomInput.val(response.unit_name);                                
+                    console.log(response);
+                }
+            });
+            
+        
+  
+  
+            });
+        });
+
+
+    });
+  })(jQuery);  
+
+
 

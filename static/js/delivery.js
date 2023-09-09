@@ -104,7 +104,9 @@ function calculateTotalQty() {
                   const quantityInput = tr.find('.field-quantity input'); 
                   const orderInput = tr.find('.field-orderNo input');                 
                   const orderlineNoInput = tr.find('.field-orderlineNo input');                 
-                
+                  const uomInput = tr.find('.field-uom input');    
+                  const sizeInput = tr.find('.field-size input');                 
+                  const colorInput = tr.find('.field-color input');                     
 
                   
                   // Update the value of the name input field
@@ -113,7 +115,9 @@ function calculateTotalQty() {
                   quantityInput.val(response.quantity);
                   orderInput.val(response.salesOrder);   
                   orderlineNoInput.val(response.orderlineNo);   
-
+                  uomInput.val(response.uom);   
+                  sizeInput.val(response.size);   
+                  colorInput.val(response.color);   
                     console.log(response);
                 }
             });
