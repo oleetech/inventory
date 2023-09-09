@@ -146,7 +146,7 @@ def calculate_order_balance(order_no):
     for sales_order in sales_orders:
         order_line_no = sales_order.lineNo
         sales_order_quantity = sales_order.quantity
-        receipt_quantity_sum = ProductionReceiptItem.objects.filter(orderlineNo=order_line_no).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
+        receipt_quantity_sum = ProductionReceiptItem.objects.filter(orderlineNo=order_line_no,salesOrder=sales_order.docNo).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
         if receipt_quantity_sum is None:
             receipt_quantity_sum = 0
         production_receipt_balance = sales_order_quantity - receipt_quantity_sum
