@@ -142,10 +142,20 @@ urlpatterns = [
     path('Sales/balance_report_view/', salesorderviews.balance_report_view, name='balance_report_view'),
     #অর্ডার অনুযায়ী চালান লিস্ট 
     path('Sales/delivery_challan_list_based_on_order/', salesorderviews.delivery_challan_list_based_on_order, name='delivery_challan_list_based_on_order'),
-  
-  
+    
+    path('Sales/find_missing_line_numbers/', salesorderviews.find_missing_line_numbers, name='find_missing_line_numbers'),
+ 
+# ____                  _                              ____                   _                               
+# | __ )   _   _   ___  (_)  _ __     ___   ___   ___  |  _ \    __ _   _ __  | |_   _ __     ___   _ __   ___ 
+# |  _ \  | | | | / __| | | | '_ \   / _ \ / __| / __| | |_) |  / _` | | '__| | __| | '_ \   / _ \ | '__| / __|
+# | |_) | | |_| | \__ \ | | | | | | |  __/ \__ \ \__ \ |  __/  | (_| | | |    | |_  | | | | |  __/ | |    \__ \
+# |____/   \__,_| |___/ |_| |_| |_|  \___| |___/ |___/ |_|      \__,_| |_|     \__| |_| |_|  \___| |_|    |___/
+#                                                                                                              
+ 
     #কাস্টমার অনুযায়ী সেলস অর্ডার লিস্ট 
     path('Businesspartner/sales_order_based_on_customer_name/', businesspartnerview.sales_order_based_on_customer_name, name='sales_order_based_on_customer_name'),
+    #সকল কাস্টমারের সেলস ডেলিভারি রিপোর্ট    
+    path('Businesspartner/customer_sales_report/', businesspartnerview.customer_sales_report, name='customer_sales_report'),
                                                                       
   
 ]

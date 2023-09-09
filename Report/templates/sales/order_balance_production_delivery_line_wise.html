@@ -13,9 +13,7 @@
     <table id="itemsTable" class="table table-bordered">
 
         <thead>
-            <th>Line No</th>
             <th>Name</th>
-            <th>Doc No</th>
             <th>Size</th>
             <th>Color No</th>                        
             <th>Quantity</th>
@@ -27,9 +25,7 @@
         </thead>
         {% for data in balance_data %}
         <tr>
-            <td>{{ data.order_line_no }}</td>
             <td>{{ data.name }}</td>
-            <td>{{ data.docNo }}</td>
             <td>{{ data.size }}</td>
             <td>{{ data.color }}</td>                        
             <td>{{ data.quantity }}</td>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Missing Line Numbers</title>
+</head>
+<body>    
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+    <h1>Missing Line Numbers</h1>
+    {% if missing_line_numbers %}
+        <ul>
+            {% for line_number in missing_line_numbers %}
+                <li>{{ line_number.lineNo }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No missing line numbers found.</p>
+    {% endif %}
+</body>
+</html>

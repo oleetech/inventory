@@ -131,7 +131,7 @@ class DeliveryInfo(models.Model):
 
 
 class DeliveryItem(models.Model):   
-    docNo = models.PositiveIntegerField(unique=True,default=1)    
+    docNo = models.PositiveIntegerField(unique=False,default=1)    
  
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
     created = models.DateField(default=date.today, editable=True)
@@ -155,8 +155,8 @@ class DeliveryItem(models.Model):
     def save(self, *args, **kwargs):
         if self.created:
             self.created = self.delivery.created
-            if self.docNo:
-                self.docNo = self.delivery.docNo    
+        if self.docNo:
+            self.docNo = self.delivery.docNo    
                    
         super().save(*args, **kwargs)       
     def __str__(self):

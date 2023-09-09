@@ -229,3 +229,28 @@ def delivery_challan_list_based_on_order(request):
         form = OrderFilterForm()
 
     return render(request, 'sales/delivery_challan_list_based_on_order.html', {'form': form})
+
+
+def find_missing_line_numbers(request):
+    if request.method == 'POST':
+        form = OrderFilterForm(request.POST)
+        if form.is_valid():
+            order_no = form.cleaned_data['orderNo']
+            
+            # Find the ProductionReceiptItem line numbers that do not exist in DeliveryItem
+            missing_line_numbers = ProductionReceiptItem.objects.filter(
+                salesOrder=order_no
+            ).exclude(
+                receiptNumber__receiptNo=F('receiptNo'),  # Match receiptNo
+                lineNo__in=DeliveryItem.objects.filter(
+                    receiptNo=F('receiptNumber__id')  # Match receiptNumber.id
+                ).values('lineNo')
+            ).values('lineNo')
+
+
+            return render(request, 'sales/find_missing_line_numbers.html', {'missing_line_numbers': missing_line_numbers})
+
+    else:
+        form = OrderFilterForm()
+
+    return render(request, 'sales/find_missing_line_numbers.html', {'form': form})

@@ -122,7 +122,8 @@ class ProductionReceipt(models.Model):
             
             
 class ProductionReceiptItem(models.Model): 
-    
+    docNo = models.PositiveIntegerField(unique=False,default=1)    
+   
     lineNo = models.CharField(max_length=4,default='0') # Add the lineNo field
     orderlineNo = models.CharField(max_length=4,default='0') # Add the lineNo field
     receiptNumber = models.ForeignKey(ProductionReceipt, on_delete=models.CASCADE, null=True, default=None)
@@ -150,11 +151,12 @@ class ProductionReceiptItem(models.Model):
             
 
             self.created = self.receiptNumber.created
-                   
+        # if self.docNo:
+        #     self.docNo = self.delivery.docno                       
         super().save(*args, **kwargs)    
      
     def __str__(self):
-        return f": {self.receiptNumber}"    
+        return f": {self.docNo}"    
 
     @staticmethod
     def get_balance_report():

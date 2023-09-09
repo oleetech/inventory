@@ -10,10 +10,10 @@ def ajax_view(request):
         lineNo = int(request.POST.get('lineNo'))
 
         try:
-            receipt_item = ProductionReceiptItem.objects.get(receiptNumber_id=receiptNo, lineNo=lineNo)
+            receipt_item = ProductionReceiptItem.objects.get(docNo=receiptNo, lineNo=lineNo)
 
             response_data = {
-                'receiptNumber': receipt_item.receiptNumber_id,
+                'receiptNumber': receipt_item.docNo,
                 'salesOrder': receipt_item.salesOrder,
                 'code': receipt_item.code,
                 'name': receipt_item.name,

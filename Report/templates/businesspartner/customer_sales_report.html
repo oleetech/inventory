@@ -1,0 +1,30 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    <h1>Customer Sales Report</h1>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Total Sales Amount</th>
+                <th>Total Sales Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in sales_data %}
+            <tr>
+                <td>{{ entry.customerName__name }}</td>
+                <td>{{ entry.total_sales_amount }}</td>
+                <td>{{ entry.total_sales_quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% endblock %}
