@@ -130,14 +130,15 @@ class DeliveryInfo(models.Model):
         return f" {self.docNo}"
 
 
-class DeliveryItem(models.Model):    
+class DeliveryItem(models.Model):   
+    docNo = models.PositiveIntegerField(unique=True,default=1)    
+ 
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
     created = models.DateField(default=date.today, editable=True)
     orderNo = models.PositiveIntegerField(default=0)    
     receiptNo =  models.PositiveIntegerField(default=0)
     lineNo =  models.PositiveIntegerField(default=0) 
-    orderlineNo = models.CharField(max_length=4,default='0') # Add the lineNo field
-          
+    orderlineNo = models.CharField(max_length=4,default='0') # Add the lineNo field          
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
     uom = models.CharField(max_length=20,default='',null=True)
@@ -153,9 +154,9 @@ class DeliveryItem(models.Model):
     
     def save(self, *args, **kwargs):
         if self.created:
-
-
             self.created = self.delivery.created
+            if self.docNo:
+                self.docNo = self.delivery.docNo    
                    
         super().save(*args, **kwargs)       
     def __str__(self):

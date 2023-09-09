@@ -1,0 +1,38 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+
+
+{% if sales_orders %}
+        <h2>Sales Orders for Selected Customer:</h2>
+        <table id="itemsTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Document Number</th>
+                    <th>Status</th>
+                    <th>Customer Name</th>
+                    <th>Address</th>
+                    <!-- Add other fields as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in sales_orders %}
+                    <tr>
+                        <td>{{ order.docNo }}</td>
+                        <td>{{ order.get_status_display }}</td> <!-- Display status label -->
+                        <td>{{ order.customerName }}</td>
+                        <td>{{ order.address }}</td>
+                        <!-- Add other fields as needed -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% endblock %}

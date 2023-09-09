@@ -1,0 +1,31 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        {% include '../form.html'%}
+    <h1>Challan List  for Order No. {{ order_number }}</h1>
+
+
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Delivery Number</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in unique_docs %}
+                <tr>
+                    <td>{{ doc.docNo }}</td>
+                    
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}

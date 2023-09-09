@@ -204,7 +204,7 @@ def delivery_items_by_order(request):
     return render(request, 'sales/delivery_items_by_order.html', {'form': form})
 
 
-    #অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী 
+#অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী 
 def balance_report_view(request):
     # Calculate the balance report using the method from your models
     balance_report = ProductionReceiptItem.get_balance_report()
@@ -213,3 +213,19 @@ def balance_report_view(request):
         sales_total=Sum('quantity')
     )    
     return render(request, 'sales/balance_report_view.html', {'balance_report': balance_report,'sales_order_totals': sales_order_totals})
+
+#অর্ডার অনুযায়ী চালান লিস্ট 
+def delivery_challan_list_based_on_order(request):
+    if request.method == 'POST':
+        form = OrderFilterForm(request.POST)
+        if form.is_valid():
+            order_number = form.cleaned_data['orderNo']
+
+            # Query unique values of DeliveryItem.doc based on the provided order number
+            unique_docs = DeliveryItem.objects.filter(orderNo=order_number).values('docNo').distinct()
+
+            return render(request, 'sales/delivery_challan_list_based_on_order.html', {'unique_docs': unique_docs, 'order_number': order_number})
+    else:
+        form = OrderFilterForm()
+
+    return render(request, 'sales/delivery_challan_list_based_on_order.html', {'form': form})
