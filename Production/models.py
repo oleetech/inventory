@@ -128,7 +128,7 @@ class ProductionReceiptItem(models.Model):
     productionNo =  models.PositiveIntegerField(default=0)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
-    quantity = models.PositiveIntegerField(default=0)
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
     size = models.CharField(max_length=100,default='',null=True)  
