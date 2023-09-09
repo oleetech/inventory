@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db import models
-from django.db.models import Sum,Count
+from django.db.models import Sum,Count,F,ExpressionWrapper, DecimalField
+
 from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta

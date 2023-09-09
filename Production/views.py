@@ -51,6 +51,8 @@ def ajax_view_receipt(request):
             response_data = {
                 'name': production_instance.name,
                 'code': production_instance.code,
+                'uom': production_instance.uom,
+                
                 'quantity':production_instance.quantity,
                 'salesOrder': production_instance.salesOrder
             }

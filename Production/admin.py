@@ -179,7 +179,7 @@ class  ProductionReceiptItemInlineForm(forms.ModelForm) :
 
     class Meta:
         model = ProductionReceiptItem
-        fields = ['productionNo','lineNo','orderlineNo','code','name','quantity','size','color','salesOrder' ]
+        fields = ['productionNo','lineNo','orderlineNo','code','name','uom','quantity','size','color','salesOrder' ]
         widgets = {
 
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
