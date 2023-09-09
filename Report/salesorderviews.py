@@ -151,7 +151,7 @@ def calculate_order_balance(order_no):
             receipt_quantity_sum = 0
         production_receipt_balance = sales_order_quantity - receipt_quantity_sum
 
-        delivery_quantity_sum = DeliveryItem.objects.filter(orderNo=order_no, orderlineNo=order_line_no).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
+        delivery_quantity_sum = DeliveryItem.objects.filter(orderNo=sales_order.docNo, orderlineNo=order_line_no).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
         if delivery_quantity_sum is None:
             delivery_quantity_sum = 0
         delivery_balance = sales_order_quantity - delivery_quantity_sum
