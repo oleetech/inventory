@@ -128,10 +128,7 @@ class ProductionReceiptItem(models.Model):
     productionNo =  models.PositiveIntegerField(default=0)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
-<<<<<<< HEAD
     uom =  models.CharField(max_length=100,default='',null=True)    
-=======
->>>>>>> 9a5c978754e627eb14e929a8946d771045f231fd
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
