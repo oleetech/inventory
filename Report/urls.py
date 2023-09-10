@@ -143,8 +143,11 @@ urlpatterns = [
     #অর্ডার অনুযায়ী চালান লিস্ট 
     path('Sales/delivery_challan_list_based_on_order/', salesorderviews.delivery_challan_list_based_on_order, name='delivery_challan_list_based_on_order'),
     
-    path('Sales/find_missing_line_numbers/', salesorderviews.find_missing_line_numbers, name='find_missing_line_numbers'),
- 
+    # পেন্ডিং পার্টিকুলার  অর্ডার অনুযায়ী    
+    path('Sales/pending_particular_based_on_order_no/', salesorderviews.pending_particular_based_on_order_no, name='pending_particular_based_on_order_no'),
+    #পেন্ডিং পার্টিকুলার  ডেট অনুযায়ী     
+    path('Sales/pending_particular_between_on_date/', salesorderviews.pending_particular_between_on_date, name='pending_particular_between_on_date'),
+
 # ____                  _                              ____                   _                               
 # | __ )   _   _   ___  (_)  _ __     ___   ___   ___  |  _ \    __ _   _ __  | |_   _ __     ___   _ __   ___ 
 # |  _ \  | | | | / __| | | | '_ \   / _ \ / __| / __| | |_) |  / _` | | '__| | __| | '_ \   / _ \ | '__| / __|

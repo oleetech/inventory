@@ -1,0 +1,39 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+    <h1>Missing Items</h1>
+
+    {% if missing_items %}
+        <table id="itemsTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Particular No</th>
+                    <th>Item Name</th>
+                    <th>Line No</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in missing_items %}
+                    <tr>
+                        <td>{{ item.docNo }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.lineNo }}</td>
+                        <td>{{ item.quantity }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No missing items found.</p>
+    {% endif %}
+
+    {% endblock %}
+

@@ -5,7 +5,7 @@ from django.db.models import Sum,Count,F,ExpressionWrapper, DecimalField
 from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta
-from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm
+from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm,DateFilterForm,OrderDepartmentFilter,DateDepartmentFilter
 #কাস্টমার অর্ডার সামারি রিপোর্ট 
 def customer_summary(request):
     customer_summary_data = SalesOrderInfo.objects.values('customerName__name').annotate(
@@ -231,26 +231,65 @@ def delivery_challan_list_based_on_order(request):
     return render(request, 'sales/delivery_challan_list_based_on_order.html', {'form': form})
 
 
-def find_missing_line_numbers(request):
+
+# পেন্ডিং পার্টিকুলার  অর্ডার অনুযায়ী 
+def pending_particular_based_on_order_no(request):
     if request.method == 'POST':
-        form = OrderFilterForm(request.POST)
+        form = OrderDepartmentFilter(request.POST)
         if form.is_valid():
             order_no = form.cleaned_data['orderNo']
-            
-            # Find the ProductionReceiptItem line numbers that do not exist in DeliveryItem
-            missing_line_numbers = ProductionReceiptItem.objects.filter(
-                salesOrder=order_no
-            ).exclude(
-                receiptNumber__receiptNo=F('receiptNo'),  # Match receiptNo
-                lineNo__in=DeliveryItem.objects.filter(
-                    receiptNo=F('receiptNumber__id')  # Match receiptNumber.id
-                ).values('lineNo')
-            ).values('lineNo')
+            department = form.cleaned_data['department']
 
+            # Get ProductionReceiptItem data based on salesOrder
+            receipt_items = ProductionReceiptItem.objects.filter(salesOrder=order_no,department=department.name)
 
-            return render(request, 'sales/find_missing_line_numbers.html', {'missing_line_numbers': missing_line_numbers})
+            # Extract docNo values from receipt_items queryset
+            doc_no_values = receipt_items.values_list('docNo', flat=True)
+
+            # Get DeliveryItem data for the docNo values
+            delivery_items = DeliveryItem.objects.filter(receiptNo__in=doc_no_values)
+
+            # Find missing lineNo entries in ProductionReceiptItem
+            missing_items = []
+            for receipt_item in receipt_items:
+                if not delivery_items.filter(receiptNo=receipt_item.docNo, lineNo=receipt_item.lineNo).exists():
+                    missing_items.append(receipt_item)
+
+            return render(request, 'sales/pending_particular_based_on_order_no.html', {'missing_items': missing_items})
 
     else:
-        form = OrderFilterForm()
+        form = OrderDepartmentFilter()
 
-    return render(request, 'sales/find_missing_line_numbers.html', {'form': form})
+    return render(request, 'sales/pending_particular_based_on_order_no.html', {'form': form})
+
+
+
+
+#পেন্ডিং পার্টিকুলার  ডেট অনুযায়ী 
+def pending_particular_between_on_date(request):
+    if request.method == 'POST':
+        form = DateDepartmentFilter(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+
+            # Get ProductionReceiptItem data within the date range
+            receipt_items = ProductionReceiptItem.objects.filter(created__range=[start_date, end_date],department=department.name)
+
+            # Get DeliveryItem data for the same docNo values
+            delivery_items = DeliveryItem.objects.filter(receiptNo__in=receipt_items.values_list('docNo', flat=True))
+
+            # Find missing lineNo entries in ProductionReceiptItem
+            missing_items = []
+            for receipt_item in receipt_items:
+                if not delivery_items.filter(receiptNo=receipt_item.docNo, lineNo=receipt_item.lineNo).exists():
+                    missing_items.append(receipt_item)
+
+            return render(request, 'sales/pending_particular_between_on_date.html', {'missing_items': missing_items})
+
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'sales/pending_particular_between_on_date.html', {'form': form})
+

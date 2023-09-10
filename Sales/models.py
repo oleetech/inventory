@@ -132,7 +132,6 @@ class DeliveryInfo(models.Model):
 
 class DeliveryItem(models.Model):   
     docNo = models.PositiveIntegerField(unique=False,default=1)    
- 
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
     created = models.DateField(default=date.today, editable=True)
     orderNo = models.PositiveIntegerField(default=0)    
