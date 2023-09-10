@@ -116,7 +116,7 @@ class ProductionReceipt(models.Model):
         super().save(*args, **kwargs)
                  
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.docno}"
 
 
             
@@ -151,8 +151,8 @@ class ProductionReceiptItem(models.Model):
             
 
             self.created = self.receiptNumber.created
-        # if self.docNo:
-        #     self.docNo = self.delivery.docno                       
+        if self.docNo:
+            self.docNo = self.receiptNumber.docno                       
         super().save(*args, **kwargs)    
      
     def __str__(self):

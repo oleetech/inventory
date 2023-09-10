@@ -1,0 +1,57 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+{% include '../form.html'%}
+    <h1>Receipt Production </h1>
+    {% if sum_by_name %}
+        <table id="itemsTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Total Production </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in sum_by_name %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.total_quantity }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data found for the selected date range and department.</p>
+    {% endif %}
+
+    <h1> Delivery Missing Item </h1>
+    {% if missing_quantity_by_name %}
+        <table id="itemsTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Missing Quantity in</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name, missing_quantity in missing_quantity_by_name.items %}
+                    <tr>
+                        <td>{{ name }}</td>
+                        <td>{{ missing_quantity }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No missing items found for the selected date range and department.</p>
+    {% endif %}
+
+
+    {% endblock %}
+

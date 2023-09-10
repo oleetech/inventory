@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.db import models
 from django.db.models import Sum,Count,F,ExpressionWrapper, DecimalField
-
+from collections import defaultdict
+from decimal import Decimal
 from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta
@@ -102,13 +103,15 @@ def sales_order_by_product_report(request):
 def calculate_production_balance(order_no):
     sales_orders = SalesOrderItem.objects.filter(docNo=order_no)
     balance_data = []
-    
+
     for sales_order in sales_orders:
         order_line_no = sales_order.lineNo
-        sales_order_quantity = order_line_no.quantity
-        receipt_quantity_sum = ProductionReceiptItem.objects.filter(orderlineNo=order_line_no).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
+        sales_order_quantity = sales_order.quantity
+        receipt_quantity_sum = ProductionReceiptItem.objects.filter(orderlineNo=order_line_no,salesOrder=sales_order.docNo).aggregate(total_quantity=models.Sum('quantity'))['total_quantity']
         if receipt_quantity_sum is None:
             receipt_quantity_sum = 0
+        production_receipt_balance = sales_order_quantity - receipt_quantity_sum
+        
         balance = sales_order_quantity - receipt_quantity_sum
         balance_data.append({
             'order_line_no': order_line_no,
@@ -292,4 +295,51 @@ def pending_particular_between_on_date(request):
         form = DateDepartmentFilter()
 
     return render(request, 'sales/pending_particular_between_on_date.html', {'form': form})
+
+
+
+
+
+def sum_quantity_by_name(request):
+    if request.method == 'POST':
+        form = DateDepartmentFilter(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            department = form.cleaned_data['department']
+
+            # Get ProductionReceiptItem data within the date range and filtered by department
+            receipt_items = ProductionReceiptItem.objects.filter(
+                created__range=[start_date, end_date],
+                department=department.name
+            )
+
+            # Group by 'name' and calculate the sum of 'quantity' for each group
+            sum_by_name = receipt_items.values('name').annotate(total_quantity=Sum('quantity'))
+
+            # Get DeliveryItem data for the same docNo values
+            delivery_items = DeliveryItem.objects.filter(receiptNo__in=receipt_items.values_list('docNo', flat=True))
+
+            # Calculate the sum of missing DeliveryItem quantities for each 'name'
+            missing_quantity_by_name = defaultdict(Decimal)  # Initialize as Decimal
+            for receipt_item in receipt_items:
+                if not delivery_items.filter(receiptNo=receipt_item.docNo, lineNo=receipt_item.lineNo).exists():
+                    missing_quantity_by_name[receipt_item.name] += Decimal(receipt_item.quantity)
+
+            # Convert the defaultdict to a regular dictionary for the template
+            missing_quantity_by_name = dict(missing_quantity_by_name)
+
+            return render(request, 'sales/sum_quantity_by_name.html', {
+                'sum_by_name': sum_by_name,
+                'missing_quantity_by_name': missing_quantity_by_name,
+            })
+
+    else:
+        form = DateDepartmentFilter()
+
+    return render(request, 'sales/sum_quantity_by_name.html', {'form': form})
+
+
+
+
 
