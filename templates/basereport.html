@@ -28,27 +28,46 @@
 </style>
 </head>
 <body>
+
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand mt-2 mt-lg-0" href="{% url 'home' %}">
+            <img
+              src="{% static 'images/logo.jpg' %}"
+              height="15"
+              alt="MDB Logo"
+              loading="lazy"
+            />
+          </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Left links -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'post_list' %}">Report</a>
+            </li>
+          </ul>
+          <!-- Left links -->
+
+        <form class="d-flex">
+            <a class="text-reset me-3" href="{% url 'admin:index' %}">
+                Login
+              </a>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+
     <div class="container-fluid">
 
-            <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start bg-light">
-              <div class="col-md-3 mb-2 mb-md-0">
-                <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
-                  <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
-                </a>
-              </div>
-        
-              <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li>  <a class='nav-link px-2 btn btn-elegant waves-effect waves-light' href="{% url 'home' %}">Home</a></li>
-                <li>  <a class='nav-link px-2 btn btn-elegant waves-effect waves-light' href="{% url 'post_list' %}">report</a></li>
-              </ul>
-        
-              <div class="col-md-3 text-end">
-                 <a class='nav-link px-2 btn btn-elegant waves-effect waves-light' href="{% url 'admin:index' %}">Login</a>
-                
-           
-              </div>
-            </header>
-      
 
 
         {% block content %}{% endblock %}
