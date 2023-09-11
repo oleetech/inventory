@@ -153,12 +153,12 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
 class DeliveryInfoForm(forms.ModelForm):
     class Meta:
         model = DeliveryInfo
-        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
+        fields = ['salesOrder','docNo','customerName', 'totalQty','address','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+            # 'customerName': CustomModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
 
                 

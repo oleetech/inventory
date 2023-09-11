@@ -32,7 +32,7 @@ def ajax_view(request):
     return JsonResponse({'error': 'Invalid request method'})
 
 
-from .models import SalesOrderItem
+from .models import SalesOrderItem,SalesOrderInfo
 from django.core.exceptions import ObjectDoesNotExist
 
 @csrf_exempt
@@ -83,6 +83,30 @@ def orderline_by_data(request):
             }
             return JsonResponse(response_data)
         except SalesOrderItem.DoesNotExist:
+            return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def deliveryinfo(request):
+    if request.method == 'POST':
+        orderno = int(request.POST.get('orderNo')) 
+        
+
+        # Replace the filter conditions with the ones you need
+        try:
+            orderinfo = SalesOrderInfo.objects.get(docNo=orderno)
+            response_data = {
+                
+                'customerName': orderinfo.customerName.name,
+                'address':orderinfo.address,
+                'sales_employee':orderinfo.sales_employee.id,
+                'remarks':orderinfo.remarks
+                
+            }
+            return JsonResponse(response_data)
+        except SalesOrderInfo.DoesNotExist:
             return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
     
     return JsonResponse({'error': 'Invalid request method'}, status=400)

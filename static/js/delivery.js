@@ -175,3 +175,47 @@ function calculateTotalQty() {
 
   });
 })(jQuery);
+
+
+
+(function($) {
+  $(document).ready(function() {
+
+     
+          $("#id_salesOrder").on('change', function() {
+            const orderNo = $(this).val();
+            const inputElement = $(this);
+
+            $.ajax({
+              type: 'POST',
+              url: '/sales/deliveryinfo/',
+              data: {
+                  'orderNo': orderNo
+     
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                        
+                const customerInput = $('#id_customerName');  
+                const addressInput = $('#id_address');  
+                // const uomInput = $('#id_uom');  
+
+                
+                // // Update the value of the name input field
+                customerInput.val(response.customerName);   
+                addressInput.val(response.address);    
+                // uomInput.val(response.unit_name);                                  
+                  console.log(response);
+              }
+          });
+          
+      
+
+
+          });
+   
+      
+
+  });
+})(jQuery);

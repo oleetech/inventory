@@ -113,14 +113,15 @@ class DeliveryInfo(models.Model):
     ] 
     status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
     docNo = models.PositiveIntegerField(unique=True,default=1)    
-    customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
+    customerName = models.CharField(max_length=250,default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateTimeField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
     sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-
+    salesOrder = models.PositiveIntegerField(default=0)
+ 
     
 
         

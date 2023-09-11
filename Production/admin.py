@@ -195,7 +195,9 @@ class ProductionReceiptItemInline(admin.TabularInline):
 class ProductionReceiptAdmin(admin.ModelAdmin):
     inlines = [ProductionReceiptItemInline]
     form =   ProductionReceiptForm  
-    change_form_template = 'admin/Production/ProductionOrder/change_form.html'          
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'   
+    list_display = ('docno','department' )
+    search_fields = ('docno', )         
     class Media:
         js = ('js/receiptfromproduction.js',)
         defer = True  # Add the defer attribute    
