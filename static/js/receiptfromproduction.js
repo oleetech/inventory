@@ -311,7 +311,8 @@ jQuery.noConflict();
                       
                           tr.find('.field-size input').val(response.size);
                           tr.find('.field-color input').val(response.color);
-                                       
+                          tr.find('.field-price input').val(response.price);
+                          tr.find('.field-priceTotal input').val(response.priceTotal);             
                             console.log(response);
                         }
                     });

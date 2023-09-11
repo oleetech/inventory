@@ -113,7 +113,7 @@ class DeliveryInfo(models.Model):
     ] 
     status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
     docNo = models.PositiveIntegerField(unique=True,default=1)    
-    customerName = models.CharField(max_length=250,default=None)
+    customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateTimeField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)

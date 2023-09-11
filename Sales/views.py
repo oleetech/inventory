@@ -18,6 +18,7 @@ def ajax_view(request):
                 'code': receipt_item.code,
                 'name': receipt_item.name,
                 'quantity': receipt_item.quantity,
+                'uom': receipt_item.uom,                
                 'price': receipt_item.price,
                 'priceTotal': receipt_item.priceTotal,
                 'orderlineNo': receipt_item.orderlineNo,   
@@ -79,7 +80,9 @@ def orderline_by_data(request):
             response_data = {
                 
                 'size': order_item.size,
-                'color': order_item.color
+                'color': order_item.color,
+                'price': order_item.price,
+                'priceTotal':order_item.priceTotal
             }
             return JsonResponse(response_data)
         except SalesOrderItem.DoesNotExist:
@@ -99,10 +102,11 @@ def deliveryinfo(request):
             orderinfo = SalesOrderInfo.objects.get(docNo=orderno)
             response_data = {
                 
-                'customerName': orderinfo.customerName.name,
+                'customerName': orderinfo.customerName.id,
                 'address':orderinfo.address,
                 'sales_employee':orderinfo.sales_employee.id,
-                'remarks':orderinfo.remarks
+                'remarks':orderinfo.remarks,
+                'sales_employee':orderinfo.sales_employee.id
                 
             }
             return JsonResponse(response_data)

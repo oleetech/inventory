@@ -107,8 +107,8 @@ function calculateTotalQty() {
                   const uomInput = tr.find('.field-uom input');    
                   const sizeInput = tr.find('.field-size input');                 
                   const colorInput = tr.find('.field-color input');                     
-
-                  
+                  const priceInput = tr.find('.field-price input');     
+                  const priceTotalInput = tr.find('.field-priceTotal input');                       
                   // Update the value of the name input field
                   codeInput.val(response.code); 
                   nameInput.val(response.name); 
@@ -118,6 +118,8 @@ function calculateTotalQty() {
                   uomInput.val(response.uom);   
                   sizeInput.val(response.size);   
                   colorInput.val(response.color);   
+                  priceInput.val(response.price);   
+                  priceTotalInput.val(response.priceTotal);                                       
                     console.log(response);
                 }
             });
@@ -199,13 +201,13 @@ function calculateTotalQty() {
                         
                 const customerInput = $('#id_customerName');  
                 const addressInput = $('#id_address');  
-                // const uomInput = $('#id_uom');  
+                const salesemployeeInput = $('#id_sales_employee');    
 
                 
                 // // Update the value of the name input field
                 customerInput.val(response.customerName);   
                 addressInput.val(response.address);    
-                // uomInput.val(response.unit_name);                                  
+                salesemployeeInput.val(response.sales_employee);                                  
                   console.log(response);
               }
           });
