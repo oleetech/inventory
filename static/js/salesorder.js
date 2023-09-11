@@ -102,10 +102,11 @@ return total.toFixed(4);
                   const tr = inputElement.closest('tr');              
                   const nameInput = tr.find('.field-name input');  
                   const uomInput = tr.find('.field-uom input');    
-                  
+                  const sizeInput = tr.find('.field-size input');                            
                   // Update the value of the name input field
                   nameInput.val(response.name);      
-                  uomInput.val(response.unit_name);                                
+                  uomInput.val(response.unit_name);        
+                  sizeInput.val(response.size);                                              
                     console.log(response);
                 }
             });
@@ -144,10 +145,11 @@ return total.toFixed(4);
                   const tr = inputElement.closest('tr');              
                   const codeInput = tr.find('.field-code input');  
                   const uomInput = tr.find('.field-uom input');    
-                  
+                  const sizeInput = tr.find('.field-size input');                    
                   // Update the value of the name input field
                   codeInput.val(response.code);      
-                  uomInput.val(response.unit_name);                                
+                  uomInput.val(response.unit_name);      
+                  sizeInput.val(response.size);                              
                     console.log(response);
                 }
             });

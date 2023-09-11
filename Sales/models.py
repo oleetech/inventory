@@ -51,6 +51,7 @@ class SalesOrderInfo(models.Model):
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
     sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    remarks = models.CharField(max_length=250,default='',blank=True)
 
     class Meta:
 
@@ -66,14 +67,17 @@ class SalesOrderItem(models.Model):
     docNo = models.PositiveIntegerField(default=1, unique=False)  
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
+    description = models.CharField(max_length=255,default='',null=True,blank=True)    
+
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
-    size = models.CharField(max_length=100,default='',null=True)  
-    color = models.CharField(max_length=100,default='',null=True)  
-    style = models.CharField(max_length=100,default='',null=True)   
-    gweight = models.CharField(max_length=100,default='',null=True)    
-    nweight = models.CharField(max_length=100,default='',null=True) 
-    ctnno = models.CharField(max_length=100,default='',null=True)                       
+    size = models.CharField(max_length=100,default='',null=True,blank=True)  
+    color = models.CharField(max_length=100,default='',null=True,blank=True)  
+    style = models.CharField(max_length=250,default='',null=True,blank=True)   
+    po = models.CharField(max_length=250,default='',null=True,blank=True)       
+    gweight = models.CharField(max_length=100,default='',null=True,blank=True)    
+    nweight = models.CharField(max_length=100,default='',null=True,blank=True) 
+    ctnno = models.CharField(max_length=100,default='',null=True,blank=True)                       
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     lineNo = models.PositiveIntegerField(default=1)  # Add the lineNo field

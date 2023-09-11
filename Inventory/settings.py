@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Purchasing', 
     'Report',
     'tinymce',
+    'PrintDocument',
 ]
 TINYMCE_DEFAULT_CONFIG = {
     'height': 400,

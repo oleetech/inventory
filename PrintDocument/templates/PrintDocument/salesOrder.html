@@ -1,0 +1,57 @@
+
+{% extends 'baseprint.html' %}
+{% block title %}Sales Order{% endblock %}
+
+{% load static %}
+
+
+{% block content %}
+
+<section class="container section card mb-5 " style="color:black !important">
+
+
+{% if not request.POST %}
+ {% include '../form.html'%}
+{% endif %}
+{% if request.POST %}
+<div class="text-center">
+    <h1 >{{ company.name }}</h1>
+    <p>{{ company.address }}</p>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-md-3"> Order Number: {{ sales_order_info.docNo }}</div>
+    <div class="col-md-3 text-center"> <h2>Sales Order</h2> </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+</div>
+<table id="itemsTable"   class="table table-bordered border border-dark" style="color:black !important" >
+    <thead>
+        <tr>
+        
+            <th>Name</th>
+            <th>Size</th>
+            <th>Quantity</th>
+            <!-- Add more item fields as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in sales_order_items %}
+        <tr>
+            
+            <td>{{ item.name }}</td>
+            <td>{{ item.size }}</td>
+            <td>{{ item.quantity }}</td>
+            <!-- Add more item fields as needed -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+</section>
+
+{% endblock %}

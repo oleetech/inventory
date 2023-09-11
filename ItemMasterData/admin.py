@@ -50,7 +50,7 @@ def calculate_instock(code):
 #         }          
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
+    list_display = ('code','name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
     readonly_fields = ('instock',)
     search_fields = ('name',) 
     # form = ItemForm     

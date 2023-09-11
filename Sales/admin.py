@@ -84,7 +84,7 @@ class SalesOrderItemInline(admin.TabularInline):
 class SalesOrderInfoAdminForm(forms.ModelForm):
     class Meta:
         model = SalesOrderInfo
-        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee','status']
+        fields = ['status','docNo','customerName', 'totalQty','sales_employee','totalAmount','remarks']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -103,7 +103,7 @@ class SalesOrderInfoAdminForm(forms.ModelForm):
 
             self.initial['docNo'] = next_order_number
             
-          
+     
                     
 @admin.register(SalesOrderInfo)
 class SalesOrderInfoAdmin(admin.ModelAdmin):

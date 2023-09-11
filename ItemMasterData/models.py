@@ -24,6 +24,7 @@ class Item(models.Model):
     description = models.TextField()
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, default=1)
     unit = models.ForeignKey(Unit, on_delete=models.SET_DEFAULT, default=1)
+    size= models.CharField(max_length=100,default='',null=True,blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     
