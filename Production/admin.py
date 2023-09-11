@@ -86,7 +86,7 @@ class ProductionForm(forms.ModelForm):
     
     class Meta:
         model = Production
-        fields = ['status','docno','code',   'salesOrder','name', 'owner','quantity','uom']
+        fields = ['status','docno','code',   'salesOrder','name', 'owner','quantity','uom','remarks']
         widgets = {
             'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
         }
@@ -124,6 +124,9 @@ class ProductionComponentInline(admin.TabularInline):
 class ProductionAdmin(admin.ModelAdmin):
     form = ProductionForm
     inlines = [ProductionComponentInline]
+    list_display = ('docno','salesOrder','name','quantity' )
+    search_fields = ('salesOrder', )  
+
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'      
     class Media:
         js = ('js/productionorder.js',)

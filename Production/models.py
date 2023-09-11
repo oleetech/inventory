@@ -54,6 +54,7 @@ class Production(models.Model):
     due_date = models.DateField(default=date.today)
     docno = models.PositiveIntegerField(unique=True,default=1)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    remarks = models.CharField(max_length=250,default='',blank=True)
   
     class Meta:
 
@@ -65,6 +66,8 @@ class Production(models.Model):
 
 class ProductionComponent(models.Model):
     production = models.ForeignKey(Production, on_delete=models.CASCADE, related_name='production_components')
+    docNo = models.PositiveIntegerField(default=1, unique=False)  
+    
     code = models.CharField(max_length=20,default='',null=True)
     salesOrder= models.PositiveIntegerField(default=1)
     name = models.CharField(max_length=100,default='',null=True)
@@ -77,7 +80,8 @@ class ProductionComponent(models.Model):
             
 
             self.created = self.production.created
-                   
+        if self.docNo:
+            self.docNo = self.production.docno                          
         super().save(*args, **kwargs)   
     # def __str__(self):
     #     return self.name   

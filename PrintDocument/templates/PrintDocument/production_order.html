@@ -1,6 +1,6 @@
 
 {% extends 'baseprint.html' %}
-{% block title %}Delivery  {{ delivery_info.docNo }} {% endblock %}
+{% block title %}Delivery  {{ info.docno }} {% endblock %}
 
 {% load static %}
 
@@ -22,22 +22,25 @@
 <div class="row">
     <div class="col-md-6 " style=" "">
         <p>
-             <b> Customer Name : </b>  {{ delivery_info.customerName }} 
+             <b> Order No: </b>  {{ info.salesOrder }} 
         </p>
         <p>
-            <b>Address: </b>  {{ delivery_info.address }}
+            <b>Item: </b>  {{ info.name }}
+
         </p>
+        <b>  Quantity :</b>  {{ info.quantity }}
     </div>
 
     <div class="col-md-6  " style=" "">
+        <p><b>Document No : </b> {{ info.docno }}</p>
         <p>
-             <b> Created : </b>{{ delivery_info.created| date:"Y-m-d"}}  
+             <b> Created : </b>{{ info.created| date:"Y-m-d"}}  
         </p>
         <p>
-            <b>  Sales Employee :</b>  {{ delivery_info.sales_employee }}
-            
+
+            <b>  Unit :  </b> {{ info.uom}}  
         </p>
-        <p><b>Document No : </b> {{ delivery_info.docNo }}</p>
+
     </div>
 </div>
 
@@ -46,10 +49,10 @@
 
 <div class="row">
     <div class="col-md-4"></div>
-    <div class="col-md-4 text-center " style="border: 1px solid black;"> <h2 >Delivery Challan </h2> </div>
+    <div class="col-md-4 text-center " style="border: 1px solid black;"> <h2 >Production Order</h2> </div>
     <div class="col-md-4"></div>
 </div>
-<table id="itemsTable"   class="table table-bordered border border-dark" style="color:black !important" >
+<table id="itemsTable"   class="table table-bordered border border-dark" style="color:black !important;" >
     <thead>
         <tr>
             <th>No</th>                 
@@ -57,14 +60,12 @@
             <th>Size</th>
             <th>Quantity</th>
             <th>Unit</th>
-            <th>Color</th>
-            <th>Style</th>
-            <th>Po</th>
+
             <!-- Add more item fields as needed -->
         </tr>
     </thead>
     <tbody>
-        {% for item in delivery_items%}
+        {% for item in items%}
         <tr>
             <td>{{ forloop.counter }}</td>
            
@@ -72,20 +73,21 @@
             <td>{{ item.size }}</td>
             <td>{{ item.quantity }}</td>
             <td>{{ item.uom }}</td>
-            <td>{{ item.color }}</td>
-            <td>{{ item.style }}</td>
-            <td>{{ item.po }}</td>
+
             <!-- Add more item fields as needed -->
         </tr>
         {% endfor %}
-        <tr style="border: none;">
-        <td style="border: none;"></td>
+
+        <tr>
         <td></td>
         <td></td>
-        <td>{{ delivery_info.totalQty }}</td>
         <td></td>
         <td></td>
+        <td></td>
+ 
         </tr>
+
+        
     </tbody>
 
 
@@ -93,8 +95,8 @@
 </table>
 
 <blockquote class="custom-blockquote">
-    <p style='font-weight:bolder'>{{ delivery_info.remarks }} </p>
-    <footer class="blockquote-footer"><cite title="Source Title">{{ delivery_info.owner }}</cite></footer>
+    <p style='font-weight:bolder'>{{ info.remarks }} </p>
+    
 </blockquote>
 
 {% endif %}
