@@ -35,7 +35,7 @@ urlpatterns = [
     path('itemMasterData/',include('ItemMasterData.urls')),     
  
     path('report/',include('Report.urls')),  
-    path('PrintDocument/', include('PrintDocument.urls')), 
+    path('report/PrintDocument/', include('PrintDocument.urls')), 
       
 ]
 if settings.DEBUG:

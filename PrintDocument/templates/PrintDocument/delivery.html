@@ -1,6 +1,6 @@
 
 {% extends 'baseprint.html' %}
-{% block title %}Sales Order {{ sales_order_info.docNo }} {% endblock %}
+{% block title %}Sales Order {{ delivery_info.docNo }} {% endblock %}
 
 {% load static %}
 
@@ -22,19 +22,19 @@
 <div class="row">
     <div class="col-md-6 " style=" "">
         <p>
-             <b> Customer Name : </b>  {{ sales_order_info.customerName }} 
+             <b> Customer Name : </b>  {{ delivery_info.customerName }} 
         </p>
         <p>
-            <b>Address: </b>  {{ sales_order_info.address }}
+            <b>Address: </b>  {{ delivery_info.address }}
         </p>
     </div>
 
     <div class="col-md-6  " style=" "">
         <p>
-             <b> Created : </b>{{ sales_order_info.created }}  
+             <b> Created : </b>{{ delivery_info.created }}  
         </p>
         <p>
-            <b>  Sales Employee :</b>  {{ sales_order_info.sales_employee }}
+            <b>  Sales Employee :</b>  {{ delivery_info.sales_employee }}
         </p>
     </div>
 </div>
@@ -44,14 +44,13 @@
 
 <div class="row">
     <div class="col-md-4"></div>
-    <div class="col-md-4 text-center " style="border: 1px solid black;"> <h2 >Sales Order </h2> </div>
+    <div class="col-md-4 text-center " style="border: 1px solid black;"> <h2 >Delivery Challan </h2> </div>
     <div class="col-md-4"></div>
 </div>
 <table id="itemsTable"   class="table table-bordered border border-dark" style="color:black !important" >
     <thead>
         <tr>
             <th>No</th>                 
-            <th>Item Description</th>        
             <th>Name</th>
             <th>Size</th>
             <th>Quantity</th>
@@ -62,14 +61,10 @@
         </tr>
     </thead>
     <tbody>
-        {% for item in sales_order_items %}
+        {% for item in delivery_items%}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td style='width:250px'>
-                {% if item.description  %} 
-                {{ item.description }}
-                {% endif %}
-            </td>            
+           
             <td>{{ item.name }}</td>
             <td>{{ item.size }}</td>
             <td>{{ item.quantity }}</td>
@@ -85,8 +80,8 @@
       
 </table>
 <blockquote class="custom-blockquote">
-    <p style='font-weight:bolder'>{{ sales_order_info.remarks }} </p>
-    <footer class="blockquote-footer"><cite title="Source Title">{{ sales_order_info.owner }}</cite></footer>
+    <p style='font-weight:bolder'>{{ delivery_info.remarks }} </p>
+    <footer class="blockquote-footer"><cite title="Source Title">{{ delivery_info.owner }}</cite></footer>
 </blockquote>
 
 {% endif %}
