@@ -89,6 +89,6 @@ fieldset.module h2{
 
   /* Set a maximum height for the table container */
 #olee {
-    max-height: 300px; /* Adjust the height as per your requirement */
+    max-height: 150px !important; /* Adjust the height as per your requirement */
     overflow-y: auto; /* Add a vertical scrollbar if needed */
   }

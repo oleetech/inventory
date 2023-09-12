@@ -49,10 +49,10 @@ class BillOfMaterialsAdmin(admin.ModelAdmin):
     form = BillOfMaterialsAdminForm  
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
     class Media: 
-        js = ('js/billofmaterials.js',)
+        js = ('js/billofmaterials.js','bootstrap.bundle.min.js','js/dataTables.min.js')
         defer = True  # Add the defer attribute          
         css = {
-            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+            'all': ('css/bootstrap.min.css','css/admin_styles.css','css/dataTables.min.css'),
         }      
     def save_model(self, request, obj, form, change):
 
@@ -198,11 +198,11 @@ class ProductionReceiptAdmin(admin.ModelAdmin):
     list_display = ('docno','department' )
     search_fields = ('docno', )         
     class Media:
-        js = ('js/receiptfromproduction.js',)
+        js = ('js/receiptfromproduction.js','js/library/bootstrap.bundle.min.js','js/library/dataTables.min.js')
         defer = True  # Add the defer attribute    
         
         css = {
-            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+            'all': ('css/bootstrap.min.css','css/admin_styles.css','css/bootstrap.min.css'),
         }   
     def save_model(self, request, obj, form, change):
 

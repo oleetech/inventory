@@ -258,13 +258,16 @@ jQuery.noConflict();
 
                   // Append the table to the "olee" element
                   $olee.html('').append($table);
-                     
+          
           
               // Get the table element by its ID
               var table = document.getElementById("olee");
-              table.getElementsByTagName("table")[0].classList.add("table","table-responsive",'table-bordered');
+              
+              table.getElementsByTagName("table")[0].classList.add("table","table-responsive",'table-bordered','datatable');
               // Add a border to the table
-              table.getElementsByTagName("table")[0].style.border = "1px solid black";                              
+              table.getElementsByTagName("table")[0].style.border = "1px solid black";   
+                
+                                  
                           console.log(response);
                       }
                   });
@@ -287,6 +290,7 @@ jQuery.noConflict();
 
 
                 $('input[name^="productionreceiptitem_set-"][name$="-orderlineNo"]').each(function() {
+
 
                   $(this).on('change', function() {
                     const orderlineNoinput = $(this);
@@ -318,11 +322,16 @@ jQuery.noConflict();
                     });
                     
               
-          
+                          // /
+                        
           
                     });
                 });
                 
+
+                
+
           
             });
           })(jQuery);
+

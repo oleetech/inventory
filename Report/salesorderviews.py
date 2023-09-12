@@ -209,6 +209,7 @@ def delivery_items_by_order(request):
 
 #অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী 
 def balance_report_view(request):
+   
     # Calculate the balance report using the method from your models
     balance_report = ProductionReceiptItem.get_balance_report()
     # Calculate the total sum of SalesOrderItem.quantity for each code

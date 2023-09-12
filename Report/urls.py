@@ -138,7 +138,8 @@ urlpatterns = [
     path('Sales/order_balance_production_delivery_line_wise/', salesorderviews.order_balance_production_delivery_line_wise, name='order_balance_production_delivery_line_wise'),
     #অর্ডার অনুযায়ী ডেলিভারি চালান বিস্তারিত   
     path('Sales/delivery_items_by_order/', salesorderviews.delivery_items_by_order, name='delivery_items_by_order'),
-    #অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী  
+    
+    # আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী  
     path('Sales/balance_report_view/', salesorderviews.balance_report_view, name='balance_report_view'),
     #অর্ডার অনুযায়ী চালান লিস্ট 
     path('Sales/delivery_challan_list_based_on_order/', salesorderviews.delivery_challan_list_based_on_order, name='delivery_challan_list_based_on_order'),
