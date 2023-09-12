@@ -66,7 +66,7 @@ from .models import GoodsReceiptPoInfo, GoodsReceiptPoItem
 class GoodsReceiptPoItemForm(forms.ModelForm):
     class Meta:
         model = GoodsReceiptPoItem
-        fields = '__all__'
+        fields = ['code','name','uom','quantity','price','priceTotal']
 
 class GoodsReceiptPoItemInline(admin.TabularInline):
     model = GoodsReceiptPoItem
@@ -76,7 +76,7 @@ class GoodsReceiptPoItemInline(admin.TabularInline):
 class GoodsReceiptPoInfoAdminForm(forms.ModelForm):
     class Meta:
         model = GoodsReceiptPoInfo
-        fields = '__all__'
+        fields = ['customerName','docNo','created','address','totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),

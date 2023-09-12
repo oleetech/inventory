@@ -55,7 +55,7 @@ function calculateTotalQty() {
 } 
       // Example: Handle changes in Price and Quantity fields
       function handleFieldChanges() {
-        $('input[name^="deliveryitem_set-"][name$="-price"], input[name^="deliveryitem_set-"][name$="-quantity"]').on('change', function() {
+        $('input[name^="deliveryitem_set-"][name$="-price"], input[name^="deliveryitem_set-"][name$="-quantity"],input[name^="deliveryitem_set-"][name$="-lineNo"]').on('change', function() {
           var index = $(this).attr('name').split('-')[1];
           calculatePriceTotal(index);
           setTotalAmount();

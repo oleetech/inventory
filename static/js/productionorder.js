@@ -35,6 +35,7 @@
         $('<th>').addClass('column-name required').text('Name').appendTo(headerRow);
         $('<th>').addClass('column-uom required').text('Uom').appendTo(headerRow);
         $('<th>').addClass('column-quantity required').text('Quantity').appendTo(headerRow);
+        $('<th>').addClass('column-price required').text('Price').appendTo(headerRow);
         $('<th>').text('Delete?').appendTo(headerRow);
   
         // Add table body
@@ -57,11 +58,19 @@
           uomInput.attr('name', 'production_components-' + index + '-uom');
           uomInput.val(component.uom);
           uomCell.append(uomInput);
+
+
           var quantityCell = $('<td>');
           var quantityInput = $('<input type="number" min="0" step="0.0001" required>');
           quantityInput.attr('name', 'production_components-' + index + '-quantity');
           quantityInput.val(component.quantity);
           quantityCell.append(quantityInput);
+
+          var priceCell = $('<td>');
+          var priceInput = $('<input type="number" min="0" step="0.0001" required>');
+          priceInput.attr('name', 'production_components-' + index + '-price');
+          priceInput.val(component.price);
+          priceCell.append(priceInput);
   
           var deleteCell = $('<td >');
           var deleteButton = $('<button>').text('Delete');
@@ -73,7 +82,7 @@
           });
           deleteCell.append(deleteButton);
   
-          row.append(codeCell, nameCell, uomCell, quantityCell, deleteCell);
+          row.append(codeCell, nameCell, uomCell, quantityCell,priceCell, deleteCell);
           formsetTable.append(row);
         });
   

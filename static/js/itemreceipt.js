@@ -101,11 +101,13 @@ return total.toFixed(4);
                 success: function(response) {
                   const tr = inputElement.closest('tr');              
                   const nameInput = tr.find('.field-name input');  
-                  const uomInput = tr.find('.field-uom input');    
+                  const uomInput = tr.find('.field-uom input');   
+                  const priceInput = tr.find('.field-price input');   
                   
                   // Update the value of the name input field
                   nameInput.val(response.name);      
-                  uomInput.val(response.unit_name);                                
+                  uomInput.val(response.unit_name);      
+                  priceInput.val(response.price);                             
                     console.log(response);
                 }
             });

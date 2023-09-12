@@ -53,6 +53,7 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = ('code','name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
     readonly_fields = ('instock',)
     search_fields = ('name',) 
+    fields = ['code','name','unit','size','price']  
     # form = ItemForm     
     # change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
    
