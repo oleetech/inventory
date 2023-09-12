@@ -39,7 +39,7 @@ class ChildComponentInline(admin.TabularInline):
 class BillOfMaterialsAdminForm(forms.ModelForm):
     class Meta:
         model = BillOfMaterials
-        fields = ['code','name','quantity','totalAmount']
+        fields = ['code','name','quantity']
         widgets = {
             'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
         }
@@ -106,7 +106,7 @@ class ProductionForm(forms.ModelForm):
 class  ProductionComponentInlineForm(forms.ModelForm) :
     class Meta:
         model = ProductionComponent
-        fields = ['code','name','uom','quantity','price','priceTotal' ]
+        fields = ['code','name','uom','quantity' ]
         widgets = {
 
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),

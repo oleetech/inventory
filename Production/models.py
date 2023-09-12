@@ -12,7 +12,6 @@ class BillOfMaterials(models.Model):
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
 
     def __str__(self):
         return f"{self.id}"
@@ -22,9 +21,7 @@ class ChildComponent(models.Model):
     name = models.CharField(max_length=100,default='',null=True)
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
-    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    
+
     
     
 '''
@@ -59,8 +56,7 @@ class Production(models.Model):
     docno = models.PositiveIntegerField(unique=True,default=1)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     remarks = models.CharField(max_length=250,default='',blank=True)
-
- 
+  
     class Meta:
 
         verbose_name = ' Production Order'
@@ -79,8 +75,7 @@ class ProductionComponent(models.Model):
     uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     created = models.DateField(default=date.today, editable=True)
-    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)    
+    
     def save(self, *args, **kwargs):
         if self.salesOrder:
             

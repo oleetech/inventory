@@ -29,7 +29,6 @@ def ajax_view(request):
                     'code': component.code,
                     'name': component.name,
                     'uom': component.uom,
-                    'price': component.price,                    
                     'quantity': updated_quantity
                 })
                     
