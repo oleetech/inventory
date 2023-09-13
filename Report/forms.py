@@ -1,9 +1,11 @@
 from django import forms
 
 from GeneralSettings.models import Department
-from ItemMasterData.models import Item
+from ItemMasterData.models import Item,ItemGroup
 from Sales.models import SalesEmployee
 from BusinessPartners.models import BusinessPartner
+
+
 class DateFilterForm(forms.Form):
     start_date = forms.DateField(label='Start Date', required=True,)
     end_date = forms.DateField(label='End Date', required=True)
@@ -130,6 +132,19 @@ class ItemNameForm(forms.Form):
                 'class': 'form-control form-control-sm',
                 'id': f"{field_name}",
             })  
+            
+            
+class ItemGroupForm(forms.Form):
+    item_group = forms.ModelChoiceField(queryset=ItemGroup.objects.all(), empty_label=None)
+    
+    def __init__(self, *args, **kwargs):
+        super(ItemGroupForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'form-control form-control-sm',
+                'id': f"{field_name}",
+            })  
+                            
 class AgeFilterForm(forms.Form):
     age_in_days = forms.IntegerField(label='Enter Age in Days')            
     

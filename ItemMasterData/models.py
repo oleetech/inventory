@@ -17,7 +17,12 @@ class Warehouse(models.Model):
     def __str__(self):
         return self.name
 
-
+class ItemGroup(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    def __str__(self):
+        return self.name
+    
 class Item(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
@@ -27,6 +32,7 @@ class Item(models.Model):
     size= models.CharField(max_length=100,default='',null=True,blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    item_group = models.ForeignKey(ItemGroup, on_delete=models.SET_NULL, null=True, blank=True)
     
     class Meta:
     # Add any other fields you need

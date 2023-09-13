@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django import forms
-from .models import Warehouse, Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery
+from .models import Warehouse, ItemGroup,Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery
 from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem,PurchaseItem
 from Sales.models import SalesOrderItem,DeliveryItem
 from django.db.models import Sum
@@ -47,13 +47,18 @@ def calculate_instock(code):
                 
 #         css = {
 #             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
-#         }          
+#         }   
+
+@admin.register(ItemGroup)
+class ItemGroupAdmin(admin.ModelAdmin):
+    list_display = ('name',  'description')
+           
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('code','name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
     readonly_fields = ('instock',)
     search_fields = ('name',) 
-    fields = ['code','name','unit','size','price']  
+    fields = ['code','name','unit','size','price','item_group']  
     # form = ItemForm     
     # change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
    

@@ -150,11 +150,15 @@ urlpatterns = [
     path('Sales/pending_particular_between_on_date/', salesorderviews.pending_particular_between_on_date, name='pending_particular_between_on_date'),
     #পেন্ডিং পার্টিকুলার  আইটেম অনুযায়ী
     path('Sales/sum_quantity_by_name/', salesorderviews.sum_quantity_by_name, name='sum_quantity_by_name'),
-
+    
+    #অর্ডার অনুযায়ী ডেলিভারি ও চালান রেসিভ দেখা
     path('Sales/check_delivery_status/', salesorderviews.check_delivery_status, name='check_delivery_status'),
-
+    
+    #অর্ডার অনুযায়ী ডেলিভারি পার্সেন্টেজ 
     path('Sales/calculate_delivery_percentage/', salesorderviews.calculate_delivery_percentage, name='calculate_delivery_percentage'),
     
+    # আইটেম group সিলেক্ট করে আইটেম group  অনুযায়ী টোটাল সেলস quantity এবং  এমাউন্ট     
+    path('Sales/calculate_summary/', salesorderviews.calculate_summary, name='calculate_summary'),
     
 
 

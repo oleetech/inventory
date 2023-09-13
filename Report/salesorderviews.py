@@ -3,10 +3,11 @@ from django.db import models
 from django.db.models import Sum,Count,F,ExpressionWrapper, DecimalField
 from collections import defaultdict
 from decimal import Decimal
+from ItemMasterData.models import Item,ItemGroup
 from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem,DeliveryInfo
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta
-from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm,DateFilterForm,OrderDepartmentFilter,DateDepartmentFilter
+from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm,DateFilterForm,OrderDepartmentFilter,DateDepartmentFilter,ItemGroupForm
 #কাস্টমার অর্ডার সামারি রিপোর্ট 
 def customer_summary(request):
     customer_summary_data = SalesOrderInfo.objects.values('customerName__name').annotate(
@@ -358,7 +359,7 @@ def check_delivery_status(request):
     return render(request, 'sales/delivery_status.html', {'form': form})
 
 
-
+#অর্ডার অনুযায়ী ডেলিভারি পার্সেন্টেজ 
 def calculate_delivery_percentage(request):
     # Query SalesOrderInfo to retrieve totalAmount and totalQty
     sales_orders = SalesOrderInfo.objects.all()
@@ -402,3 +403,35 @@ def calculate_delivery_percentage(request):
             sales_order.delivery_percentage_qty = None
 
     return render(request, 'sales/calculate_delivery_percentage.html', {'sales_orders': sales_orders})
+
+# আইটেম group সিলেক্ট করে আইটেম group  অনুযায়ী টোটাল সেলস quantity এবং  এমাউন্ট 
+def calculate_summary(request):
+    if request.method == 'POST':
+        form = ItemGroupForm(request.POST)
+        if form.is_valid():
+            selected_item_group = form.cleaned_data['item_group']
+            
+            # Get a list of Item objects belonging to the selected ItemGroup
+            items_in_group = Item.objects.filter(item_group=selected_item_group)
+            
+            # Get the codes of the items in the selected ItemGroup
+            item_codes = [item.code for item in items_in_group]
+            
+            # Calculate sum of quantity and priceTotal for SalesOrderItem
+            summary_data = SalesOrderItem.objects.filter(
+                code__in=item_codes  # Match SalesOrderItem.code with Item.code
+            ).aggregate(
+                total_quantity=Sum('quantity'),
+                total_price_total=Sum('priceTotal')
+            )
+            
+            return render(request, 'sales/item_group_sales_summary.html', {
+                'selected_item_group': selected_item_group,
+                'total_quantity': summary_data['total_quantity'],
+                'total_price_total': summary_data['total_price_total'],
+            })
+    else:
+        form = ItemGroupForm()
+
+    return render(request, 'sales/item_group_sales_summary.html', {'form': form})
+
