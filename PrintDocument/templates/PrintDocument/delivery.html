@@ -4,7 +4,12 @@
 
 {% load static %}
 
-
+{% block extra_css %}
+/* Remove border for the last row */
+table tr:last-child {
+  border: 1px solid white !important;
+}
+{% endblock %}
 {% block content %}
 
 <section class="container section card mb-5 " style="color:black !important">

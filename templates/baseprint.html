@@ -12,13 +12,11 @@
                 border-left: 5px solid #007bff; /* Change color as needed */
                 padding-left: 15px; /* Adjust spacing as needed */
             }
-                    /* Remove border for the last row */
-        table tr:last-child {
-          border: 1px solid white !important;
-      }
-      table tr:first-child {
-        border: 1px solid black !important;
-    }
+            table tr:first-child {
+              border: 1px solid black !important;
+          }
+
+  
             @media print {
               /* Custom CSS for print media */
               .col-md-6 {
@@ -32,6 +30,9 @@
             }              
           }
     </style>
+    {% block extra_css %}
+    
+    {% endblock %}
 </head>
 <body>
     
