@@ -1,0 +1,32 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        {% include '../form.html'%}
+    <h1>Sales Order Summary</h1>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Total Quantity</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in summary_data %}
+                <tr>
+                    <td>{{ item.code }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.total_quantity }}</td>
+                    <td>{{ item.total_amount }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}

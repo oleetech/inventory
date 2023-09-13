@@ -159,6 +159,8 @@ urlpatterns = [
     
     # আইটেম group সিলেক্ট করে আইটেম group  অনুযায়ী টোটাল সেলস quantity এবং  এমাউন্ট     
     path('Sales/calculate_summary/', salesorderviews.calculate_summary, name='calculate_summary'),
+    #আইটেম অনুযায়ী অর্ডার টোটাল আইটেম quantity, এমাউন্ট সামারি 
+    path('Sales/sales_order_item_wise_summary/', salesorderviews.sales_order_item_wise_summary, name='sales_order_item_wise_summary'),
     
 
 

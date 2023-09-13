@@ -344,7 +344,7 @@ def sum_quantity_by_name(request):
 
 
 
-
+#অর্ডার অনুযায়ী ডেলিভারি ও চালান রেসিভ দেখা
 def check_delivery_status(request):
     if request.method == 'POST':
         form = OrderFilterForm(request.POST)
@@ -434,4 +434,25 @@ def calculate_summary(request):
         form = ItemGroupForm()
 
     return render(request, 'sales/item_group_sales_summary.html', {'form': form})
+
+#আইটেম অনুযায়ী অর্ডার টোটাল আইটেম quantity, এমাউন্ট সামারি 
+def sales_order_item_wise_summary(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            
+            # Get the total quantity and total amount for each code, filtered by date range
+            summary_data = SalesOrderItem.objects.filter(created__gte=start_date, created__lte=end_date).values('created', 'code', 'name').annotate(
+                total_quantity=Sum('quantity'),
+                total_amount=Sum('priceTotal')
+            ).order_by('created')
+            
+            return render(request, 'sales/sales_order_item_wise_summary.html', {'summary_data': summary_data, 'form': form})
+    else:
+        form = DateFilterForm()
+        summary_data = []  # Empty data for initial display
+    
+    return render(request, 'sales/sales_order_item_wise_summary.html', {'form': form})
 
