@@ -55,6 +55,14 @@ function calculateTotalQty() {
 } 
       // Example: Handle changes in Price and Quantity fields
       function handleFieldChanges() {
+        
+        $('input[name^="deliveryitem_set-"][name$="-lineNo"]').on('change', function() {
+          var index = $(this).attr('name').split('-')[1];
+          calculatePriceTotal(index);
+          setTotalAmount();
+          setTotalQty();
+        });
+
         $('input[name^="deliveryitem_set-"][name$="-price"], input[name^="deliveryitem_set-"][name$="-quantity"],input[name^="deliveryitem_set-"][name$="-lineNo"]').on('change', function() {
           var index = $(this).attr('name').split('-')[1];
           calculatePriceTotal(index);
@@ -83,6 +91,8 @@ function calculateTotalQty() {
 
         $('input[name^="deliveryitem_set-"][name$="-lineNo"]').each(function() {
             $(this).on('change', function() {
+
+              
               const inputValue = parseInt($(this).val(), 10);
               const receiptNo = $(this).closest('tr').find('.field-receiptNo input').val();
 

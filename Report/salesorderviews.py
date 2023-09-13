@@ -356,3 +356,49 @@ def check_delivery_status(request):
         form = OrderFilterForm()
 
     return render(request, 'sales/delivery_status.html', {'form': form})
+
+
+
+def calculate_delivery_percentage(request):
+    # Query SalesOrderInfo to retrieve totalAmount and totalQty
+    sales_orders = SalesOrderInfo.objects.all()
+
+    # Calculate the sum of totalAmount and totalQty for each docNo
+    delivery_totals = DeliveryInfo.objects.values('salesOrder').annotate(
+        total_delivery_amount=Sum('totalAmount'),
+        total_delivery_qty=Sum('totalQty')
+    )
+
+    # Calculate percentage and add it to the SalesOrderInfo objects
+    for sales_order in sales_orders:
+        matching_delivery_info = next(
+            (item for item in delivery_totals if item['salesOrder'] == sales_order.docNo),
+            None
+        )
+        if matching_delivery_info:
+            delivery_total_amount = matching_delivery_info['total_delivery_amount']
+            delivery_total_qty = matching_delivery_info['total_delivery_qty']
+            total_amount = sales_order.totalAmount
+            total_qty = sales_order.totalQty
+            if total_amount:
+                percentage_amount = (delivery_total_amount / total_amount) * 100
+                percentage_qty = (delivery_total_qty / total_qty) * 100
+                # Add these calculated values to the sales_order object
+                sales_order.delivery_total_amount = delivery_total_amount
+                sales_order.delivery_total_qty = delivery_total_qty
+                sales_order.delivery_percentage_amount = percentage_amount
+                sales_order.delivery_percentage_qty = percentage_qty
+            else:
+                # Handle cases where total_amount is zero or None
+                sales_order.delivery_total_amount = 0
+                sales_order.delivery_total_qty = 0
+                sales_order.delivery_percentage_amount = None
+                sales_order.delivery_percentage_qty = None
+        else:
+            # Handle cases where there is no matching delivery info
+            sales_order.delivery_total_amount = 0
+            sales_order.delivery_total_qty = 0
+            sales_order.delivery_percentage_amount = None
+            sales_order.delivery_percentage_qty = None
+
+    return render(request, 'sales/calculate_delivery_percentage.html', {'sales_orders': sales_orders})

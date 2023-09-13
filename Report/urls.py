@@ -152,6 +152,8 @@ urlpatterns = [
     path('Sales/sum_quantity_by_name/', salesorderviews.sum_quantity_by_name, name='sum_quantity_by_name'),
 
     path('Sales/check_delivery_status/', salesorderviews.check_delivery_status, name='check_delivery_status'),
+
+    path('Sales/calculate_delivery_percentage/', salesorderviews.calculate_delivery_percentage, name='calculate_delivery_percentage'),
     
     
 

@@ -1,0 +1,62 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        
+    <h1>Sales Order Info</h1>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Order Number (docNo)</th>
+                <th>Total Amount</th>
+                <th>Total Quantity</th>
+                <th>Total Delivery Amount</th>
+                <th>Total Delivery Quantity</th>
+                <th>Delivery Percentage (Amount)</th>
+                <th>Delivery Percentage (Quantity)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sales_order in sales_orders %}
+                <tr>
+                    <td>{{ sales_order.docNo }}</td>
+                    <td>{{ sales_order.totalAmount }}</td>
+                    <td>{{ sales_order.totalQty }}</td>
+                    <td>
+                        {% if sales_order.delivery_percentage_amount %}
+                            {{ sales_order.delivery_total_amount|floatformat:2 }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sales_order.delivery_percentage_qty %}
+                            {{ sales_order.delivery_total_qty|floatformat:2 }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sales_order.delivery_percentage_amount %}
+                            {{ sales_order.delivery_percentage_amount|floatformat:2 }}%
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if sales_order.delivery_percentage_qty %}
+                            {{ sales_order.delivery_percentage_qty|floatformat:2 }}%
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
