@@ -10,7 +10,7 @@ from django_select2.forms import ModelSelect2Widget
 from .models import SalesOrderInfo, SalesOrderItem 
 from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
-from .models import DeliveryInfo,DeliveryItem
+from .models import DeliveryInfo,DeliveryItem,AdditionalDeliveryData,ChallanReceivedDeliveryData
 
 def calculate_delivery(salesOrderNo):
     delivery_qty = DeliveryItem.objects.filter(orderNo=salesOrderNo).aggregate(total_quantity=models.Sum('quantity'))['total_quantity'] or 0    
@@ -219,7 +219,15 @@ class DeliveryInfoAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         
 
-  
+@admin.register(AdditionalDeliveryData)
+class AdditionalDeliveryDataAdmin(admin.ModelAdmin):   
+    list_display = ('delivery_info','delivertobuyerdate')
+    search_fields = ('delivery_info__docNo', ) 
+    
+@admin.register(ChallanReceivedDeliveryData)
+class ChallanReceivedDeliveryDataDataAdmin(admin.ModelAdmin):   
+    list_display = ('delivery_info','challanreceiveddate')
+    search_fields = ('delivery_info__docNo', )     
         
 '''
   ____            _                   ___                    _            _     _                 

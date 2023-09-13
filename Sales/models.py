@@ -122,7 +122,8 @@ class DeliveryInfo(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     salesOrder = models.PositiveIntegerField(default=0)
  
-    
+    delivertobuyerdate = models.DateField(default=None, blank=True, null=True)
+    challanreceiveddate = models.DateField(default=None, blank=True, null=True)
 
         
         
@@ -133,7 +134,45 @@ class DeliveryInfo(models.Model):
 
     def __str__(self):
         return f" {self.docNo}"
+    
+class AdditionalDeliveryData(models.Model):
+    delivery_info = models.OneToOneField(DeliveryInfo, on_delete=models.CASCADE,unique=True)
+    delivertobuyerdate = models.DateField(default=date.today, editable=True)
 
+    def __str__(self):
+        return f"{self.delivery_info.docNo}"
+
+    def save(self, *args, **kwargs):
+        # Update the delivertobuyerdate of the associated DeliveryInfo
+        self.delivery_info.delivertobuyerdate = self.delivertobuyerdate
+        self.delivery_info.save()
+        super().save(*args, **kwargs)
+        
+    class Meta:
+
+        verbose_name = ' Challan Pass From Gate '
+        verbose_name_plural = 'Challan Pass From Gate '
+        
+        
+class ChallanReceivedDeliveryData(models.Model):
+    delivery_info = models.OneToOneField(DeliveryInfo, on_delete=models.CASCADE,unique=True)
+    challanreceiveddate = models.DateField(default=date.today, editable=True)
+
+    def __str__(self):
+        return f"{self.delivery_info.docNo}"
+
+    def save(self, *args, **kwargs):
+        # Update the delivertobuyerdate of the associated DeliveryInfo
+        self.delivery_info.challanreceiveddate = self.challanreceiveddate
+        self.delivery_info.save()
+        super().save(*args, **kwargs)
+        
+    class Meta:
+
+        verbose_name = '  Received Challan From Customer '
+        verbose_name_plural = 'Received Challan From Customer '
+                
+        
 
 class DeliveryItem(models.Model):   
     docNo = models.PositiveIntegerField(unique=False,default=1)    

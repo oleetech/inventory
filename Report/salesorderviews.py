@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import Sum,Count,F,ExpressionWrapper, DecimalField
 from collections import defaultdict
 from decimal import Decimal
-from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem
+from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem,DeliveryInfo
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta
 from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm,DateFilterForm,OrderDepartmentFilter,DateDepartmentFilter
@@ -69,7 +69,7 @@ def filter_orders_by_age(request):
 
     return render(request, 'sales/filter_orders_by_age.html', {'form': form})
 
-#স্ট্যাটাস অনুযায়ী  সেলস অর্ডার দেখা 
+#অর্ডার Open Hold স্ট্যাটাস অনুযায়ী  সেলস অর্ডার দেখা 
 def sales_order_status_filter(request):
     if request.method == 'POST':
         form = SalesOrderStatusFilterForm(request.POST)
@@ -344,3 +344,15 @@ def sum_quantity_by_name(request):
 
 
 
+def check_delivery_status(request):
+    if request.method == 'POST':
+        form = OrderFilterForm(request.POST)
+        if form.is_valid():
+            order_no = form.cleaned_data['orderNo']
+            
+            delivery_info_queryset = DeliveryInfo.objects.filter(salesOrder=order_no)
+            return render(request, 'sales/delivery_status.html', {'delivery_info_queryset': delivery_info_queryset})
+    else:
+        form = OrderFilterForm()
+
+    return render(request, 'sales/delivery_status.html', {'form': form})

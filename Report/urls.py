@@ -150,6 +150,8 @@ urlpatterns = [
     path('Sales/pending_particular_between_on_date/', salesorderviews.pending_particular_between_on_date, name='pending_particular_between_on_date'),
     #পেন্ডিং পার্টিকুলার  আইটেম অনুযায়ী
     path('Sales/sum_quantity_by_name/', salesorderviews.sum_quantity_by_name, name='sum_quantity_by_name'),
+
+    path('Sales/check_delivery_status/', salesorderviews.check_delivery_status, name='check_delivery_status'),
     
     
 

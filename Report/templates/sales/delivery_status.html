@@ -1,0 +1,49 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        {% include '../form.html'%}
+    {% if delivery_info_queryset %}
+    <h1>Order Number: {{ delivery_info_queryset.0.salesOrder }}</h1> <!-- Display salesOrder value -->
+
+
+        <table id="itemsTable" class="table table-bordered">
+            <thead>
+                <tr>
+               
+                    <th>Challan No</th>
+                    <th> Delivery Status</th>
+                    <th> Challan Received Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for delivery_info in delivery_info_queryset %}
+                    <tr>
+                      
+                        <td>{{ delivery_info.docNo }}</td>
+                        <td>
+                            {% if delivery_info.delivertobuyerdate %}
+                                Delivered
+                            {% else %}
+                                Not Delivered
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if delivery_info.challanreceiveddate %}
+                                Received
+                            {% else %}
+                                Not Received
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% endblock %}
