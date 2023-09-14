@@ -32,11 +32,13 @@ class PurchaseItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    
+    lineNo = models.PositiveIntegerField(default=0)  # Add the lineNo field
+    docNo = models.PositiveIntegerField(default=1, unique=False)      
     def save(self, *args, **kwargs):
         if self.created:            
             self.created = self.order.created
-                   
+        if self.docNo:
+            self.docNo = self.order.docNo                       
         super().save(*args, **kwargs)  
             
     def __str__(self):
@@ -46,6 +48,8 @@ class PurchaseItem(models.Model):
     
 class GoodsReceiptPoInfo(models.Model):
     docNo = models.PositiveIntegerField(default=1, unique=True)
+    purchaseOrder = models.PositiveIntegerField(default=0)
+
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
@@ -71,9 +75,14 @@ class GoodsReceiptPoItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    purchaseOrder = models.PositiveIntegerField(default=0)
+    purchareOrderNo =  models.PositiveIntegerField(default=0)
+    lineNo =  models.PositiveIntegerField(default=0) 
     def save(self, *args, **kwargs):
         if self.created:            
             self.created = self.order.created
+        if self.purchaseOrder:            
+            self.purchaseOrder = self.order.purchaseOrder            
                    
         super().save(*args, **kwargs)      
     def __str__(self):

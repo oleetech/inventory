@@ -33,6 +33,7 @@ urlpatterns = [
     path('production/',include('Production.urls')),   
     path('sales/',include('Sales.urls')),    
     path('itemMasterData/',include('ItemMasterData.urls')),     
+    path('Purchasing/',include('Purchasing.urls')),   
  
     path('report/',include('Report.urls')),  
     path('report/PrintDocument/', include('PrintDocument.urls')), 

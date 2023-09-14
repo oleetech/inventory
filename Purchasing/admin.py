@@ -23,6 +23,7 @@ class PurchaseOrderInfoAdminForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),            
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
             'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
@@ -66,7 +67,7 @@ from .models import GoodsReceiptPoInfo, GoodsReceiptPoItem
 class GoodsReceiptPoItemForm(forms.ModelForm):
     class Meta:
         model = GoodsReceiptPoItem
-        fields = ['code','name','uom','quantity','price','priceTotal']
+        fields = ['code','name','uom','quantity','price','priceTotal','purchareOrderNo','lineNo']
 
 class GoodsReceiptPoItemInline(admin.TabularInline):
     model = GoodsReceiptPoItem
@@ -76,12 +77,12 @@ class GoodsReceiptPoItemInline(admin.TabularInline):
 class GoodsReceiptPoInfoAdminForm(forms.ModelForm):
     class Meta:
         model = GoodsReceiptPoInfo
-        fields = ['customerName','docNo','created','address','totalQty','totalAmount']
+        fields = ['purchaseOrder','docNo','customerName','created','address','totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+            # 'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
     
     def __init__(self, *args, **kwargs):

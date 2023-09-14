@@ -104,7 +104,7 @@ function calculateTotalQty() {
                         nameInput.val(response.name);
                         uomInput.val(response.uom);
 
-                        quantityInput.val(response.quantity);
+                        // quantityInput.val(response.quantity);
                         salesorderInput.val(response.salesOrder);
         
                         console.log(response);
