@@ -77,7 +77,7 @@ class BillOfMaterialsAdmin(admin.ModelAdmin):
 from .models import Production, ProductionComponent
 from Sales.models import SalesOrderInfo,SalesOrderItem
 
-
+ 
     
 class ProductionForm(forms.ModelForm):
     # docno = forms.IntegerField(disabled=True)  # Add this line to the form
