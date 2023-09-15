@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Check if the element exists before proceeding
     if (headerDiv) {
         // Add your custom class to the <div> element
-        headerDiv.classList.add('bg-dark', 'waves-effect', 'waves-light');
+        headerDiv.classList.add('card-header', 'waves-effect', 'waves-light');
     }
 
     // Select the <h2> element in the admin panel

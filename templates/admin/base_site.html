@@ -1,6 +1,7 @@
 {% extends "admin/base.html" %}
 {%load static%}
 
+{% block title %}Rebel{% endblock %}
 
 
 {% block extrahead %}
@@ -9,15 +10,25 @@
     <link rel="stylesheet" href="{% static 'css/admin_styles.css' %}">   
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-   
+    <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+
 
     <style>
         /* Hide the Recent actions section */
         #content-related{
             display: none;
         }
+
     </style>  
 
     <script type="text/javascript" src="{% static 'js/custom_admin.js' %}" defer></script>
 
+{% endblock %}
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'images/logo.jpg' %}" alt="Rebel" width='70px'>
+        Rebel
+    </a>
+</h1>
 {% endblock %}

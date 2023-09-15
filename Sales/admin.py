@@ -3,6 +3,7 @@ from django import forms
 from django.db import models
 from django.db.models import Sum
 
+
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
@@ -139,7 +140,7 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
         obj.owner = request.user if request.user.is_authenticated else None                         
         super().save_model(request, obj, form, change)
         
-        
+
 '''
   ____           _   _                               
  |  _ \    ___  | | (_) __   __   ___   _ __   _   _ 

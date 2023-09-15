@@ -123,46 +123,39 @@ return total.toFixed(4);
 
 
 
-  // আইটেম নাম কোড লিখলে আইটেমের কোড ITEM মডেল থেকে অটো আসবে 
   (function($) {
     $(document).ready(function() {
-  
         $('input[name^="salesorderitem_set-"][name$="-name"]').each(function() {
-            $(this).on('change', function() {
-              const name = $(this).val();
-              const inputElement = $(this);
-  
-              $.ajax({
-                type: 'POST',
-                url: '/itemMasterData/item_name/',
-                data: {
-                    'name': name
-       
-                  
+            $(this).autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/itemMasterData/item_name/', // Adjust the URL to your endpoint
+                        data: {
+                            'name': request.term
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            response([{
+                                label: data.name, // Displayed in the dropdown
+                                value: data.code // Value placed in the input field when selected
+                            }]);
+                        }
+                    });
                 },
-                dataType: 'json',
-                success: function(response) {
-                  const tr = inputElement.closest('tr');              
-                  const codeInput = tr.find('.field-code input');  
-                  const uomInput = tr.find('.field-uom input');    
-                  const sizeInput = tr.find('.field-size input');                    
-                  // Update the value of the name input field
-                  codeInput.val(response.code);      
-                  uomInput.val(response.unit_name);      
-                  sizeInput.val(response.size);                              
-                    console.log(response);
+                minLength: 2, // Minimum number of characters before triggering autocomplete
+                select: function(event, ui) {
+                    const tr = $(this).closest('tr');
+                    const codeInput = tr.find('.field-code input');
+
+                    // Update the value of the name input field
+                    $(this).val(ui.item.label);
+                    // Update the value of the code input field
+                    codeInput.val(ui.item.value);
+
+                    return false; // Prevent the input value from being overwritten
                 }
             });
-            
-        
-  
-  
-            });
         });
-
-
     });
-  })(jQuery);  
-
-
-
+})(jQuery);

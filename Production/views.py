@@ -1,10 +1,17 @@
 from django.shortcuts import render,get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 
 from django.views.decorators.csrf import csrf_exempt
 from .models import BillOfMaterials,Production
 
+def custom_print_view(request):
+    model_name = request.GET.get('model_name')
+    model_id = request.GET.get('model_id')
 
+    # Fetch the object based on the model name and ID
+    # Implement your printing logic here
+
+    return HttpResponse(f'Printing {model_name} with ID {model_id}')
 
 @csrf_exempt
 def ajax_view(request):
@@ -60,5 +67,5 @@ def ajax_view_receipt(request):
             response_data = {'error': 'Production not found'}
         
         return JsonResponse(response_data)
-    
+
     

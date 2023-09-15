@@ -11,8 +11,14 @@
 
 
 {% block extrastyle %}{{ block.super }}
+
+
+
 <link rel="stylesheet" href="{% static "admin/css/forms.css" %}">
-<script src="{% static "js/library/bootstrap.bundle.min.js" %}""></script>
+<link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+<script src="{% static 'js/library/bootstrap.bundle.min.js' %}"></script>
+
+
 {% endblock %}
 
 {% block coltype %}colM{% endblock %}
@@ -31,6 +37,9 @@
 {% endif %}
 
 {% block content %}<div id="content-main" class='card p-4'>
+  <div class="card-header">
+    {{ opts.verbose_name }}
+  </div>  
 {% block object-tools %}
 {% if change and not is_popup %}
   <ul class="object-tools">
