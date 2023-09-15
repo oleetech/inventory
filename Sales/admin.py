@@ -377,7 +377,7 @@ class ARInvoiceItemInline(admin.TabularInline):
 class ARInvoiceInfoAdminForm(forms.ModelForm):
     class Meta:
         model = ARInvoiceInfo
-        fields = ['salesOrder','deliveryNo','customerName','docNo', 'totalQty','totalAmount','sales_employee']
+        fields = ['deliveryNo','salesOrder','customerName','docNo','address' ,'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),

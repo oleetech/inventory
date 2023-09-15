@@ -3,6 +3,7 @@ from django import forms
 from .models import  BusinessPartner
 from Sales.models import SalesOrderInfo,DeliveryInfo,ARInvoiceInfo
 from Purchasing.models import PurchaseOrderInfo,GoodsReceiptPoInfo,ApInvoiceInfo
+from Banking.models import IncomingPaymentInfo,OutgoingPaymentInfo
 from django.db.models import Sum
 
 class BusinessPartnerForm(forms.ModelForm):
@@ -16,7 +17,7 @@ class BusinessPartnerForm(forms.ModelForm):
 
 @admin.register(BusinessPartner)
 class BusinessPartnerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'total_sales_amount','total_delivery_amount','total_purchase_amount','total_arinvoice_amount','total_apinvoice_amount')
+    list_display = ('name', 'total_sales_amount','total_delivery_amount','total_purchase_amount','total_arinvoice_amount','total_apinvoice_amount','total_incoming_amount','total_outgoing_amount')
     search_fields = ('name', 'code')
     list_filter = ('currency_type', 'vendor_type')
     ordering = ('name',)
@@ -62,4 +63,18 @@ class BusinessPartnerAdmin(admin.ModelAdmin):
         return total_amount or 0
 
     total_apinvoice_amount.short_description = 'AP Invoice Amount'     
+    
+    def total_incoming_amount(self, obj):
+        # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
+        total_amount = IncomingPaymentInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
+        return total_amount or 0
+
+    total_incoming_amount.short_description = 'Incoming  Amount'      
+    
+    def total_outgoing_amount(self, obj):
+        # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
+        total_amount = OutgoingPaymentInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
+        return total_amount or 0
+
+    total_outgoing_amount.short_description = 'Outgoing  Amount'         
 

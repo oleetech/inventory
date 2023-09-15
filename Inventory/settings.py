@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'Report',
     'tinymce',
     'PrintDocument',
+    'Banking',
 
 ]
 TINYMCE_DEFAULT_CONFIG = {

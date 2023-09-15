@@ -37,6 +37,8 @@ urlpatterns = [
  
     path('report/',include('Report.urls')),  
     path('report/PrintDocument/', include('PrintDocument.urls')), 
+    path('banking/',include('Banking.urls')),  
+
       
 ]
 if settings.DEBUG:

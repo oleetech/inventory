@@ -17,6 +17,8 @@ def purchaseorderinfo(request):
                 'docNo': purchaseOrder,
                 'customerName': orderinfo.customerName.id,
                 'address':orderinfo.address,
+                'totalAmount':orderinfo.totalAmount,
+                'totalQty':orderinfo.totalQty                
 
                 
             }

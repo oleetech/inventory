@@ -135,12 +135,15 @@ function calculateTotalQty() {
                 const addressInput = $('#id_address');  
                 const salesOrderInput = $('#id_salesOrder');    
                 const salesemployeeInput = $('#id_sales_employee');    
-                
+                const totalAmountInput = $('#id_totalAmount');    
+                const totalQtyInput = $('#id_totalQty');                                    
                 // // Update the value of the name input field
                 customerInput.val(response.customerName);   
                 addressInput.val(response.address);    
                 salesOrderInput.val(response.salesOrder);         
-                salesemployeeInput.val(response.sales_employee);                                            
+                salesemployeeInput.val(response.sales_employee);      
+                totalAmountInput.val(response.totalAmount);  
+                totalQtyInput.val(response.totalQty);                                        
                   console.log(response);
               }
           });
@@ -202,6 +205,7 @@ function calculateTotalQty() {
                 priceInput.val(response.price);   
                 priceTotalInput.val(response.priceTotal);                                       
                   console.log(response);
+
               }
           });
           

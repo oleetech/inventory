@@ -352,7 +352,7 @@ class ARInvoiceInfo(models.Model):
     sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     salesOrder = models.PositiveIntegerField(default=0)
-    deliveryNo = models.PositiveIntegerField(default=0)
+    deliveryNo = models.PositiveIntegerField(default=0,unique=True)
 
     class Meta:
 

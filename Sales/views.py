@@ -134,7 +134,9 @@ def arinvoiceinfo(request):
                 'customerName': orderinfo.customerName.id,
                 'salesOrder':orderinfo.salesOrder,
                 'address':orderinfo.address,
-                'sales_employee':orderinfo.sales_employee.id
+                'sales_employee':orderinfo.sales_employee.id,
+                'totalAmount':orderinfo.totalAmount,
+                'totalQty':orderinfo.totalQty
 
                 
             }
