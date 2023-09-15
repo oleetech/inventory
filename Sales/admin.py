@@ -173,7 +173,29 @@ class DeliveryInfoForm(forms.ModelForm):
                 next_order_number = 1
 
             self.initial['docNo'] = next_order_number
-                    
+            
+
+    def clean(self):
+        cleaned_data = super().clean()
+        order_no = cleaned_data.get('salesOrder')
+        total_qty = cleaned_data.get('totalQty')
+
+        # Get the sum of previous DeliveryItem total quantities based on salesOrder
+        previous_delivery_quantity = DeliveryInfo.objects.filter(salesOrder=order_no).exclude(pk=self.instance.pk).aggregate(Sum('totalQty'))['totalQty__sum'] or 0
+
+        # Get the SalesOrderInfo for the given docNo
+        sales_order_info = SalesOrderInfo.objects.filter(docNo=cleaned_data.get('docNo')).first()
+
+        if sales_order_info:
+            total_quantity = sales_order_info.totalQty
+
+            # Calculate the total quantity including previous and current
+            total_delivery_quantity = previous_delivery_quantity + total_qty
+
+            if total_delivery_quantity  > total_quantity:
+                raise forms.ValidationError("Total delivery quantity exceeds SalesOrderInfo total quantity.")
+        
+        return cleaned_data              
 class DeliveryItemForm(forms.ModelForm):
     class Meta:
         model = DeliveryItem
