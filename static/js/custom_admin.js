@@ -152,3 +152,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+   
+    
+    var saveButton = document.querySelector('input[name="_save"]');
+    if (saveButton) {
+        saveButton.addEventListener('click', function(e) {
+            const lineNoInputs = document.querySelectorAll('input[name^="arinvoiceitem_set-"][id^="id_arinvoiceitem_set-"][id$="-lineNo"]');
+            lineNoInputs.forEach(function(input, index) {
+                input.value = index + 1;
+            });
+        });
+    }
+});

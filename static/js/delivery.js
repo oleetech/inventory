@@ -231,3 +231,5 @@ function calculateTotalQty() {
 
   });
 })(jQuery);
+
+

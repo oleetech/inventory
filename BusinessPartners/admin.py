@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django import forms
 from .models import  BusinessPartner
-from Sales.models import SalesOrderInfo,DeliveryInfo
-from Purchasing.models import PurchaseOrderInfo,GoodsReceiptPoInfo
+from Sales.models import SalesOrderInfo,DeliveryInfo,ARInvoiceInfo
+from Purchasing.models import PurchaseOrderInfo,GoodsReceiptPoInfo,ApInvoiceInfo
 from django.db.models import Sum
 
 class BusinessPartnerForm(forms.ModelForm):
@@ -16,7 +16,7 @@ class BusinessPartnerForm(forms.ModelForm):
 
 @admin.register(BusinessPartner)
 class BusinessPartnerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'total_sales_amount','total_delivery_amount','total_purchase_amount')
+    list_display = ('name', 'total_sales_amount','total_delivery_amount','total_purchase_amount','total_arinvoice_amount','total_apinvoice_amount')
     search_fields = ('name', 'code')
     list_filter = ('currency_type', 'vendor_type')
     ordering = ('name',)
@@ -49,7 +49,17 @@ class BusinessPartnerAdmin(admin.ModelAdmin):
 
     total_purchase_amount.short_description = 'Purchase Amount'          
     
+    def total_arinvoice_amount(self, obj):
+        # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
+        total_amount = ARInvoiceInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
+        return total_amount or 0
 
+    total_arinvoice_amount.short_description = 'AR Invoice Amount'     
 
+    def total_apinvoice_amount(self, obj):
+        # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
+        total_amount = ApInvoiceInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
+        return total_amount or 0
 
+    total_apinvoice_amount.short_description = 'AP Invoice Amount'     
 

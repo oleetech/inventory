@@ -351,6 +351,8 @@ class ARInvoiceInfo(models.Model):
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
     sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    salesOrder = models.PositiveIntegerField(default=0)
+    deliveryNo = models.PositiveIntegerField(default=0)
 
     class Meta:
 
@@ -376,17 +378,22 @@ class ARInvoiceItem(models.Model):
     ctnno = models.CharField(max_length=100,default='',null=True)       
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    deliveryNo =  models.PositiveIntegerField(default=0)
+    deliverylineNo = models.PositiveIntegerField(default=0)       
+    lineNo =  models.PositiveIntegerField(default=0) 
+    orderNo = models.PositiveIntegerField(default=0)    
     
     def save(self, *args, **kwargs):
         if self.created:
 
 
             self.created = self.order.created
-                   
+            self.deliveryNo = self.order.deliveryNo       
+            self.orderNo = self.order.salesOrder                          
         super().save(*args, **kwargs)     
             
     def __str__(self):
-        return f": {self.order}"          
+        return f": {self.id}"          
     
     
     

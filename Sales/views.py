@@ -1,5 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse,HttpRequest
+from .models import SalesOrderItem,SalesOrderInfo,DeliveryInfo,DeliveryItem,ARInvoiceInfo,ARInvoiceItem
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from Production.models import ProductionReceiptItem
 
@@ -33,8 +35,7 @@ def ajax_view(request):
     return JsonResponse({'error': 'Invalid request method'})
 
 
-from .models import SalesOrderItem,SalesOrderInfo
-from django.core.exceptions import ObjectDoesNotExist
+
 
 @csrf_exempt
 def get_sales_order_info(request):
@@ -105,8 +106,8 @@ def deliveryinfo(request):
                 'customerName': orderinfo.customerName.id,
                 'address':orderinfo.address,
                 'sales_employee':orderinfo.sales_employee.id,
-                'remarks':orderinfo.remarks,
-                'sales_employee':orderinfo.sales_employee.id
+                'remarks':orderinfo.remarks
+
                 
             }
             return JsonResponse(response_data)
@@ -114,4 +115,65 @@ def deliveryinfo(request):
             return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
     
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+
+
+@csrf_exempt
+def arinvoiceinfo(request):
+    if request.method == 'POST':
+        deliveryNo = int(request.POST.get('deliveryNo')) 
+        
+
+        # Replace the filter conditions with the ones you need
+        try:
+            orderinfo = DeliveryInfo.objects.get(docNo=deliveryNo)
+            response_data = {
+                
+                'customerName': orderinfo.customerName.id,
+                'salesOrder':orderinfo.salesOrder,
+                'address':orderinfo.address,
+                'sales_employee':orderinfo.sales_employee.id
+
+                
+            }
+            return JsonResponse(response_data)
+        except DeliveryInfo.DoesNotExist:
+            return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+
+
+
+@csrf_exempt
+def deliveryline_by_data(request):
+    if request.method == 'POST':
+        deliveryNo = request.POST.get('deliveryNo')
+        deliverylineNo = request.POST.get('deliverylineNo')
+
+        try:
+            order_item = DeliveryItem.objects.get(docNo=deliveryNo, lineNo=deliverylineNo)
+            response_data = {
+                'deliveryNo': order_item.docNo,
+                'salesOrder': order_item.orderNo,
+                'code': order_item.code,
+                'name': order_item.name,
+                'quantity': order_item.quantity,
+                'uom': order_item.uom,                
+                'price': order_item.price,
+                'priceTotal': order_item.priceTotal,
+                'deliverylineNo': order_item.lineNo,   
+                'size': order_item.size,   
+                'color': order_item.color,   
+            }
+            return JsonResponse(response_data)
+        except DeliveryItem.DoesNotExist:
+            return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
 

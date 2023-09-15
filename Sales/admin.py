@@ -367,7 +367,7 @@ from .models import ARInvoiceInfo, ARInvoiceItem
 class ARInvoiceItemForm(forms.ModelForm):
     class Meta:
         model = ARInvoiceItem
-        fields = ['code','name', 'uom','quantity','price','priceTotal']   
+        fields = ['code','name', 'uom','quantity','price','priceTotal','deliveryNo','deliverylineNo','lineNo','orderNo']   
 
 class ARInvoiceItemInline(admin.TabularInline):
     model = ARInvoiceItem
@@ -377,12 +377,12 @@ class ARInvoiceItemInline(admin.TabularInline):
 class ARInvoiceInfoAdminForm(forms.ModelForm):
     class Meta:
         model = ARInvoiceInfo
-        fields = ['customerName','docNo', 'totalQty','totalAmount','sales_employee']
+        fields = ['salesOrder','deliveryNo','customerName','docNo', 'totalQty','totalAmount','sales_employee']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+            # 'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
     
     def __init__(self, *args, **kwargs):

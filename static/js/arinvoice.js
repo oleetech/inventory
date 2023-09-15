@@ -112,4 +112,113 @@ function calculateTotalQty() {
 
 
   
-  
+(function($) {
+  $(document).ready(function() {
+
+     
+          $("#id_deliveryNo").on('change', function() {
+            const deliveryNo = $(this).val();
+            const inputElement = $(this);
+
+            $.ajax({
+              type: 'POST',
+              url: '/sales/arinvoiceinfo/',
+              data: {
+                  'deliveryNo': deliveryNo
+     
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                        
+                const customerInput = $('#id_customerName');  
+                const addressInput = $('#id_address');  
+                const salesOrderInput = $('#id_salesOrder');    
+                const salesemployeeInput = $('#id_sales_employee');    
+                
+                // // Update the value of the name input field
+                customerInput.val(response.customerName);   
+                addressInput.val(response.address);    
+                salesOrderInput.val(response.salesOrder);         
+                salesemployeeInput.val(response.sales_employee);                                            
+                  console.log(response);
+              }
+          });
+          
+      
+
+
+          });
+   
+      
+
+  });
+})(jQuery);  
+
+
+
+
+(function($) {
+  $(document).ready(function() {
+
+      $('input[name^="arinvoiceitem_set-"][name$="-deliverylineNo"]').each(function() {
+          $(this).on('change', function() {
+
+            
+            const inputValue = parseInt($(this).val(), 10);
+            const deliveryNo = $(this).closest('tr').find('.field-deliveryNo input').val();
+
+            const inputElement = $(this);
+
+            $.ajax({
+              type: 'POST',
+              url: '/sales/deliveryline_by_data/',
+
+              data: {
+                  'deliveryNo': deliveryNo,
+                  'deliverylineNo':inputValue
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                const tr = inputElement.closest('tr');
+                const codeInput = tr.find('.field-code input');  
+                const nameInput = tr.find('.field-name input');  
+                const quantityInput = tr.find('.field-quantity input'); 
+                const orderInput = tr.find('.field-orderNo input');                 
+                const uomInput = tr.find('.field-uom input');    
+                const sizeInput = tr.find('.field-size input');                 
+                const colorInput = tr.find('.field-color input');                     
+                const priceInput = tr.find('.field-price input');     
+                const priceTotalInput = tr.find('.field-priceTotal input');                       
+                // Update the value of the name input field
+                codeInput.val(response.code); 
+                nameInput.val(response.name); 
+                quantityInput.val(response.quantity);
+                orderInput.val(response.salesOrder);   
+                uomInput.val(response.uom);   
+                sizeInput.val(response.size);   
+                colorInput.val(response.color);   
+                priceInput.val(response.price);   
+                priceTotalInput.val(response.priceTotal);                                       
+                  console.log(response);
+              }
+          });
+          
+      
+
+
+          });
+      });
+      
+
+  });
+})(jQuery);
+
+
+
+
+
+
+
+
