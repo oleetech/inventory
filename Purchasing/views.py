@@ -1,7 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import PurchaseOrderInfo,GoodsReceiptPoInfo,PurchaseItem
+from .models import PurchaseOrderInfo,PurchaseItem,GoodsReceiptPoInfo,GoodsReceiptPoItem,ApInvoiceInfo,ApInvoiceItem
 # Create your views here.
 @csrf_exempt
 def purchaseorderinfo(request):
@@ -40,6 +40,59 @@ def goodsreceiptpoline(request):
 
             response_data = {
                 'receiptNumber': receipt_item.docNo,
+                'code': receipt_item.code,
+                'name': receipt_item.name,
+                'quantity': receipt_item.quantity,
+                'uom': receipt_item.uom,                
+                'price': receipt_item.price,
+                'priceTotal': receipt_item.priceTotal,             
+             
+                # Include other fields you want to retrieve
+            }
+            return JsonResponse(response_data)
+        except PurchaseItem.DoesNotExist:
+            return JsonResponse({'error': 'Item not found'})
+
+    return JsonResponse({'error': 'Invalid request method'})
+
+
+@csrf_exempt
+def goodsreReiptPoinfo(request):
+    if request.method == 'POST':
+        goodsreReiptNo  = request.POST.get('goodsreReiptNo')
+        
+
+        # Replace the filter conditions with the ones you need
+        try:
+            orderinfo = GoodsReceiptPoInfo.objects.get(docNo=goodsreReiptNo)
+            response_data = {
+                
+                # 'docNo': purchaseOrder,
+                'customerName': orderinfo.customerName.id,
+                'address':orderinfo.address,
+                'totalAmount':orderinfo.totalAmount,
+                'totalQty':orderinfo.totalQty                
+
+                
+            }
+            return JsonResponse(response_data)
+        except GoodsReceiptPoInfo.DoesNotExist:
+            return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def goodsreceiptpoline(request):
+    if request.method == 'POST':
+        receiptNo = int(request.POST.get('receiptNo'))
+        lineNo = int(request.POST.get('lineNo'))
+
+        try:
+            receipt_item = GoodsReceiptPoItem.objects.get(docNo=receiptNo, lineNo=lineNo)
+
+            response_data = {
+                # 'receiptNumber': receipt_item.docNo,
                 'code': receipt_item.code,
                 'name': receipt_item.name,
                 'quantity': receipt_item.quantity,

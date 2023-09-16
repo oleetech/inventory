@@ -75,14 +75,15 @@ class GoodsReceiptPoItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    purchaseOrder = models.PositiveIntegerField(default=0)
     purchareOrderNo =  models.PositiveIntegerField(default=0)
     lineNo =  models.PositiveIntegerField(default=0) 
+    docNo = models.PositiveIntegerField(default=1, unique=False)      
+    
     def save(self, *args, **kwargs):
         if self.created:            
             self.created = self.order.created
-        if self.purchaseOrder:            
-            self.purchaseOrder = self.order.purchaseOrder            
+        if self.docNo:
+            self.docNo = self.order.docNo              
                    
         super().save(*args, **kwargs)      
     def __str__(self):
@@ -137,6 +138,7 @@ class ApInvoiceInfo(models.Model):
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    goodsreReiptNo = models.PositiveIntegerField(default=0)
 
     class Meta:
 
@@ -156,10 +158,14 @@ class ApInvoiceItem(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    docNo = models.PositiveIntegerField(default=1, unique=False)        
+    goodsreReiptNo = models.PositiveIntegerField(default=0)
+    lineNo =  models.PositiveIntegerField(default=0)     
     def save(self, *args, **kwargs):
         if self.created:            
             self.created = self.order.created
-                   
+        if self.docNo:
+            self.docNo = self.order.docNo                       
         super().save(*args, **kwargs)       
     def __str__(self):
         return f": {self.order}"        

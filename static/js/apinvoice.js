@@ -154,10 +154,100 @@ function calculateTotalQty() {
 
 
 
+(function($) {
+  $(document).ready(function() {
+
+     
+          $("#id_goodsreReiptNo").on('change', function() {
+            const goodsreReiptNo= $(this).val();
+            const inputElement = $(this);
+      
+
+            $.ajax({
+              type: 'POST',
+              url: '/Purchasing/goodsreReiptPoinfo/',
+              data: {
+                  'goodsreReiptNo': goodsreReiptNo
+     
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                        
+                const customerInput = $('#id_customerName');  
+                const addressInput = $('#id_address');  
+                // const salesemployeeInput = $('#id_sales_employee');    
+
+                
+                // // Update the value of the name input field
+                customerInput.val(response.customerName);   
+                addressInput.val(response.address);    
+                // salesemployeeInput.val(response.sales_employee);                                  
+                  console.log(response);
+              }
+          });
+          
+      
 
 
+          });
+   
+      
+
+  });
+})(jQuery);
+  
 
 
+(function($) {
+  $(document).ready(function() {
+
+      $('input[name^="apinvoiceitem_set-"][name$="-lineNo"]').each(function() {
+          $(this).on('change', function() {
+
+            
+            const inputValue = parseInt($(this).val(), 10);
+            const receiptNo = $(this).closest('tr').find('.field-goodsreReiptNo input').val();
+
+            const inputElement = $(this);
+
+            $.ajax({
+              type: 'POST',
+              url: '/Purchasing/goodsreceiptpoline/',
+              data: {
+                  'receiptNo': receiptNo,
+                  'lineNo':inputValue
+                
+              },
+              dataType: 'json',
+              success: function(response) {
+                const tr = inputElement.closest('tr');
+                const codeInput = tr.find('.field-code input');  
+                const nameInput = tr.find('.field-name input');  
+                const quantityInput = tr.find('.field-quantity input'); 
+                const uomInput = tr.find('.field-uom input');   
+                const priceInput = tr.find('.field-price input');     
+                const priceTotalInput = tr.find('.field-priceTotal input');                                          
+                // Update the value of the name input field
+                codeInput.val(response.code); 
+                nameInput.val(response.name); 
+                quantityInput.val(response.quantity); 
+                uomInput.val(response.uom);         
+                priceInput.val(response.price);   
+                priceTotalInput.val(response.priceTotal);                                             
+                  console.log(response);
+              }
+          });
+          
+      
+
+
+          });
+      });
+      
+
+  });
+})(jQuery);
   
   
 

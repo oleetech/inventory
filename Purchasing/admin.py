@@ -199,7 +199,7 @@ class ApInvoiceInfoAdminForm(forms.ModelForm):
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+            # 'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
         }
     
     def __init__(self, *args, **kwargs):
