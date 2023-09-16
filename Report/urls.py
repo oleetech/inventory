@@ -115,6 +115,7 @@ urlpatterns = [
     #নির্দিষ্ট আইটেমের ডেট অনুযায়ী রিপোর্ট 
     path('Inventory/item_receipt_between_date_by_name/', inventoryviews.item_receipt_between_date_by_name, name='item_receipt_between_date_by_name'),
     path('Inventory/item_delivery_between_date_by_name/', inventoryviews.item_delivery_between_date_by_name, name='item_delivery_between_date_by_name'),
+    path('Inventory/issue_for_production_balance_report/', inventoryviews.issue_for_production_balance_report, name='issue_for_production_balance_report'),
   
 #  ____            _                   ___               _               
 # / ___|    __ _  | |   ___   ___     / _ \   _ __    __| |   ___   _ __ 

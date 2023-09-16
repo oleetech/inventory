@@ -5,8 +5,10 @@ from django.db.models.functions import ExtractMonth
 from django.db.models import IntegerField
 from datetime import datetime
 import calendar
+from Production.models import ProductionComponent
+from django.db import models
 
-from ItemMasterData.models import Item,ItemReceiptinfo,ItemReceipt,ItemDeliveryinfo,ItemDelivery,Stock
+from ItemMasterData.models import Item,ItemReceiptinfo,ItemReceipt,ItemDeliveryinfo,ItemDelivery,Stock,IssueForProductionItem
 from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter,ItemNameForm
 
 '''
@@ -516,3 +518,61 @@ def item_delivery_between_date_by_name(request):
         form = ItemNameForm()
 
     return render(request, 'inventory/item_delivery_between_date_by_name.html', {'form': form, 'item_receipts': item_receipts})
+
+
+def issue_for_production_balance_report(request):
+    balance_report_data = None
+    form = OrderFilterForm()  # Initialize the form without any request data
+    
+    if request.method == 'POST':
+        form = OrderFilterForm(request.POST)
+        if form.is_valid():
+            doc_no = form.cleaned_data['orderNo']
+
+            # Get all ProductionComponents for the specified docNo
+            production_components = ProductionComponent.objects.filter(docNo=doc_no)
+
+            # Initialize a dictionary to store the quantities for each code
+            code_quantities = {}
+
+            # Calculate ProductionComponent quantities
+            for pc in production_components:
+                code = pc.code
+                quantity = pc.quantity
+                name = pc.name
+
+                if code not in code_quantities:
+                    code_quantities[code] = {'production_quantity': 0, 'issue_quantity': 0, 'name': name}
+
+                code_quantities[code]['production_quantity'] += quantity
+
+            # Calculate IssueForProductionItem quantities based on productionNo
+            issue_items = IssueForProductionItem.objects.filter(productionNo=doc_no)
+            for issue_item in issue_items:
+                code = issue_item.code
+                name = issue_item.name  # Update the name for each item
+
+                quantity = issue_item.quantity
+
+                if code not in code_quantities:
+                    code_quantities[code] = {'production_quantity': 0, 'issue_quantity': 0, 'name': name}
+
+                code_quantities[code]['issue_quantity'] += quantity
+
+            # Calculate balance for each code
+            balance_report_data = []
+            for code, quantities in code_quantities.items():
+                production_quantity = quantities['production_quantity']
+                issue_quantity = quantities['issue_quantity']
+                name = quantities['name']  # Get the name from the dictionary
+                balance = production_quantity - issue_quantity
+
+                balance_report_data.append({
+                    'code': code,
+                    'name': name,
+                    'production_quantity': production_quantity,
+                    'issue_quantity': issue_quantity,
+                    'balance': balance,
+                })
+
+    return render(request, 'inventory/issue_for_production_balance_report.html', {'form': form, 'balance_report_data': balance_report_data})

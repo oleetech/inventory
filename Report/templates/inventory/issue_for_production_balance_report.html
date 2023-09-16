@@ -1,0 +1,38 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        <h2>Type Production Order No</h2>
+ {% include '../form.html'%}
+
+    {% if balance_report_data %}
+    <h2>Balance Report</h2>
+    <table id="itemsTable" class="table table-bordered" >
+        <thead>
+            <tr>
+                <th>Code</th>           
+                <th>Name</th>
+                <th>Production Quantity</th>
+                <th>Issue Quantity</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in balance_report_data %}
+            <tr>
+                <td>{{ item.code }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.production_quantity }}</td>
+                <td>{{ item.issue_quantity }}</td>
+                <td>{{ item.balance }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    {% endblock %}
