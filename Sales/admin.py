@@ -185,7 +185,7 @@ class DeliveryInfoForm(forms.ModelForm):
         previous_delivery_quantity = DeliveryInfo.objects.filter(salesOrder=order_no).exclude(pk=self.instance.pk).aggregate(Sum('totalQty'))['totalQty__sum'] or 0
 
         # Get the SalesOrderInfo for the given docNo
-        sales_order_info = SalesOrderInfo.objects.filter(docNo=cleaned_data.get('docNo')).first()
+        sales_order_info = SalesOrderInfo.objects.filter(docNo=order_no).first()
 
         if sales_order_info:
             total_quantity = sales_order_info.totalQty

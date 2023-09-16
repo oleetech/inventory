@@ -1,7 +1,11 @@
 {% extends "admin/base.html" %}
 {%load static%}
+{% load i18n %}
 
-{% block title %}Rebel{% endblock %}
+{% block title %}
+  {% if title %}{{ title }} | {% endif %}
+  {% if not is_popup %}{% if not add and change and delete %}{% if "app_list" in request.resolver_match.url_name %}{% blocktrans with name=opts.verbose_name_plural count=1 %}{{ name }}{% endblocktrans %}{% else %}{{ name }}{% endif %}{% endif %}{% endif %}
+{% endblock %}
 
 
 {% block extrahead %}

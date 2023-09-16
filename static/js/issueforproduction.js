@@ -26,17 +26,17 @@
                     dataType: 'json',
                     success: function(response) {
                         const tr = inputElement.closest('tr');
-                        const quantityInput = tr.find('.field-quantity input');
-                        const codeInput = tr.find('.field-code input');                        
-                        const nameInput = tr.find('.field-name input');
-                        const uomInput = tr.find('.field-uom input');
+                        // const quantityInput = tr.find('.field-quantity input');
+                        // const codeInput = tr.find('.field-code input');                        
+                        // const nameInput = tr.find('.field-name input');
+                        // const uomInput = tr.find('.field-uom input');
 
                         const salesorderInput = tr.find('.field-salesOrder input');
                         
                         // Update the value of the name input field
-                        codeInput.val(response.code);
-                        nameInput.val(response.name);
-                        uomInput.val(response.uom);
+                        // codeInput.val(response.code);
+                        // nameInput.val(response.name);
+                        // uomInput.val(response.uom);
 
                         // quantityInput.val(response.quantity);
                         salesorderInput.val(response.salesOrder);

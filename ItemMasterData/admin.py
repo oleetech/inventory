@@ -255,7 +255,7 @@ class  IssueForProductionItemInlineForm(forms.ModelForm) :
     
     class Meta:
         model = IssueForProductionItem
-        fields = ['productionNo','orderlineNo','code','name','uom','lineNo','salesOrder' ]
+        fields = ['productionNo','orderlineNo','code','name','quantity','uom','lineNo','salesOrder' ]
 
         
 class IssueForProductionItemInline(admin.TabularInline):
@@ -266,7 +266,7 @@ class IssueForProductionItemInline(admin.TabularInline):
               
   
 @admin.register(IssueForProductionInfo) 
-class ProductionReceiptAdmin(admin.ModelAdmin):   
+class IssueForProductionInfoAdmin(admin.ModelAdmin):   
     inlines = [IssueForProductionItemInline]
     form =   IssueForProductionInfoForm  
     change_form_template = 'admin/Production/ProductionOrder/change_form.html'   

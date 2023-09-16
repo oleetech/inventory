@@ -4,7 +4,58 @@ from django_select2.forms import ModelSelect2Widget
 from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
 
+from .models import PurchaseQuotetionInfo, PurchaseQuotetionItem
+class PurchaseQuotetionItemForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseQuotetionItem
+        fields = ['code','name', 'uom','quantity','price','priceTotal']   
 
+class PurchaseQuotetionItemInline(admin.TabularInline):
+    model = PurchaseQuotetionItem
+    form = PurchaseQuotetionItemForm
+    extra = 0
+
+class PurchaseQuotetionInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseQuotetionInfo
+        fields = ['customerName','docNo', 'totalQty','totalAmount']
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
+            # 'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_quotation = PurchaseQuotetionInfo.objects.order_by('-docNo').first()
+            if last_quotation:
+                next_quotation_number = last_quotation.docNo + 1
+            else:
+                next_quotation_number = 1
+
+            self.initial['docNo'] = next_quotation_number
+
+@admin.register(PurchaseQuotetionInfo)
+class PurchaseQuotetionInfoAdmin(admin.ModelAdmin):
+    form = PurchaseQuotetionInfoAdminForm
+    inlines = [PurchaseQuotetionItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+
+    class Media:
+        js = ('js/purchasequotetion.js',)
+        defer = True
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        } 
+    def save_model(self, request, obj, form, change):
+        if not obj.address:
+            if obj.customerName:
+                obj.address = obj.customerName.address
+        obj.owner = request.user if request.user.is_authenticated else None               
+        super().save_model(request, obj, form, change)
 
 from .models import PurchaseOrderInfo, PurchaseItem
 class PurchaseItemForm(forms.ModelForm):

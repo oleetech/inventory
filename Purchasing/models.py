@@ -5,6 +5,54 @@ from ItemMasterData.models import Item
 from datetime import date
 from django.contrib.auth.models import User
 
+class PurchaseQuotetionInfo(models.Model):
+    Status_CHOICES = [
+        ('O', 'Open'),
+        ('H', 'Hold'),
+        ('C', 'Close'),
+        ('F', 'Canceled')
+        
+    ] 
+    status = models.CharField(max_length=1, choices=Status_CHOICES,default='O')      
+    docNo = models.PositiveIntegerField(default=1, unique=True)
+    customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
+    address = models.CharField(max_length=250,blank=True)
+    created = models.DateField(default=timezone.now)
+    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+
+        verbose_name = 'Purchase Quotetion'
+        verbose_name_plural = 'Purchase Quotetion'
+        
+    def __str__(self):
+        return f"{self.docNo}"   
+    
+
+class PurchaseQuotetionItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)
+    order = models.ForeignKey(PurchaseQuotetionInfo, on_delete=models.CASCADE, null=True, default=None)    
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)    
+    uom = models.CharField(max_length=20,default='',null=True)  
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    docNo = models.PositiveIntegerField(default=1, unique=False)      
+    
+    def save(self, *args, **kwargs):
+        if self.created:
+
+
+            self.created = self.order.created
+                   
+        super().save(*args, **kwargs)       
+    def __str__(self):
+        return f": {self.docNo}"
+
+
 
 class PurchaseOrderInfo(models.Model):
     docNo = models.PositiveIntegerField(default=1, unique=True)
