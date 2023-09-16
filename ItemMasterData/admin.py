@@ -3,9 +3,11 @@ from django.db import models
 from django import forms
 from .models import Warehouse, ItemGroup,Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery,IssueForProductionInfo,IssueForProductionItem
 from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem,PurchaseItem
+from Production.models import Production,ProductionComponent
 from Sales.models import SalesOrderItem,DeliveryItem
 from django.db.models import Sum
 import csv
+from django.forms import BaseInlineFormSet
 
 from django_select2.forms import ModelSelect2Widget
 class CustomModelSelect2Widget(ModelSelect2Widget):
@@ -256,12 +258,52 @@ class  IssueForProductionItemInlineForm(forms.ModelForm) :
     class Meta:
         model = IssueForProductionItem
         fields = ['productionNo','orderlineNo','code','name','quantity','uom','lineNo','salesOrder' ]
+        
+class CustomIssueForProductionItemFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        production_component_codes = {}
 
+        for form in self.forms:
+            if not form.cleaned_data.get('DELETE'):
+                production_no = form.cleaned_data.get('productionNo')
+                code = form.cleaned_data.get('code')
+                quantity = form.cleaned_data.get('quantity')
+
+                if production_no not in production_component_codes:
+                    production_component = ProductionComponent.objects.filter(
+                        docNo=production_no
+                    ).first()
+
+                    if production_component:
+                        production_component_codes[production_no] = {
+                            code: {
+                                'quantity': quantity,
+                                'total_production_quantity': production_component.quantity,
+                            }
+                        }
+                else:
+                    if code not in production_component_codes[production_no]:
+                        production_component_codes[production_no][code] = {
+                            'quantity': quantity,
+                            'total_production_quantity': production_component.quantity,
+                        }
+                    else:
+                        production_component_codes[production_no][code]['quantity'] += quantity
+
+        for production_no, code_quantities in production_component_codes.items():
+            for code, data in code_quantities.items():
+                total_issue_quantity = data['quantity']
+                total_production_quantity = data['total_production_quantity']
+
+                if total_issue_quantity > total_production_quantity:
+                    form.add_error(None, f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
         
 class IssueForProductionItemInline(admin.TabularInline):
     model = IssueForProductionItem
     extra = 0  
     form = IssueForProductionItemInlineForm   
+    formset = CustomIssueForProductionItemFormSet
     
               
   
