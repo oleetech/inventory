@@ -44,7 +44,10 @@
       float: left;'>
         <!-- Uncomment below if you prefer to use an text logo -->
         <!-- <h1><a href="index.html">OleeTech</a></h1> -->
-        <a href="{% url 'home' %}"><img src="{% static 'assets/img/logo.png' %}" alt="" class="img-fluid"></a>
+        <a href="{% url 'home' %}">
+          OleeTech
+          {% comment %} <img src="{% static 'assets/img/logo.png' %}" alt="" class="img-fluid"> {% endcomment %}
+        </a>
       </div>
 
       <nav class="main-nav float-right d-none d-lg-block">

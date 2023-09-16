@@ -65,8 +65,22 @@ fieldset.module{
     border: 1px solid #ccc;
     padding: 10px;
 }
+
+.card{
+    background-color: #ebebeb !important;
+    border: 1px solid blue;
+}
+.card-header{
+ background: #d7d7d7 !important;
+
+}
+
 fieldset.module h2{
-    width: auto!important;
+    display: none  !important;
+}
+
+.table > thead {
+    height: 33px !important;
 }
 /* Menu */
 .accordion {

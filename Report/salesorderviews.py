@@ -8,7 +8,7 @@ from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem,DeliveryInfo
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta
 from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm,DateFilterForm,OrderDepartmentFilter,DateDepartmentFilter,ItemGroupForm
-#কাস্টমার অর্ডার সামারি রিপোর্ট 
+#কাস্টমার অর্ডার সামারি রিপোর্ট  Customer Wise Order Summary
 def customer_summary(request):
     customer_summary_data = SalesOrderInfo.objects.values('customerName__name').annotate(
         total_amount=Sum('totalAmount'),
@@ -19,7 +19,7 @@ def customer_summary(request):
     return render(request, 'sales/customer_summary.html', {'customer_summary_data': customer_summary_data})
 
 
-#সেলস অর্ডার এর বয়স দেখা     
+#সেলস অর্ডার এর বয়স দেখা     Sales Order Ageing Report
 def sales_order_aging_report(request):
     today = datetime.now().date()
 
@@ -50,7 +50,7 @@ def sales_order_aging_report(request):
 
     return render(request, 'sales/sales_order_aging_report.html', {'aging_data': aging_data})
 
-#বয়স অনুযায়ী  সেলস অর্ডার দেখা 
+#বয়স অনুযায়ী  সেলস অর্ডার দেখা Age Wise Sales Order Report By Days
 def filter_orders_by_age(request):
     if request.method == 'POST':
         form = AgeFilterForm(request.POST)
@@ -70,7 +70,7 @@ def filter_orders_by_age(request):
 
     return render(request, 'sales/filter_orders_by_age.html', {'form': form})
 
-#অর্ডার Open Hold স্ট্যাটাস অনুযায়ী  সেলস অর্ডার দেখা 
+#অর্ডার Open Hold স্ট্যাটাস অনুযায়ী  সেলস অর্ডার দেখা  Sales Order Status Filter
 def sales_order_status_filter(request):
     if request.method == 'POST':
         form = SalesOrderStatusFilterForm(request.POST)
@@ -87,7 +87,7 @@ def sales_order_status_filter(request):
         filtered_orders = SalesOrderInfo.objects.all()
 
     return render(request, 'sales/sales_order_status_filter.html', {'form': form, 'filtered_orders': filtered_orders})
-#প্রোডাক্ট অনুযায়ী  সেলস অর্ডার 
+#প্রোডাক্ট অনুযায়ী  সেলস অর্ডার Product Based Sales Order
 def sales_order_by_product_report(request):
     # Retrieve sales order data grouped by product name
     product_data = (
@@ -100,7 +100,7 @@ def sales_order_by_product_report(request):
     return render(request, 'sales/sales_order_by_product_report.html', {'product_data': product_data})
 
 
-#সাইজ অনুযায়ী প্রোডাকশন  ব্যালেন্স
+#সাইজ অনুযায়ী প্রোডাকশন  ব্যালেন্স Size Wise Production Balance Report
 def calculate_production_balance(order_no):
     sales_orders = SalesOrderItem.objects.filter(docNo=order_no)
     balance_data = []
@@ -143,7 +143,7 @@ def production_balance_line_wise(request):
     return render(request, 'sales/production_balance_line_wise.html', {'order_no': order_no, 'balance_data': balance_data, 'form': form})
 
 
-#সাইজ অনুযায়ী প্রোডাকশন ও ডেলিভারি ব্যালেন্স 
+#সাইজ অনুযায়ী প্রোডাকশন ও ডেলিভারি ব্যালেন্স  Size Wise Production And Delivery Balance
 def calculate_order_balance(order_no):
     sales_orders = SalesOrderItem.objects.filter(docNo=order_no)
     balance_data = []
@@ -194,7 +194,7 @@ def order_balance_production_delivery_line_wise(request):
     
     return render(request, 'sales/order_balance_production_delivery_line_wise.html', {'order_no': order_no, 'balance_data': balance_data, 'form': form})
 
-# অর্ডার অনুযায়ী ডেলিভারি চালান বিস্তারিত 
+# অর্ডার অনুযায়ী ডেলিভারি চালান বিস্তারিত Delivery Challan Based On Order No
 def delivery_items_by_order(request):
     if request.method == 'POST':
         form = OrderFilterForm(request.POST)
@@ -208,7 +208,7 @@ def delivery_items_by_order(request):
     return render(request, 'sales/delivery_items_by_order.html', {'form': form})
 
 
-#অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী 
+#অর্ডার আইটেম ব্যালেন্স ডিপার্টমেন্ট অনুযায়ী  Order Item Balance Department Wise  Pasha Sir
 def balance_report_view(request):
    
     # Calculate the balance report using the method from your models
@@ -219,7 +219,7 @@ def balance_report_view(request):
     )    
     return render(request, 'sales/balance_report_view.html', {'balance_report': balance_report,'sales_order_totals': sales_order_totals})
 
-#অর্ডার অনুযায়ী চালান লিস্ট 
+#অর্ডার অনুযায়ী চালান লিস্ট Order Wise Challan List
 def delivery_challan_list_based_on_order(request):
     if request.method == 'POST':
         form = OrderFilterForm(request.POST)
@@ -237,7 +237,7 @@ def delivery_challan_list_based_on_order(request):
 
 
 
-# পেন্ডিং পার্টিকুলার  অর্ডার অনুযায়ী 
+# পেন্ডিং পার্টিকুলার  অর্ডার অনুযায়ী  Pending Particular Based On Order No
 def pending_particular_based_on_order_no(request):
     if request.method == 'POST':
         form = OrderDepartmentFilter(request.POST)
@@ -270,7 +270,7 @@ def pending_particular_based_on_order_no(request):
 
 
 
-#পেন্ডিং পার্টিকুলার  ডেট অনুযায়ী 
+#পেন্ডিং পার্টিকুলার  ডেট অনুযায়ী Pending Particular Based On Date
 def pending_particular_between_on_date(request):
     if request.method == 'POST':
         form = DateDepartmentFilter(request.POST)
@@ -301,7 +301,7 @@ def pending_particular_between_on_date(request):
 
 
 
-
+# Pending Particular Item Wise 
 def sum_quantity_by_name(request):
     if request.method == 'POST':
         form = DateDepartmentFilter(request.POST)
@@ -344,7 +344,7 @@ def sum_quantity_by_name(request):
 
 
 
-#অর্ডার অনুযায়ী ডেলিভারি ও চালান রেসিভ দেখা
+#অর্ডার অনুযায়ী ডেলিভারি ও চালান রেসিভ দেখা Order Wise Delivery And Challan Received
 def check_delivery_status(request):
     if request.method == 'POST':
         form = OrderFilterForm(request.POST)
@@ -359,7 +359,7 @@ def check_delivery_status(request):
     return render(request, 'sales/delivery_status.html', {'form': form})
 
 
-#অর্ডার অনুযায়ী ডেলিভারি পার্সেন্টেজ 
+#অর্ডার অনুযায়ী ডেলিভারি পার্সেন্টেজ  Order Wise Delivery Percentage
 def calculate_delivery_percentage(request):
     # Query SalesOrderInfo to retrieve totalAmount and totalQty
     sales_orders = SalesOrderInfo.objects.all()
@@ -404,7 +404,7 @@ def calculate_delivery_percentage(request):
 
     return render(request, 'sales/calculate_delivery_percentage.html', {'sales_orders': sales_orders})
 
-# আইটেম group সিলেক্ট করে আইটেম group  অনুযায়ী টোটাল সেলস quantity এবং  এমাউন্ট 
+# আইটেম group সিলেক্ট করে আইটেম group  অনুযায়ী টোটাল সেলস quantity এবং  এমাউন্ট  Total Sales Select By Item Group
 def calculate_summary(request):
     if request.method == 'POST':
         form = ItemGroupForm(request.POST)
@@ -435,7 +435,7 @@ def calculate_summary(request):
 
     return render(request, 'sales/item_group_sales_summary.html', {'form': form})
 
-#আইটেম অনুযায়ী অর্ডার টোটাল আইটেম quantity, এমাউন্ট সামারি 
+#আইটেম অনুযায়ী অর্ডার টোটাল আইটেম quantity, এমাউন্ট সামারি  Item Based Order Total Quantity And Amount
 def sales_order_item_wise_summary(request):
     if request.method == 'POST':
         form = DateFilterForm(request.POST)
