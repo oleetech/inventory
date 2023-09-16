@@ -17,7 +17,7 @@ class BusinessPartnerForm(forms.ModelForm):
 
 @admin.register(BusinessPartner)
 class BusinessPartnerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'total_sales_amount','total_delivery_amount','total_purchase_amount','total_arinvoice_amount','total_apinvoice_amount','total_incoming_amount','total_outgoing_amount')
+    list_display = ('name', 'total_sales_amount','total_delivery_amount','total_purchase_amount','total_arinvoice_amount','total_apinvoice_amount','total_incoming_amount','total_outgoing_amount','total_arinvoice_minus_incoming','total_apinvoice_minus_outgoing')
     search_fields = ('name', 'code')
     list_filter = ('currency_type', 'vendor_type')
     ordering = ('name',)
@@ -76,5 +76,27 @@ class BusinessPartnerAdmin(admin.ModelAdmin):
         total_amount = OutgoingPaymentInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_outgoing_amount.short_description = 'Outgoing  Amount'         
+    total_outgoing_amount.short_description = 'Outgoing  Amount'    
+    
+         
+    def total_arinvoice_minus_incoming(self, obj):
+        # Calculate the sum of totalAmount for ARInvoiceInfo related to this BusinessPartner
+        total_arinvoice = ARInvoiceInfo.objects.filter(customerName=obj).aggregate(total_arinvoice=Sum('totalAmount'))['total_arinvoice'] or 0
 
+        # Calculate the sum of totalAmount for IncomingPaymentInfo related to this BusinessPartner
+        total_incoming = IncomingPaymentInfo.objects.filter(customerName=obj).aggregate(total_incoming=Sum('totalAmount'))['total_incoming'] or 0
+
+        return total_arinvoice - total_incoming
+
+    total_arinvoice_minus_incoming.short_description = 'Due AR '
+    
+    def total_apinvoice_minus_outgoing(self, obj):
+        # Calculate the sum of totalAmount for APInvoiceInfo related to this BusinessPartner
+        total_apinvoice = ApInvoiceInfo.objects.filter(customerName=obj).aggregate(total_apinvoice=Sum('totalAmount'))['total_apinvoice'] or 0
+
+        # Calculate the sum of totalAmount for OutgoingPaymentInfo related to this BusinessPartner
+        total_outgoing = OutgoingPaymentInfo.objects.filter(customerName=obj).aggregate(total_outgoing=Sum('totalAmount'))['total_outgoing'] or 0
+
+        return total_apinvoice - total_outgoing
+
+    total_apinvoice_minus_outgoing.short_description = 'Due AP'    
