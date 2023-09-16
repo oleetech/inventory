@@ -95,3 +95,25 @@ def get_production_order_info(request):
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'Sales order not found'}, status=404)
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def orderline_by_data(request):
+    if request.method == 'POST':
+        orderno = request.POST.get('orderno')
+        orderlineNo = request.POST.get('orderlineNo')
+
+        # Replace the filter conditions with the ones you need
+        try:
+            order_item = ProductionComponent.objects.get(docNo=orderno, lineNo=orderlineNo)
+            response_data = {
+
+                'code': order_item.code,
+                'name':order_item.name,
+                'uom':order_item.uom,
+            }
+            return JsonResponse(response_data)
+        except ProductionComponent.DoesNotExist:
+            return JsonResponse({'error': 'No data found for the given orderno and orderlineNo'}, status=404)
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

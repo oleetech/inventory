@@ -50,7 +50,7 @@
             });
         });
         
-
+       
 
 
 
@@ -207,3 +207,57 @@
 
   });
 })(jQuery);
+
+
+
+         // production order item   থেকে লাইন নম্বর অনুসারে ডেটা নিয়ে এসে ইনপুট এ সেট করি 
+         (function($) {
+          $(document).ready(function() {
+
+
+              $('input[name^="issueforproductionitem_set-"][name$="-orderlineNo"]').each(function() {
+
+
+                $(this).on('change', function() {
+                  const orderlineNoinput = $(this);
+                  const inputElement = $(this);
+                  const orderlineNo = $(this).val();
+
+                  const tr = inputElement.closest('tr');              
+                  const orderno = tr.find('.field-salesOrder input').val();  
+        
+                    $.ajax({
+                      type: 'POST',
+                      url: '/production/orderline_by_data/',
+                      data: {
+
+                          'orderno':orderno,
+                          'orderlineNo': orderlineNo,
+             
+                        
+                      },
+                      dataType: 'json',
+                      success: function(response) {
+                    
+                        const codeInput = tr.find('.field-code input').val(response.code);                        
+                        const nameInput = tr.find('.field-name input').val(response.name);  
+                        const uomInput = tr.find('.field-uom input').val(response.uom);  
+
+           
+                          console.log(response);
+                      }
+                  });
+                  
+            
+                        // /
+                      
+        
+                  });
+              });
+              
+
+              
+
+        
+          });
+        })(jQuery);

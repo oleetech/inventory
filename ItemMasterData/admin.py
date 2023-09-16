@@ -255,7 +255,7 @@ class  IssueForProductionItemInlineForm(forms.ModelForm) :
     
     class Meta:
         model = IssueForProductionItem
-        fields = ['code','name','price','priceTotal','salesOrder','productionNo','lineNo' ]
+        fields = ['productionNo','orderlineNo','code','name','uom','lineNo','salesOrder' ]
 
         
 class IssueForProductionItemInline(admin.TabularInline):
