@@ -174,7 +174,7 @@ jQuery.noConflict();
 (function($) {
   $(document).ready(function() {
 
-      // ইনপুট এর পাশে ক্লিকেবল আইকন যোগ করা       
+                  // ইনপুট এর পাশে ক্লিকেবল আইকন যোগ করা       
                       // Find all input elements with the specified id format and add spans after them
                       $('input[name^="productionreceiptitem_set-"][name$="-lineNo"]').each(function() {
                         // Create a new <span> element
@@ -192,7 +192,7 @@ jQuery.noConflict();
   
                 });
   
-                                      // Add click event handler for the "icon" elements
+                   // Add click event handler for the "icon" elements
                   $('span.icon').on('click', function() {
                     var constTr = $(this).closest('tr');
                     var closestTd = $(this).closest('td');

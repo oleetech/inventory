@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse,HttpResponse
 
 from django.views.decorators.csrf import csrf_exempt
-from .models import BillOfMaterials,Production
+from .models import BillOfMaterials,Production,ProductionComponent
 
 def custom_print_view(request):
     model_name = request.GET.get('model_name')
@@ -68,4 +68,29 @@ def ajax_view_receipt(request):
         
         return JsonResponse(response_data)
 
-    
+@csrf_exempt    
+def get_production_order_info(request):
+    if request.method == 'POST':
+        docNo = request.POST.get('docNo')
+        print("Received docNo:", docNo)  # Add this line for debugging
+        try:
+            order_items = ProductionComponent.objects.filter(docNo=docNo)
+
+            if order_items.exists():  # Check if there are any results
+                # Assuming you want to return a list of 'name' values for all matching rows
+                response_data = {
+                    'lineNo': [item.lineNo for item in order_items],
+                    'code': [item.code for item in order_items],
+                    'name': [item.name for item in order_items],
+
+                }
+            else:
+                # Handle the case where no matching rows were found
+                response_data = {
+                    'message': 'No matching items found.'
+                }
+            print("Response data:", response_data)  # Add this line for debugging
+            return JsonResponse(response_data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Sales order not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
