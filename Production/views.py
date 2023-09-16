@@ -82,6 +82,7 @@ def get_production_order_info(request):
                     'lineNo': [item.lineNo for item in order_items],
                     'code': [item.code for item in order_items],
                     'name': [item.name for item in order_items],
+                    'quantity': [item.quantity for item in order_items],
 
                 }
             else:

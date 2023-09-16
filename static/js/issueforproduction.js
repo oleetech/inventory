@@ -151,6 +151,7 @@
                         var lineNoArray = response.lineNo;
                         var codeArray = response.code;
                         var nameArray = response.name;
+                        var quantityArray = response.quantity;                        
 
   
                         
@@ -168,6 +169,7 @@
                     $('<th>').text('lineNo').appendTo($headerRow);
                     $('<th>').text('Code').appendTo($headerRow);
                     $('<th>').text('Name').appendTo($headerRow);
+                    $('<th>').text('Quantity').appendTo($headerRow);
 
   
                     // Create table body
@@ -179,6 +181,7 @@
                       $('<td>').text(lineNoArray[i]).appendTo($row);
                       $('<td>').text(codeArray[i]).appendTo($row);
                       $('<td>').text(nameArray[i]).appendTo($row);
+                      $('<td>').text(quantityArray[i]).appendTo($row);                      
 
   
                     }
