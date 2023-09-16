@@ -35,6 +35,8 @@
         $('<th>').addClass('column-name required').text('Name').appendTo(headerRow);
         $('<th>').addClass('column-uom required').text('Uom').appendTo(headerRow);
         $('<th>').addClass('column-quantity required').text('Quantity').appendTo(headerRow);
+        $('<th>').addClass('column-lineNo required').text('lineNo').appendTo(headerRow);
+
         $('<th>').text('Delete?').appendTo(headerRow);
   
         // Add table body
@@ -42,27 +44,37 @@
   
         data.forEach(function (component, index) {
           var row = $('<tr>');
+
           var codeCell = $('<td>');
           var codeInput = $('<input type="text" maxlength="20" class="vTextField">');
           codeInput.attr('name', 'production_components-' + index + '-code');
           codeInput.val(component.code);
           codeCell.append(codeInput);
+
           var nameCell = $('<td>');
           var nameInput = $('<input type="text" maxlength="100" class="vTextField">');
           nameInput.attr('name', 'production_components-' + index + '-name');
           nameInput.val(component.name);
           nameCell.append(nameInput);
+
           var uomCell = $('<td>');
           var uomInput = $('<input type="text" maxlength="20" class="vTextField">');
           uomInput.attr('name', 'production_components-' + index + '-uom');
           uomInput.val(component.uom);
           uomCell.append(uomInput);
+
           var quantityCell = $('<td>');
           var quantityInput = $('<input type="number" min="0" step="0.0001" required>');
           quantityInput.attr('name', 'production_components-' + index + '-quantity');
           quantityInput.val(component.quantity);
           quantityCell.append(quantityInput);
-  
+
+          var lineNoCell = $('<td>');
+          var lineNoInput = $('<input type="number" min="0" step="1" required>');
+          lineNoInput.attr('name', 'production_components-' + index + '-lineNo');
+          lineNoInput.val(0);
+          lineNoCell.append(lineNoInput);
+
           var deleteCell = $('<td >');
           var deleteButton = $('<button>').text('Delete');
           deleteButton.addClass('delete-button');
@@ -73,7 +85,7 @@
           });
           deleteCell.append(deleteButton);
   
-          row.append(codeCell, nameCell, uomCell, quantityCell, deleteCell);
+          row.append(codeCell, nameCell, uomCell, quantityCell, lineNoCell, deleteCell);
           formsetTable.append(row);
         });
   

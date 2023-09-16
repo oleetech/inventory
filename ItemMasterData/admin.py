@@ -255,12 +255,14 @@ class  IssueForProductionItemInlineForm(forms.ModelForm) :
     
     class Meta:
         model = IssueForProductionItem
-        fields = '__all__'
+        fields = ['code','name','price','priceTotal','salesOrder','productionNo','lineNo' ]
+
         
 class IssueForProductionItemInline(admin.TabularInline):
     model = IssueForProductionItem
     extra = 0  
     form = IssueForProductionItemInlineForm   
+    
               
   
 @admin.register(IssueForProductionInfo) 

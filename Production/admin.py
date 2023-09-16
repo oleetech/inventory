@@ -106,7 +106,7 @@ class ProductionForm(forms.ModelForm):
 class  ProductionComponentInlineForm(forms.ModelForm) :
     class Meta:
         model = ProductionComponent
-        fields = ['code','name','uom','quantity' ]
+        fields = ['code','name','uom','quantity','lineNo' ]
         widgets = {
 
             # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),

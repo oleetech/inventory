@@ -68,7 +68,7 @@ class Production(models.Model):
 class ProductionComponent(models.Model):
     production = models.ForeignKey(Production, on_delete=models.CASCADE, related_name='production_components')
     docNo = models.PositiveIntegerField(default=1, unique=False)  
-    
+    lineNo = models.CharField(max_length=4,default='0') # Add the lineNo field    
     code = models.CharField(max_length=20,default='',null=True)
     salesOrder= models.PositiveIntegerField(default=1)
     name = models.CharField(max_length=100,default='',null=True)
