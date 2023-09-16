@@ -143,4 +143,61 @@ class ItemDelivery(models.Model):
         return f'{self.id}'
     
     
-  
+
+class IssueForProductionInfo(models.Model):
+    docno = models.PositiveIntegerField(unique=True,default=1)
+    created = models.DateField(default=date.today)
+
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.SET_DEFAULT,
+        default=None, blank=True  # Set the default to None initially
+    )   
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+     
+    class Meta:
+
+        verbose_name = ' Issue For Production'
+        verbose_name_plural = 'Issue  For  Production'   
+        
+        
+    def save(self, *args, **kwargs):
+        if not self.department_id:
+            self.department = Department.objects.first()
+        super().save(*args, **kwargs)
+                 
+    def __str__(self):
+        return f"{self.docno}"
+
+
+            
+            
+class IssueForProductionItem(models.Model): 
+    docNo = models.PositiveIntegerField(unique=False,default=1)    
+    lineNo = models.CharField(max_length=4,default='0') # Add the lineNo field
+    orderlineNo = models.CharField(max_length=4,default='0') # Add the lineNo field
+    receiptNumber = models.ForeignKey(IssueForProductionInfo, on_delete=models.CASCADE, null=True, default=None)
+    salesOrder = models.PositiveIntegerField(default=0)
+    productionNo =  models.PositiveIntegerField(default=0)    
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)
+    uom =  models.CharField(max_length=100,default='',null=True)    
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)
+    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,default=0,null=True)  
+    remarks = models.CharField(max_length=100,default='') 
+    department = models.CharField(max_length=50,default='1')
+    created = models.DateField(default=date.today, editable=True)
+    
+    def save(self, *args, **kwargs):
+        if self.receiptNumber:
+            self.department = self.receiptNumber.department.name
+            
+
+            self.created = self.receiptNumber.created
+        if self.docNo:
+            self.docNo = self.receiptNumber.docno                       
+        super().save(*args, **kwargs)    
+     
+    def __str__(self):
+        return f": {self.docNo}"  

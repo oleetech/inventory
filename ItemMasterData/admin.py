@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django import forms
-from .models import Warehouse, ItemGroup,Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery
+from .models import Warehouse, ItemGroup,Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery,IssueForProductionInfo,IssueForProductionItem
 from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem,PurchaseItem
 from Sales.models import SalesOrderItem,DeliveryItem
 from django.db.models import Sum
@@ -224,4 +224,54 @@ class StockAdmin(admin.ModelAdmin):
 
         obj.owner = request.user if request.user.is_authenticated else None
           
-        super().save_model(request, obj, form, change)     
+        super().save_model(request, obj, form, change)  
+        
+class IssueForProductionInfoForm(forms.ModelForm):
+    docno = forms.IntegerField(disabled=True)  # Add this line to the form
+
+
+    
+    class Meta:
+        model = IssueForProductionInfo
+        fields = ['department','docno','created']
+        widgets = {
+
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        
+        if not self.instance.pk:
+            # Get the last inserted docno
+            last_docno = IssueForProductionInfo.objects.order_by('-docno').first()
+            if last_docno:
+                next_docno = last_docno.docno + 1
+            else:
+                next_docno = 1
+
+            self.initial['docno'] = next_docno           
+        
+class  IssueForProductionItemInlineForm(forms.ModelForm) :
+    
+    class Meta:
+        model = IssueForProductionItem
+        fields = '__all__'
+        
+class IssueForProductionItemInline(admin.TabularInline):
+    model = IssueForProductionItem
+    extra = 0  
+    form = IssueForProductionItemInlineForm   
+              
+  
+@admin.register(IssueForProductionInfo) 
+class ProductionReceiptAdmin(admin.ModelAdmin):   
+    inlines = [IssueForProductionItemInline]
+    form =   IssueForProductionInfoForm  
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'   
+    class Media:
+        js = ('js/issueforproduction.js','js/library/bootstrap.bundle.min.js','js/library/dataTables.min.js')
+        defer = True  # Add the defer attribute    
+        
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css','css/bootstrap.min.css'),
+        }         
