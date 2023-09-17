@@ -7,6 +7,8 @@ from Production.models import Production,ProductionComponent
 from Sales.models import SalesOrderItem,DeliveryItem
 from django.db.models import Sum
 import csv
+from django.core.exceptions import ValidationError
+from collections import defaultdict
 from django.forms import BaseInlineFormSet
 
 from django_select2.forms import ModelSelect2Widget
@@ -259,10 +261,20 @@ class  IssueForProductionItemInlineForm(forms.ModelForm) :
         model = IssueForProductionItem
         fields = ['productionNo','orderlineNo','code','name','quantity','uom','lineNo','salesOrder' ]
         
+
+
+
 class CustomIssueForProductionItemFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
-        production_component_codes = {}
+        production_component_codes = defaultdict(dict)
+        issue_total_quantity = defaultdict(int)
+
+        # Gather all IssueForProductionItem records for the same productionNo and code
+        issue_items = IssueForProductionItem.objects.filter(
+            productionNo__in=[form.cleaned_data['productionNo'] for form in self.forms if not form.cleaned_data.get('DELETE')],
+            code__in=[form.cleaned_data['code'] for form in self.forms if not form.cleaned_data.get('DELETE')]
+        )
 
         for form in self.forms:
             if not form.cleaned_data.get('DELETE'):
@@ -276,28 +288,48 @@ class CustomIssueForProductionItemFormSet(BaseInlineFormSet):
                     ).first()
 
                     if production_component:
-                        production_component_codes[production_no] = {
-                            code: {
-                                'quantity': quantity,
-                                'total_production_quantity': production_component.quantity,
-                            }
-                        }
-                else:
-                    if code not in production_component_codes[production_no]:
                         production_component_codes[production_no][code] = {
                             'quantity': quantity,
                             'total_production_quantity': production_component.quantity,
                         }
+                else:
+                    if code not in production_component_codes[production_no]:
+                        production_component = ProductionComponent.objects.filter(
+                            docNo=production_no
+                        ).first()
+                        if production_component:
+                            production_component_codes[production_no][code] = {
+                                'quantity': quantity,
+                                'total_production_quantity': production_component.quantity,
+                            }
                     else:
                         production_component_codes[production_no][code]['quantity'] += quantity
 
+                # Calculate the total issue quantity for each code
+                issue_total_quantity[code] = sum(
+                    issue_item.quantity for issue_item in issue_items if issue_item.code == code
+                )
+
         for production_no, code_quantities in production_component_codes.items():
             for code, data in code_quantities.items():
-                total_issue_quantity = data['quantity']
+                total_issue_quantity = issue_total_quantity[code]
                 total_production_quantity = data['total_production_quantity']
 
+                # Check if the total issue quantity plus the current code quantity exceeds production quantity
+                if total_issue_quantity + data['quantity'] > total_production_quantity:
+                    form.add_error('quantity', f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
+                    raise ValidationError("Total issue quantity exceeds production quantity. Form submission aborted.")
+
+        for production_no, code_quantities in production_component_codes.items():
+            for code, data in code_quantities.items():
+                total_issue_quantity = issue_total_quantity[code]
+                total_production_quantity = data['total_production_quantity']
+
+                # Check if the total issue quantity exceeds production quantity
                 if total_issue_quantity > total_production_quantity:
-                    form.add_error(None, f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
+                    form.add_error('quantity', f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
+                    raise ValidationError("Total issue quantity exceeds production quantity. Form submission aborted.")
+
         
 class IssueForProductionItemInline(admin.TabularInline):
     model = IssueForProductionItem
