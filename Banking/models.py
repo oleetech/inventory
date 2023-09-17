@@ -12,14 +12,14 @@ class IncomingPaymentInfo(models.Model):
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
-    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=0,null=True, blank=True,)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     remarks = models.CharField(max_length=250,default='',blank=True)
     
     class Meta:
 
-        verbose_name = 'Incoming Payement'
-        verbose_name_plural = 'Incoming Payement'
+        verbose_name = 'Incoming Payment'
+        verbose_name_plural = 'Incoming Payment'
         
     def __str__(self):
         return f"{self.docNo}"    
@@ -35,14 +35,14 @@ class OutgoingPaymentInfo(models.Model):
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
-    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
+    sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=0,null=True, blank=True,)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     remarks = models.CharField(max_length=250,default='',blank=True)
     
     class Meta:
 
-        verbose_name = 'Outgoing Payement'
-        verbose_name_plural = 'Outgoing Payement'
+        verbose_name = 'Outgoing Payment'
+        verbose_name_plural = 'Outgoing Payment'
         
     def __str__(self):
         return f"{self.docNo}"        

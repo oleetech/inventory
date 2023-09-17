@@ -27,9 +27,7 @@ class Item(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
     description = models.TextField()
-    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, default=1)
     unit = models.ForeignKey(Unit, on_delete=models.SET_DEFAULT, default=1)
-    size= models.CharField(max_length=100,default='',null=True,blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     item_group = models.ForeignKey(ItemGroup, on_delete=models.SET_NULL, null=True, blank=True)
@@ -43,16 +41,16 @@ class Item(models.Model):
 
 
 class Stock(models.Model):
-    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
-    uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    
+    def save_model(self, request, obj, form, change):
 
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change)     
 
 class ItemReceiptinfo(models.Model):
     

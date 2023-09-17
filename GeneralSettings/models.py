@@ -45,7 +45,8 @@ class Company(models.Model):
     class Meta:
         verbose_name_plural = "Company Information"    
         
-        
+    def __str__(self):
+        return self.name        
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True, help_text="The name of the department")
     description = models.TextField(blank=True, null=True, help_text="A description of the department")

@@ -20,15 +20,22 @@ class CustomModelSelect2Widget(ModelSelect2Widget):
 class CustomModelSelect2Widgetd(ModelSelect2Widget):
     def label_from_instance(self, obj):
         return obj.OrderNumber  # Replace 'name' with the appropriate field    
-    
+'''
+  ____    _   _   _      ___     __     __  __           _                   _           _       
+ | __ )  (_) | | | |    / _ \   / _|   |  \/  |   __ _  | |_    ___   _ __  (_)   __ _  | |  ___ 
+ |  _ \  | | | | | |   | | | | | |_    | |\/| |  / _` | | __|  / _ \ | '__| | |  / _` | | | / __|
+ | |_) | | | | | | |   | |_| | |  _|   | |  | | | (_| | | |_  |  __/ | |    | | | (_| | | | \__ \
+ |____/  |_| |_| |_|    \___/  |_|     |_|  |_|  \__,_|  \__|  \___| |_|    |_|  \__,_| |_| |___/
+                                                                                                 
+'''    
 class ChildComponentForm(forms.ModelForm):
     class Meta:
         model = ChildComponent
         fields = '__all__'
         widgets = {
-            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
-            # 'uom': CustomModelSelect2Widget(model=Unit, search_fields=['name__icontains']),            
-        }
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+ 
+        }  
 class ChildComponentInline(admin.TabularInline):
     model = ChildComponent
     extra = 0 
@@ -39,9 +46,11 @@ class ChildComponentInline(admin.TabularInline):
 class BillOfMaterialsAdminForm(forms.ModelForm):
     class Meta:
         model = BillOfMaterials
-        fields = ['code','name','quantity']
+        fields = ['code','name','quantity','uom']
         widgets = {
             'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            
         }
 @admin.register(BillOfMaterials)                     
 class BillOfMaterialsAdmin(admin.ModelAdmin):
@@ -88,6 +97,8 @@ class ProductionForm(forms.ModelForm):
         fields = ['status','docno','code',   'salesOrder','name', 'owner','quantity','uom','remarks']
         widgets = {
             'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -108,9 +119,8 @@ class  ProductionComponentInlineForm(forms.ModelForm) :
         model = ProductionComponent
         fields = ['code','name','uom','quantity','lineNo' ]
         widgets = {
-
-            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
-            # 'sales_order_no': CustomModelSelect2Widgetd(model=SalesOrderInfo, search_fields=['OrderNumber__icontains']), 
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            
         }
 
             
@@ -159,7 +169,8 @@ class ProductionReceiptForm(forms.ModelForm):
         model = ProductionReceipt
         fields = ['department','docno','created']
         widgets = {
-
+            'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
+            
         }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -181,8 +192,8 @@ class  ProductionReceiptItemInlineForm(forms.ModelForm) :
         model = ProductionReceiptItem
         fields = ['productionNo','orderlineNo','code','name','uom','quantity','size','color','price','priceTotal','salesOrder','lineNo' ]
         widgets = {
-
-            # 'name': CustomModelSelect2Widget(model=Item, search_fields=['name__icontains']),
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+            
         }
       
                 

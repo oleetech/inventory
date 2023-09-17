@@ -34,49 +34,49 @@ class BusinessPartnerAdmin(admin.ModelAdmin):
         total_amount = SalesOrderInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_sales_amount.short_description = 'Order Amount'  
+    total_sales_amount.short_description = 'Order'  
     
     def total_delivery_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
         total_amount = DeliveryInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_delivery_amount.short_description = 'Delivery Amount'    
+    total_delivery_amount.short_description = 'Delivery'    
     
     def total_purchase_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
         total_amount = GoodsReceiptPoInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_purchase_amount.short_description = 'Purchase Amount'          
+    total_purchase_amount.short_description = 'Purchase'          
     
     def total_arinvoice_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
         total_amount = ARInvoiceInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_arinvoice_amount.short_description = 'AR Invoice Amount'     
+    total_arinvoice_amount.short_description = 'AR Invoice'     
 
     def total_apinvoice_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
         total_amount = ApInvoiceInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_apinvoice_amount.short_description = 'AP Invoice Amount'     
+    total_apinvoice_amount.short_description = 'AP Invoice'     
     
     def total_incoming_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
         total_amount = IncomingPaymentInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_incoming_amount.short_description = 'Incoming  Amount'      
+    total_incoming_amount.short_description = 'Incoming'      
     
     def total_outgoing_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
         total_amount = OutgoingPaymentInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
-    total_outgoing_amount.short_description = 'Outgoing  Amount'    
+    total_outgoing_amount.short_description = 'Outgoing'    
     
          
     def total_arinvoice_minus_incoming(self, obj):

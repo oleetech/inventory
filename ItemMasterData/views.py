@@ -14,11 +14,10 @@ def item(request):
                 'code': item.code,
                 'name': item.name,
                 'description': item.description,
-                'warehouse_id': item.warehouse.id,
-                'warehouse_name': item.warehouse.name,  # Assuming you want to include warehouse information
+
                 'unit_id': item.unit.id,
                 'unit_name': item.unit.name,  # Assuming you want to include unit information
-                'size': item.size,
+ 
                 'price': str(item.price),  # Convert DecimalField to a string for JSON serialization
 
             }

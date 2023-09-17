@@ -59,10 +59,10 @@ class ItemGroupAdmin(admin.ModelAdmin):
            
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('code','name',  'description', 'price', 'warehouse','instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
+    list_display = ('code','name',  'description', 'price', 'instock','total_sales_quantity','total_delivery_quantity','total_purchase_quantity')
     readonly_fields = ('instock',)
     search_fields = ('name',) 
-    fields = ['code','name','unit','size','price','item_group']  
+    fields = ['code','name','unit','price','item_group']  
     # form = ItemForm     
     # change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
    
@@ -103,12 +103,13 @@ class ItemAdmin(admin.ModelAdmin):
 class ItemReceiptinfoForm(forms.ModelForm):
     class Meta:
         model = ItemReceiptinfo
-        fields = '__all__'
+        fields = ['department']
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
+            # 'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
 
-        } 
+            
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -123,9 +124,11 @@ class ItemReceiptinfoForm(forms.ModelForm):
 class ItemReceiptInlineForm(forms.ModelForm):
     class Meta:
         model = ItemReceipt
-        fields = ['code','name', 'uom','quantity','price','priceTotal']
+        fields = ['code','name', 'uom','quantity']
         widgets = {
-        } 
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+ 
+        }  
 class ItemReceiptInline(admin.TabularInline):
     model = ItemReceipt
     extra = 1
@@ -154,10 +157,10 @@ class ItemReceiptinfoAdmin(admin.ModelAdmin):
 class ItemDeliveryinfoForm(forms.ModelForm):
     class Meta:
         model = ItemDeliveryinfo
-        fields = '__all__'
+        fields = ['department']
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
+            # 'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
 
             
         }
@@ -176,10 +179,11 @@ class ItemDeliveryinfoForm(forms.ModelForm):
 class ItemDeliveryInlineForm(forms.ModelForm):
     class Meta:
         model = ItemDelivery
-        fields = ['code','name', 'uom','quantity','price','priceTotal']
+        fields = ['code','name', 'uom','quantity']
         widgets = {
-            
-        } 
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+ 
+        }  
         
               
 class ItemDeliveryInline(admin.TabularInline):
@@ -210,26 +214,44 @@ class ItemDeliveryinfoAdmin(admin.ModelAdmin):
         
         
                    
-@admin.register(Warehouse)
-class Warehouse(admin.ModelAdmin):
-    list_display = ('name', 'location')
-    search_fields = ('name', 'location') 
-    def save_model(self, request, obj, form, change):
+# @admin.register(Warehouse)
+# class Warehouse(admin.ModelAdmin):
+#     list_display = ('name', 'location')
+#     search_fields = ('name', 'location') 
+#     def save_model(self, request, obj, form, change):
 
-        obj.owner = request.user if request.user.is_authenticated else None
+#         obj.owner = request.user if request.user.is_authenticated else None
           
-        super().save_model(request, obj, form, change)   
-        
+#         super().save_model(request, obj, form, change)  
+         
+class StockForm(forms.ModelForm):
+    class Meta:
+        model = Stock
+        fields = ['code','name', 'quantity']
+        widgets = {
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+
+            
+        }        
 @admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    list_display = ('item', 'quantity')
-    search_fields = ('item', ) 
+    list_display = ('code', 'name','quantity')
+    search_fields = ('code','name' ) 
+    fields=['code','name','quantity']
+    form= StockForm
+    class Media:
+        js = ('js/stock.js',)
+        defer = True  # Add the defer attribute    
+        
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css','css/bootstrap.min.css'),
+        }     
     def save_model(self, request, obj, form, change):
 
         obj.owner = request.user if request.user.is_authenticated else None
           
         super().save_model(request, obj, form, change)  
-        
+            
 class IssueForProductionInfoForm(forms.ModelForm):
     docno = forms.IntegerField(disabled=True)  # Add this line to the form
 
@@ -260,82 +282,68 @@ class  IssueForProductionItemInlineForm(forms.ModelForm) :
     class Meta:
         model = IssueForProductionItem
         fields = ['productionNo','orderlineNo','code','name','quantity','uom','lineNo','salesOrder' ]
-        
+        widgets = {
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+
+            
+        }          
 
 
 
-class CustomIssueForProductionItemFormSet(BaseInlineFormSet):
-    def clean(self):
-        super().clean()
-        production_component_codes = defaultdict(dict)
-        issue_total_quantity = defaultdict(int)
 
-        # Gather all IssueForProductionItem records for the same productionNo and code
-        issue_items = IssueForProductionItem.objects.filter(
-            productionNo__in=[form.cleaned_data['productionNo'] for form in self.forms if not form.cleaned_data.get('DELETE')],
-            code__in=[form.cleaned_data['code'] for form in self.forms if not form.cleaned_data.get('DELETE')]
-        )
 
-        for form in self.forms:
-            if not form.cleaned_data.get('DELETE'):
-                production_no = form.cleaned_data.get('productionNo')
-                code = form.cleaned_data.get('code')
-                quantity = form.cleaned_data.get('quantity')
 
-                if production_no not in production_component_codes:
-                    production_component = ProductionComponent.objects.filter(
-                        docNo=production_no
-                    ).first()
 
-                    if production_component:
-                        production_component_codes[production_no][code] = {
-                            'quantity': quantity,
-                            'total_production_quantity': production_component.quantity,
-                        }
-                else:
-                    if code not in production_component_codes[production_no]:
-                        production_component = ProductionComponent.objects.filter(
-                            docNo=production_no
-                        ).first()
-                        if production_component:
-                            production_component_codes[production_no][code] = {
-                                'quantity': quantity,
-                                'total_production_quantity': production_component.quantity,
-                            }
-                    else:
-                        production_component_codes[production_no][code]['quantity'] += quantity
+# class CustomIssueForProductionItemFormSet(BaseInlineFormSet):
+#     def clean(self):
+#         super().clean()
+#         production_component_codes = defaultdict(dict)
+#         issue_total_quantity = defaultdict(lambda: defaultdict(int))
 
-                # Calculate the total issue quantity for each code
-                issue_total_quantity[code] = sum(
-                    issue_item.quantity for issue_item in issue_items if issue_item.code == code
-                )
+#         # Gather all IssueForProductionItem records for the same productionNo and code
+#         issue_items = IssueForProductionItem.objects.filter(
+#             productionNo__in=[form.cleaned_data['productionNo'] for form in self.forms if not form.cleaned_data.get('DELETE')],
+#             code__in=[form.cleaned_data['code'] for form in self.forms if not form.cleaned_data.get('DELETE')]
+#         )
 
-        for production_no, code_quantities in production_component_codes.items():
-            for code, data in code_quantities.items():
-                total_issue_quantity = issue_total_quantity[code]
-                total_production_quantity = data['total_production_quantity']
+#         # Gather all ProductionComponent items for the same docNo
+#         production_component_dict = {}
+#         production_no_list = list(set([form.cleaned_data['productionNo'] for form in self.forms if not form.cleaned_data.get('DELETE')]))
+#         production_components = ProductionComponent.objects.filter(
+#             docNo__in=production_no_list
+#         )
+#         for pc in production_components:
+#             if pc.docNo not in production_component_dict:
+#                 production_component_dict[pc.docNo] = {}
+#             production_component_dict[pc.docNo][pc.code] = {
+#                 'quantity': pc.quantity,
+#             }
 
-                # Check if the total issue quantity plus the current code quantity exceeds production quantity
-                if total_issue_quantity + data['quantity'] > total_production_quantity:
-                    form.add_error('quantity', f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
-                    raise ValidationError("Total issue quantity exceeds production quantity. Form submission aborted.")
+#         for form in self.forms:
+#             if not form.cleaned_data.get('DELETE'):
+#                 production_no = form.cleaned_data.get('productionNo')
+#                 code = form.cleaned_data.get('code')
+#                 quantity = form.cleaned_data.get('quantity')
 
-        for production_no, code_quantities in production_component_codes.items():
-            for code, data in code_quantities.items():
-                total_issue_quantity = issue_total_quantity[code]
-                total_production_quantity = data['total_production_quantity']
+#                 # Get the total production quantity for the current code and docNo
+#                 total_production_quantity = production_component_dict.get(production_no, {}).get(code, {}).get('quantity', 0)
 
-                # Check if the total issue quantity exceeds production quantity
-                if total_issue_quantity > total_production_quantity:
-                    form.add_error('quantity', f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
-                    raise ValidationError("Total issue quantity exceeds production quantity. Form submission aborted.")
+#                 # Calculate the total issue quantity for the current code and docNo
+#                 issue_total_quantity[production_no][code] = sum(
+#                     issue_item.quantity for issue_item in issue_items if issue_item.code == code
+#                 )
 
-        
+#                 # Check if the total issue quantity plus the current code quantity exceeds production quantity
+#                 if total_production_quantity is not None and issue_total_quantity[production_no][code] + quantity > total_production_quantity:
+#                     form.add_error('quantity', f"Total issue quantity for code {code} exceeds total production quantity for productionNo {production_no}.")
+#                     raise ValidationError("Total issue quantity exceeds production quantity. Form submission aborted.")
+
+
 class IssueForProductionItemInline(admin.TabularInline):
     model = IssueForProductionItem
     extra = 0  
     form = IssueForProductionItemInlineForm   
-    formset = CustomIssueForProductionItemFormSet
+    # formset = CustomIssueForProductionItemFormSet
     
               
   

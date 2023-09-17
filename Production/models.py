@@ -6,11 +6,21 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from Sales.models import SalesOrderItem
 
+'''
+  ____    _   _   _      ___     __     __  __           _                   _           _       
+ | __ )  (_) | | | |    / _ \   / _|   |  \/  |   __ _  | |_    ___   _ __  (_)   __ _  | |  ___ 
+ |  _ \  | | | | | |   | | | | | |_    | |\/| |  / _` | | __|  / _ \ | '__| | |  / _` | | | / __|
+ | |_) | | | | | | |   | |_| | |  _|   | |  | | | (_| | | |_  |  __/ | |    | | | (_| | | | \__ \
+ |____/  |_| |_| |_|    \___/  |_|     |_|  |_|  \__,_|  \__|  \___| |_|    |_|  \__,_| |_| |___/
+                                                                                                 
+
+'''
 # Create your models here.
 class BillOfMaterials(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
+    uom = models.CharField(max_length=20,default='',null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):

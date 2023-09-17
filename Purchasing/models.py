@@ -18,8 +18,8 @@ class PurchaseQuotetionInfo(models.Model):
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
-    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
-    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    totalAmount = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -37,9 +37,9 @@ class PurchaseQuotetionItem(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
     uom = models.CharField(max_length=20,default='',null=True)  
-    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
+    quantity = models.DecimalField(max_digits=15, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=15, decimal_places=4,null=True, blank=True, default=0)
     docNo = models.PositiveIntegerField(default=1, unique=False)      
     
     def save(self, *args, **kwargs):
@@ -59,8 +59,8 @@ class PurchaseOrderInfo(models.Model):
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
-    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
-    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    totalAmount = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -79,7 +79,7 @@ class PurchaseItem(models.Model):
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=15, decimal_places=4,null=True, blank=True, default=0)
     lineNo = models.PositiveIntegerField(default=0)  # Add the lineNo field
     docNo = models.PositiveIntegerField(default=1, unique=False)      
     def save(self, *args, **kwargs):
@@ -101,8 +101,8 @@ class GoodsReceiptPoInfo(models.Model):
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
-    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
-    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    totalAmount = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -122,7 +122,7 @@ class GoodsReceiptPoItem(models.Model):
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=15, decimal_places=4,null=True, blank=True, default=0)
     purchareOrderNo =  models.PositiveIntegerField(default=0)
     lineNo =  models.PositiveIntegerField(default=0) 
     docNo = models.PositiveIntegerField(default=1, unique=False)      
@@ -166,7 +166,7 @@ class GoodsReturnItem(models.Model):
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=15, decimal_places=4,null=True, blank=True, default=0)
     
     def save(self, *args, **kwargs):
         if self.created:            
@@ -184,7 +184,7 @@ class ApInvoiceInfo(models.Model):
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
     totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
-    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    totalQty = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     goodsreReiptNo = models.PositiveIntegerField(default=0)
 
@@ -205,7 +205,7 @@ class ApInvoiceItem(models.Model):
     uom = models.CharField(max_length=20,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
-    priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
+    priceTotal = models.DecimalField(max_digits=15, decimal_places=4,null=True, blank=True, default=0)
     docNo = models.PositiveIntegerField(default=1, unique=False)        
     goodsreReiptNo = models.PositiveIntegerField(default=0)
     lineNo =  models.PositiveIntegerField(default=0)     
