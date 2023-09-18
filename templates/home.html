@@ -44,9 +44,9 @@
 
       <div class="logo float-left">
 
-        <a href="{% url 'home' %}"><h1 style="font-weight: bolder;">   
-           {% comment %} <img src="{{ header.logo.url }}" alt="Logo" width='100px' height='100px'>      {% endcomment %}
-           {{ header.title }}    </h1> </a>
+        <a href="{% url 'home' %}">
+           <img src="{% static 'images/logo.jpg' %}" alt="Logo" width='100px' height='100px'>     
+             </h1> </a>
       </div>
 
       <nav class="main-nav float-right d-none d-lg-block">

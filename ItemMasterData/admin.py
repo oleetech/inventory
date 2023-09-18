@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django import forms
-from .models import Warehouse, ItemGroup,Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery,IssueForProductionInfo,IssueForProductionItem
+from .models import Warehouse, ItemGroup,Item, Stock, ItemReceiptinfo, ItemReceipt, ItemDeliveryinfo, ItemDelivery,IssueForProductionInfo,IssueForProductionItem,LedgerEntry
 from Purchasing.models import GoodsReceiptPoItem,GoodsReturnItem,PurchaseItem
 from Production.models import Production,ProductionComponent
 from Sales.models import SalesOrderItem,DeliveryItem
@@ -103,7 +103,7 @@ class ItemAdmin(admin.ModelAdmin):
 class ItemReceiptinfoForm(forms.ModelForm):
     class Meta:
         model = ItemReceiptinfo
-        fields = ['department']
+        fields = ['department','docno']
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -157,7 +157,7 @@ class ItemReceiptinfoAdmin(admin.ModelAdmin):
 class ItemDeliveryinfoForm(forms.ModelForm):
     class Meta:
         model = ItemDeliveryinfo
-        fields = ['department']
+        fields = ['department','docno']
         widgets = {
             'docno': forms.TextInput(attrs={'readonly': 'readonly'}),
             # 'owner': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -209,7 +209,8 @@ class ItemDeliveryinfoAdmin(admin.ModelAdmin):
        
 
         obj.owner = request.user if request.user.is_authenticated else None
-          
+
+       
         super().save_model(request, obj, form, change)  
         
         
@@ -249,9 +250,16 @@ class StockAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
 
         obj.owner = request.user if request.user.is_authenticated else None
-          
+        if not obj.pk:  # Check if this is a new instance
+            # Get the last inserted docno
+            last_stock = Stock.objects.order_by('-docNo').first()
+            if last_stock:
+                obj.docNo = last_stock.docNo + 1
+            else:
+                obj.docNo = 1        
         super().save_model(request, obj, form, change)  
-            
+        
+
 class IssueForProductionInfoForm(forms.ModelForm):
     docno = forms.IntegerField(disabled=True)  # Add this line to the form
 
@@ -359,3 +367,17 @@ class IssueForProductionInfoAdmin(admin.ModelAdmin):
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css','css/bootstrap.min.css'),
         }         
+        
+@admin.register(LedgerEntry)         
+class LedgerEntryAdmin(admin.ModelAdmin):  
+     
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:  # Check if this is a new instance
+            # Get the last inserted docno
+            last_ledger_entry = LedgerEntry.objects.order_by('-docNo').first()
+            if last_ledger_entry:
+                obj.docNo = last_ledger_entry.docNo + 1
+            else:
+                obj.docNo = 1
+
+        super().save_model(request, obj, form, change)

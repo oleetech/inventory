@@ -45,6 +45,8 @@ class Stock(models.Model):
     name = models.CharField(max_length=100,default='',null=True)    
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created = models.DateField(default=date.today, editable=True)    
+    docNo = models.PositiveIntegerField(unique=False,default=1)    
     
     def save_model(self, request, obj, form, change):
 
@@ -199,3 +201,19 @@ class IssueForProductionItem(models.Model):
      
     def __str__(self):
         return f": {self.docNo}"  
+    
+class LedgerEntry(models.Model):
+    TRANSACTION_CHOICES = (
+        ('STOCK', 'Stock'),
+        ('ITEM_RECEIVED', 'Item Received'),
+        ('ITEM_DELIVERY', 'Item Delivery'),
+        ('ISSUE_FOR_PRODUCTION ', 'ISSUE FOR PRODUCTION'),        
+    )
+
+    code = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField()
+    created = models.DateField(default=date.today, editable=True)
+    transaction_type = models.CharField(max_length=100, choices=TRANSACTION_CHOICES)
+    docNo = models.PositiveIntegerField(unique=False,default=1)    
+      
