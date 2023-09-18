@@ -45,7 +45,7 @@ class BusinessPartnerAdmin(admin.ModelAdmin):
     
     def total_purchase_amount(self, obj):
         # Calculate the sum of totalAmount for SalesOrderInfo related to this BusinessPartner
-        total_amount = GoodsReceiptPoInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
+        total_amount = PurchaseOrderInfo.objects.filter(customerName=obj).aggregate(total_sales=Sum('totalAmount'))['total_sales']
         return total_amount or 0
 
     total_purchase_amount.short_description = 'Purchase'          

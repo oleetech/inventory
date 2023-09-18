@@ -175,13 +175,18 @@ function calculateTotalQty() {
               success: function(response) {
                         
                 const customerInput = $('#id_customerName');  
-                const addressInput = $('#id_address');  
+                const addressInput = $('#id_address'); 
+                const totalAmountInput = $('#id_totalAmount');  
+                const totalQtyInput = $('#id_totalQty');                  
+                
                 // const salesemployeeInput = $('#id_sales_employee');    
 
                 
                 // // Update the value of the name input field
                 customerInput.val(response.customerName);   
                 addressInput.val(response.address);    
+                totalAmountInput.val(response.totalAmount);   
+                totalQtyInput.val(response.totalQty);                                   
                 // salesemployeeInput.val(response.sales_employee);                                  
                   console.log(response);
               }

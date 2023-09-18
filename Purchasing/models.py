@@ -41,6 +41,7 @@ class PurchaseQuotetionItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     priceTotal = models.DecimalField(max_digits=15, decimal_places=4,null=True, blank=True, default=0)
     docNo = models.PositiveIntegerField(default=1, unique=False)      
+    lineNo = models.PositiveIntegerField(default=0)  # Add the lineNo field
     
     def save(self, *args, **kwargs):
         if self.created:
@@ -145,8 +146,8 @@ class GoodsReturnInfo(models.Model):
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
-    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
-    totalQty = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True, default=0)
+    totalAmount = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True,default=0)
+    totalQty = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
@@ -183,7 +184,7 @@ class ApInvoiceInfo(models.Model):
     customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
     address = models.CharField(max_length=250,blank=True)
     created = models.DateField(default=timezone.now)
-    totalAmount = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True,default=0)
+    totalAmount = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True,default=0)
     totalQty = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     goodsreReiptNo = models.PositiveIntegerField(default=0)

@@ -8,7 +8,7 @@ from .models import PurchaseQuotetionInfo, PurchaseQuotetionItem
 class PurchaseQuotetionItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseQuotetionItem
-        fields = ['code','name', 'uom','quantity','price','priceTotal']   
+        fields = ['code','name', 'uom','quantity','price','priceTotal','lineNo']   
 
 class PurchaseQuotetionItemInline(admin.TabularInline):
     model = PurchaseQuotetionItem
@@ -61,7 +61,7 @@ from .models import PurchaseOrderInfo, PurchaseItem
 class PurchaseItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseItem
-        fields = '__all__'
+        fields = ['code','name', 'uom','quantity','price','priceTotal','lineNo']   
 
 class PurchaseItemInline(admin.TabularInline):
     model = PurchaseItem
@@ -71,10 +71,10 @@ class PurchaseItemInline(admin.TabularInline):
 class PurchaseOrderInfoAdminForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderInfo
-        fields = '__all__'
+        fields = ['customerName','docNo', 'totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'owner': forms.TextInput(attrs={'readonly': 'readonly'}),            
+            # 'owner': forms.TextInput(attrs={'readonly': 'readonly'}),            
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalQty': forms.TextInput(attrs={'readonly': 'readonly'}),
             'customerName': ModelSelect2Widget(model=BusinessPartner, search_fields=['name__icontains']),
@@ -118,7 +118,7 @@ from .models import GoodsReceiptPoInfo, GoodsReceiptPoItem
 class GoodsReceiptPoItemForm(forms.ModelForm):
     class Meta:
         model = GoodsReceiptPoItem
-        fields = ['code','name','uom','quantity','price','priceTotal','purchareOrderNo','lineNo']
+        fields = ['purchareOrderNo','lineNo','code','name','uom','quantity','price','priceTotal']
 
 class GoodsReceiptPoItemInline(admin.TabularInline):
     model = GoodsReceiptPoItem
@@ -245,7 +245,7 @@ class ApInvoiceItemInline(admin.TabularInline):
 class ApInvoiceInfoAdminForm(forms.ModelForm):
     class Meta:
         model = ApInvoiceInfo
-        fields = '__all__'
+        fields = ['goodsreReiptNo','docNo','customerName', 'totalQty','totalAmount']
         widgets = {
             'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
             'totalAmount': forms.TextInput(attrs={'readonly': 'readonly'}),

@@ -29,31 +29,7 @@ def purchaseorderinfo(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-@csrf_exempt
-def goodsreceiptpoline(request):
-    if request.method == 'POST':
-        receiptNo = int(request.POST.get('receiptNo'))
-        lineNo = int(request.POST.get('lineNo'))
 
-        try:
-            receipt_item = PurchaseItem.objects.get(docNo=receiptNo, lineNo=lineNo)
-
-            response_data = {
-                'receiptNumber': receipt_item.docNo,
-                'code': receipt_item.code,
-                'name': receipt_item.name,
-                'quantity': receipt_item.quantity,
-                'uom': receipt_item.uom,                
-                'price': receipt_item.price,
-                'priceTotal': receipt_item.priceTotal,             
-             
-                # Include other fields you want to retrieve
-            }
-            return JsonResponse(response_data)
-        except PurchaseItem.DoesNotExist:
-            return JsonResponse({'error': 'Item not found'})
-
-    return JsonResponse({'error': 'Invalid request method'})
 
 
 @csrf_exempt
@@ -89,7 +65,7 @@ def goodsreceiptpoline(request):
         lineNo = int(request.POST.get('lineNo'))
 
         try:
-            receipt_item = GoodsReceiptPoItem.objects.get(docNo=receiptNo, lineNo=lineNo)
+            receipt_item = PurchaseItem.objects.get(docNo=receiptNo, lineNo=lineNo)
 
             response_data = {
                 # 'receiptNumber': receipt_item.docNo,

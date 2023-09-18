@@ -2,9 +2,9 @@ body{font-family: Roboto, sans-serif;}
 
 /* Admin Panel */
 #header{
-    background: rgb(2,0,36);
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 75%);
-    
+    background: rgb(2,0,36)     !important;
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 75%) !important;
+    border: 1px solid darkslategray;
 }
 /* https://cssgradient.io/ */
 div.breadcrumbs {
