@@ -8,7 +8,7 @@ import calendar
 from Production.models import ProductionComponent
 from django.db import models
 
-from ItemMasterData.models import Item,ItemReceiptinfo,ItemReceipt,ItemDeliveryinfo,ItemDelivery,Stock,IssueForProductionItem
+from ItemMasterData.models import Item,ItemReceiptinfo,ItemReceipt,ItemDeliveryinfo,ItemDelivery,Stock,IssueForProductionItem,LedgerEntry
 from .forms import DateFilterForm,OrderFilterForm,YearFilterForm,DepartmentYearFilter,DateDepartmentFilter,OrderDepartmentFilter,ItemNameForm
 
 '''
@@ -576,3 +576,40 @@ def issue_for_production_balance_report(request):
                 })
 
     return render(request, 'inventory/issue_for_production_balance_report.html', {'form': form, 'balance_report_data': balance_report_data})
+
+
+def ledger_entry_view(request):
+    item_name = None  # Default value if no item is selected
+
+    if request.method == 'POST':
+        form = ItemNameForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            item_name = form.cleaned_data['item_name']
+
+            # Filter LedgerEntry data based on selected item and date range
+            ledger_entries = LedgerEntry.objects.filter(
+                created__range=(start_date, end_date),
+                name=item_name if item_name else None  # Filter by item if selected, or all items if None
+            ).order_by('created')
+    else:
+        form = ItemNameForm()
+        ledger_entries = None
+
+    context = {
+        'form': form,
+        'ledger_entries': ledger_entries,
+        'item_name': item_name,  # Pass item_name to the context
+    }
+    return render(request, 'inventory/ledger_entry_template.html', context)
+
+
+
+
+
+
+
+
+
+

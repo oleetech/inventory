@@ -207,7 +207,8 @@ class LedgerEntry(models.Model):
         ('STOCK', 'Stock'),
         ('ITEM_RECEIVED', 'Item Received'),
         ('ITEM_DELIVERY', 'Item Delivery'),
-        ('ISSUE_FOR_PRODUCTION ', 'ISSUE FOR PRODUCTION'),        
+        ('ISSUE_FOR_PRODUCTION ', 'ISSUE FOR PRODUCTION'),      
+        ('Goods_Receipt_Po_Item ', 'Purchase Goods received'),            
     )
 
     code = models.CharField(max_length=255)

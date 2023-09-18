@@ -1,0 +1,36 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        <h2>Type Production Order No</h2>
+ {% include '../form.html'%}
+
+    <h2>Ledger Entry for Item: {{ item_name }}</h2>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Transaction Type</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Linstock</th>  <!-- Add this column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in ledger_entries %}
+                <tr>
+                    <td>{{ entry.created }}</td>
+                    <td>{{ entry.transaction_type }}</td>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.quantity }}</td>
+                    <td>{{ entry.linstock }}</td>  <!-- Display linstock for each entry -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
