@@ -125,6 +125,12 @@ urlpatterns = [
 #  ___) | | (_| | | | |  __/ \__ \   | |_| | | |    | (_| | |  __/ | |   
 # |____/   \__,_| |_|  \___| |___/    \___/  |_|     \__,_|  \___| |_|   
 #  
+    path('Sales/sales_quotation_between_date/', salesorderviews.sales_quotation_between_date, name='sales_quotation_between_date'),
+    path('Sales/sales_order_between_date/', salesorderviews.sales_order_between_date, name='sales_order_between_date'),
+    path('Sales/delivery_between_date/', salesorderviews.delivery_between_date, name='delivery_between_date'),
+    path('Sales/ar_invoice_between_date/', salesorderviews.ar_invoice_between_date, name='ar_invoice_between_date'),
+    path('Sales/ar_invoice_between_date_without_item/', salesorderviews.ar_invoice_between_date_without_item, name='ar_invoice_between_date_without_item'),
+    
     #কাস্টমার অর্ডার সামারি রিপোর্ট 
     path('Sales/customer_summary/', salesorderviews.customer_summary, name='customer_summary'),
     #সেলস অর্ডার এর বয়স দেখা     

@@ -4,10 +4,106 @@ from django.db.models import Sum,Count,F,ExpressionWrapper, DecimalField
 from collections import defaultdict
 from decimal import Decimal
 from ItemMasterData.models import Item,ItemGroup
-from Sales.models import SalesOrderInfo,SalesOrderItem,DeliveryItem,DeliveryInfo
+from Sales.models import SalesQuotetionItem,SalesOrderInfo,SalesOrderItem,DeliveryItem,DeliveryInfo,ARInvoiceItem,ARInvoiceInfo
 from Production.models import ProductionReceiptItem
 from datetime import datetime, timedelta
 from .forms import AgeFilterForm,SalesOrderStatusFilterForm,OrderFilterForm,DateFilterForm,OrderDepartmentFilter,DateDepartmentFilter,ItemGroupForm
+
+
+#ডেট অনুযায়ী sales quotetion রিপোর্ট 
+def sales_quotation_between_date(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                items_within_range = SalesQuotetionItem.objects.filter(created__range=(start_date, end_date))
+                
+                return render(request, 'sales/sales_quotation_between_date.html', {'items': items_within_range})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'sales/sales_quotation_between_date.html', {'form': form})
+
+#ডেট অনুযায়ী sales order রিপোর্ট 
+def sales_order_between_date(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                items_within_range = SalesOrderItem.objects.filter(created__range=(start_date, end_date))
+                
+                return render(request, 'sales/sales_order_between_date.html', {'items': items_within_range})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'sales/sales_order_between_date.html', {'form': form})
+
+#ডেট অনুযায়ী Delivery রিপোর্ট 
+def delivery_between_date(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                items_within_range = DeliveryItem.objects.filter(created__range=(start_date, end_date))
+                
+                return render(request, 'sales/delivery_between_date.html', {'items': items_within_range})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'sales/delivery_between_date.html', {'form': form})
+
+#ডেট অনুযায়ী Ar Invoice রিপোর্ট 
+def ar_invoice_between_date(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                items_within_range = ARInvoiceItem.objects.filter(created__range=(start_date, end_date))
+                
+                return render(request, 'sales/ar_invoice_between_date.html', {'items': items_within_range})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'sales/ar_invoice_between_date.html', {'form': form})
+
+#ডেট অনুযায়ী Ar Invoice রিপোর্ট 
+def ar_invoice_between_date_without_item(request):
+    form = DateFilterForm(request.POST)
+    
+    if request.method == 'POST' and form.is_valid():
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+        
+        if start_date and end_date:
+            try:
+                items_within_range = ARInvoiceInfo.objects.filter(created__range=(start_date, end_date))
+                
+                return render(request, 'sales/ar_invoice_between_date_without_item.html', {'items': items_within_range})
+            except ValueError:
+                # Handle invalid date format
+                pass
+    
+    return render(request, 'sales/ar_invoice_between_date_without_item.html', {'form': form})
 #কাস্টমার অর্ডার সামারি রিপোর্ট  Customer Wise Order Summary
 def customer_summary(request):
     customer_summary_data = SalesOrderInfo.objects.values('customerName__name').annotate(

@@ -1,0 +1,47 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+ {% include '../form.html'%}
+
+
+
+{% if items %}
+<table id="itemsTable" class="table table-bordered" >
+    <thead class="">
+        <tr>
+            <th>Order No</th>            
+            <th>Created</th>            
+            <th>Customer</th>            
+            <th>Name</th>
+  
+            <th>Quantity</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.docNo }}</td>    
+                <td>{{ item.created }}</td>                
+                <td>{{ item.delivery.customerName }}</td>
+                <td>{{ item.name }}</td>
+                <td class="number-cell">{{ item.quantity }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+
+
+
+</table>
+<p id="sum-cell" colspan="3"></p>
+{% endif %}
+</div>
+
+</div>
+{% endblock %}
