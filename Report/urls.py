@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views,salesemployeeviews,inventoryviews,salesorderviews,businesspartnerview
+from . import views,salesemployeeviews,inventoryviews,salesorderviews,businesspartnerview,purchasingview,bankingview
 
 
 urlpatterns = [
@@ -179,5 +179,32 @@ urlpatterns = [
     #সকল কাস্টমারের সেলস ডেলিভারি রিপোর্ট    
     path('Businesspartner/customer_sales_report/', businesspartnerview.customer_sales_report, name='customer_sales_report'),
                                                                       
-  
+#  ____                          _                                          
+# |  _ \   _   _   _ __    ___  | |__     __ _   ___    ___     
+# | |_) | | | | | | '__|  / __| | '_ \   / _` | / __|  / _ \   
+# |  __/  | |_| | | |    | (__  | | | | | (_| | \__ \ |  __/   
+# |_|      \__,_| |_|     \___| |_| |_|  \__,_| |___/  \___|    
+#
+
+
+
+# Datewise
+    path('purchasing/purchase_quotation_between_date/', purchasingview.purchase_quotation_between_date, name='purchase_quotation_between_date'),
+    path('purchasing/purchase_order_between_date/', purchasingview.purchase_order_between_date, name='purchase_order_between_date'),
+    path('purchasing/goods_receipt_po_between_date/', purchasingview.goods_receipt_po_between_date, name='goods_receipt_po_between_date'),
+    path('purchasing/ap_invoice_between_date_without_item/', purchasingview.ap_invoice_between_date_without_item, name='ap_invoice_between_date_without_item'),
+    path('purchasing/ap_invoice_between_date/', purchasingview.ap_invoice_between_date, name='ap_invoice_between_date'),
+
+
+#  ____                    _      _                   
+# | __ )    __ _   _ __   | | __ (_)  _ __     __ _   
+# |  _ \   / _` | | '_ \  | |/ / | | | '_ \   / _` |  
+# | |_) | | (_| | | | | | |   <  | | | | | | | (_| |  
+# |____/   \__,_| |_| |_| |_|\_\ |_| |_| |_|  \__, |  
+#                                             |___/   
+    path('banking/incoming_payment_info_between_date/', bankingview.incoming_payment_info_between_date, name='incoming_payment_info_between_date'),
+    path('banking/outgoing_payment_info_between_date/', bankingview.outgoing_payment_info_between_date, name='outgoing_payment_info_between_date'),
+   
 ]
+
+
