@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>OleeTech </title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/font-awesome/css/font-awesome.min.css' %}"rel="stylesheet">
+  <link href="{% static 'assets/vendor/ionicons/css/ionicons.min.css' %}"rel="stylesheet">
+  <link href="{% static 'assets/vendor/owl.carousel/assets/owl.carousel.min.css' %}"rel="stylesheet">
+  <link href="{% static 'assets/vendor/venobox/venobox.css' %}"rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css' %}"rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'assets/css/style.css' %}"rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: OleeTech - v2.1.0
+  * Template URL: https://bootstrapmade.com/OleeTech-bootstrap-business-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container">
+
+      <div class="logo float-left">
+
+        <a href="{% url 'home' %}">
+           <img src="{% static 'images/logo.jpg' %}" alt="Logo" width='100px' height='100px'>     
+             </h1> </a>
+      </div>
+
+      <nav class="main-nav float-right d-none d-lg-block">
+        <ul>
+          <li class="active"><a href="{% url 'home' %}">Home</a></li>
+
+          {% for item in navigation %}
+          <li><a href="{{ item.link }}">{{ item.title }}</a></li>          
+      {% endfor %}
+
+
+
+          <li class="drop-down"><a href="">Application</a>
+            <ul>
+              <li><a href="{% url 'admin:index' %}">Login</a></li>
+
+              <li><a href="{% url 'post_list' %}">Report</a></li>
+              <li><a href="https://olee-tech.gitbook.io/rebel-user-manual/">User Manual</a></li>
+              
+            </ul>
+          </li>   
+        </ul>
+      </nav><!-- .main-nav -->
+
+    </div>
+  </header><!-- #header -->
+
+  <div class="clear mb-4"></div>
+<div class="row">
+    <div class="col-md-6">
+        <div id="chart-container" style="width: 80%; margin: 0 auto;"></div>
+        <h2>Item Stock Information</h2>
+
+    </div>
+    <div class="col-md-6">
+
+         <div id="pie-chart" style="width: 80%; margin: 0 auto;" ></div> 
+         <h2>Last 12 Month Purchase Report</h2>
+
+        </div>  
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div id="top_customer_sales_amount" style="width: 80%; margin: 0 auto;"></div>
+        <h2>Running Order Top Customer </h2>
+    </div>
+
+    <div class="col-md-6">
+        <div id="month_labels" style="width: 80%; margin: 0 auto;"></div>
+        <h2>Trend Sales Order By Month </h2>
+    </div>
+</div>
+
+
+  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/counterup/counterup.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/owl.carousel/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/venobox/venobox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+  <script src="{% static 'js/library/plotly.min.js' %}"></script>
+  <script>
+    // Load the Plotly chart data
+    var itemData = {{ item_data|safe }};
+
+    // Create arrays for item names and instock values
+    var itemNames = itemData.map(function(item) {
+        return item.name;
+    });
+    var instockValues = itemData.map(function(item) {
+        return item.instock;
+    });
+
+    // Create the Plotly chart
+    var trace = {
+        x: itemNames,
+        y: instockValues,
+        type: 'bar',
+    };
+
+    var data = [trace];
+
+    var layout = {
+        title: 'Top Items by Instock Value',
+        xaxis: { title: 'Item Name' },
+        yaxis: { title: 'Instock Value' },
+    };
+
+    Plotly.newPlot('chart-container', data, layout);
+</script>
+
+
+
+<script>
+    // Load the Plotly chart data
+    var chartData = {{ chart_data|safe }};
+
+    // Render the Plotly pie chart in the specified div
+    Plotly.react('pie-chart', chartData.data, chartData.layout);
+</script>
+
+
+
+
+<script>
+    // Load the Plotly chart data
+    var chartData = {{ top_customer_sales_amount|safe }};
+
+    // Render the Plotly pie chart in the specified div
+    Plotly.react('top_customer_sales_amount', chartData.data, chartData.layout);
+</script>
+
+
+
+<script>
+    // Load the Plotly chart data
+    var monthLabels = {{ month_labels|safe }};
+    var totalQuantities = {{ total_quantities|safe }};
+
+    // Create the Plotly bar chart
+    var trace = {
+        x: monthLabels,
+        y: totalQuantities,
+        type: 'bar',
+    };
+    var data = [trace];
+    var layout = {
+        title: 'Sales Order Trend by Month',
+        xaxis: { title: 'Month' },
+        yaxis: { title: 'Total Quantity' },
+    };
+    Plotly.newPlot('month_labels', data, layout);
+</script>
+
+
+
+</body>
+
+</html>  

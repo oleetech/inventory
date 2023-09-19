@@ -31,7 +31,7 @@ class Item(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     item_group = models.ForeignKey(ItemGroup, on_delete=models.SET_NULL, null=True, blank=True)
-    
+
     class Meta:
     # Add any other fields you need
         verbose_name = 'Item Master Data'

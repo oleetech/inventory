@@ -52,7 +52,7 @@
       <nav class="main-nav float-right d-none d-lg-block">
         <ul>
           <li class="active"><a href="{% url 'home' %}">Home</a></li>
-
+          <li class=""><a href="{% url 'dashboard' %}">Dashboard</a></li>
           {% for item in navigation %}
           <li><a href="{{ item.link }}">{{ item.title }}</a></li>          
       {% endfor %}

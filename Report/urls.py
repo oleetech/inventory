@@ -82,19 +82,24 @@ urlpatterns = [
     #ডেট অনুযায়ী আইটেম  রিপোর্ট 
     path('Inventory/item_receipt_between_date/', inventoryviews.item_receipt_between_date, name='item_receipt_between_date'),
     path('Inventory/item_delivery_between_date/', inventoryviews.item_delivery_between_date, name='item_delivery_between_date'),
-    
+    path('Inventory/item_stock_between_date/', inventoryviews.item_stock_between_date, name='item_stock_between_date'),
+    path('Inventory/issue_for_production_between_date/', inventoryviews.issue_for_production_between_date, name='issue_for_production_between_date'),
+  
     #ডেট অনুযায়ী আইটেম  রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে     
     path('Inventory/item_delivery_between_date_by_department/', inventoryviews.item_delivery_between_date_by_department, name='item_delivery_between_date_by_department'),
     path('Inventory/item_receipt_between_date_by_department/', inventoryviews.item_receipt_between_date_by_department, name='item_receipt_between_date_by_department'),
+    path('Inventory/issue_for_production_between_date_by_department/', inventoryviews.issue_for_production_between_date_by_department, name='issue_for_production_between_date_by_department'),
 
     #ডেট অনুযায়ী ডিপার্টমেন্ট  আইটেম টোটাল সামারি  রিপোর্ট
     path('Inventory/item_receipt_department_summary_by_dates/', inventoryviews.item_receipt_department_summary_by_dates, name='item_receipt_department_summary_by_dates'),
     path('Inventory/item_delivery_department_summary_by_dates/', inventoryviews.item_delivery_department_summary_by_dates, name='item_delivery_department_summary_by_dates'),
+    path('Inventory/issue_for_production_department_summary_by_dates/', inventoryviews.issue_for_production_department_summary_by_dates, name='issue_for_production_department_summary_by_dates'),
 
     
     # ১ বছরের মাস অনুযায়ী রিপোর্ট     
     path('Inventory/item_receipt_monthly_data/', inventoryviews.item_receipt_monthly_data, name='item_receipt_monthly_data'),
     path('Inventory/item_delivery_monthly_data/', inventoryviews.item_delivery_monthly_data, name='item_delivery_monthly_data'),
+    path('Inventory/issue_for_production_monthly_data/', inventoryviews.issue_for_production_monthly_data, name='issue_for_production_monthly_data'),
     
     # ১ বছরের মাস অনুযায়ী রিপোর্ট ডিপার্টমেন্ট সিলেক্ট করে       
     path('Inventory/item_receipt_monthly_data_by_department/', inventoryviews.item_receipt_monthly_data_by_department, name='item_receipt_monthly_data_by_department'),
