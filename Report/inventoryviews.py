@@ -723,6 +723,7 @@ def ledger_entry_view(request):
         'form': form,
         'ledger_entries': ledger_entries,
         'item_name': item_name,  # Pass item_name to the context
+        'initial_stock':0,
     }
     return render(request, 'inventory/ledger_entry_template.html', context)
 
