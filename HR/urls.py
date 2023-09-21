@@ -9,6 +9,8 @@ urlpatterns = [
     path('attendance_summary_report/', views.attendance_summary_report, name='attendance_summary_report'),
     path('leave_balance_report/', views.leave_balance_report, name='leave_balance_report'),
     path('overtime_summary_report/', views.overtime_summary_report, name='overtime_summary_report'),
+    path('employee_leave_records_report/', views.employee_leave_records_report, name='employee_leave_records_report'),
+    path('employee_ot_hour_records_report/', views.employee_ot_hour_records_report, name='employee_ot_hour_records_report'),
     
     # path('attendance_report/', views.attendance_report, name='attendance_report'),
 

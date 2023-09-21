@@ -2,14 +2,15 @@ from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse,HttpRequest,HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
-from .models import AttendanceLog,Attendance,Employee,OvertimeRecord,LeaveRequest
-from django.db.models import Count, Sum
-from datetime import date
+from .models import AttendanceLog,Attendance,Employee,OvertimeRecord,LeaveRequest,Payroll
+from django.db.models import Count, Sum,F
+from datetime import date,timedelta
 from django.shortcuts import render, redirect
-from .forms import ExcelUploadForm,DateFilterForm,YearFilterForm
-from .models import Payroll, Employee
+from .forms import ExcelUploadForm,DateFilterForm,YearFilterForm,EmployeeIDDateFilterForm
+
 import pandas as pd
 from django.db import models
+
 
 
 # Create your views here.
@@ -182,7 +183,6 @@ def attendance_summary_report(request):
 
 
 # ...
-from django.db.models import F
 
 def leave_balance_report(request):
     # Initialize the form with default values.
@@ -233,8 +233,34 @@ def leave_balance_report(request):
         'leave_data': leave_data,
     })
 
+def employee_leave_records_report(request):
+    form = EmployeeIDDateFilterForm(request.POST or None)
+    leave_records = None
+    total_casual_leave = 0
+    total_medical_leave = 0
 
+    if request.method == 'POST' and form.is_valid():
+        id_no = form.cleaned_data['id_no']
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
 
+        # Filter LeaveRequest records by id_no and date range
+        leave_records = LeaveRequest.objects.filter(
+            employee__id_no=id_no,
+            start_date__gte=start_date,
+            end_date__lte=end_date
+        )
+
+        # Calculate the total sum of casual_leave and medical_leave
+        total_casual_leave = leave_records.filter(leave_type='casual_leave').aggregate(Sum('leave_duration'))['leave_duration__sum'] or timedelta(0)
+        total_medical_leave = leave_records.filter(leave_type='medical_leave').aggregate(Sum('leave_duration'))['leave_duration__sum'] or timedelta(0)
+
+    return render(request, 'employee_leave_records_report.html', {
+        'form': form,
+        'leave_records': leave_records,
+        'total_casual_leave': total_casual_leave,
+        'total_medical_leave': total_medical_leave,
+    })
 
 
 def overtime_summary_report(request):
@@ -265,3 +291,39 @@ def overtime_summary_report(request):
         'form': form,
         'summary_data': summary_data,
     })
+    
+def employee_ot_hour_records_report(request):
+    form = EmployeeIDDateFilterForm(request.POST or None)
+    ot_hour_records = None
+    employee_info = None
+    total_ot_hours = 0
+
+    if request.method == 'POST' and form.is_valid():
+        id_no = form.cleaned_data['id_no']
+        start_date = form.cleaned_data['start_date']
+        end_date = form.cleaned_data['end_date']
+
+        # Filter OvertimeRecord records by id_no and date range
+        ot_hour_records = OvertimeRecord.objects.filter(
+            employee__id_no=id_no,
+            date__gte=start_date,
+            date__lte=end_date
+        )
+
+        # Get employee information
+        try:
+            employee_info = Employee.objects.get(id_no=id_no)
+        except Employee.DoesNotExist:
+            employee_info = None
+            
+            
+        # Calculate the total sum of ot_hour
+        total_ot_hours = ot_hour_records.aggregate(Sum('ot_hour'))['ot_hour__sum'] or 0
+        
+    return render(request, 'employee_ot_hour_records_report.html', {
+        'form': form,
+        'ot_hour_records': ot_hour_records,
+        'employee_info': employee_info,
+        'total_ot_hours': total_ot_hours,
+        
+    })    

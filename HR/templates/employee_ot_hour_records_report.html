@@ -1,0 +1,58 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body     ">
+        <h2>Overtime Hour Records</h2>
+
+   {% include 'form.html'%}
+   <div class="row">
+    {% if employee_info %}
+
+    <div class="card col-md-4 ">
+        <div class="card-body bg-light">        
+        Employee Name: {{ employee_info.first_name }} {{ employee_info.last_name }}
+    <br>
+    
+        Employee ID: {{ employee_info.id_no }}
+        
+        <br>
+        Total OT Hours: {{ total_ot_hours }}
+        
+    </div>
+
+</div>
+</div>
+
+    <!-- Add more employee information as needed -->
+    {% endif %}
+
+    {% if ot_hour_records %}
+    <table id="itemsTable" class="table table-bordered" >
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>OT Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in ot_hour_records %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.ot_hour }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+    {% endif %}
+</div>
+
+</div>
+{% endblock %}

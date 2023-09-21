@@ -1,0 +1,47 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+        <h1>Employee Leave Records Report</h1>
+   {% include 'form.html'%}
+    {% if leave_records %}
+    <h2>Total Leave Summaries</h2>
+    <ul>
+        <li>Total Casual Leave: {{ total_casual_leave.days }} days</li>
+        <li>Total Medical Leave: {{ total_medical_leave.days }} days</li>
+    </ul>
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Leave Type</th>
+                <th>Leave Duration (Days)</th>
+                <th>Reason</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in leave_records %}
+            <tr>
+                <td>{{ record.start_date }}</td>
+                <td>{{ record.end_date }}</td>
+                <td>{{ record.leave_type }}</td>
+                <td>{{ record.leave_duration.days }}</td>
+                <td>{{ record.reason }}</td>
+                <td>{{ record.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% endif %}
+</div>
+
+</div>
+{% endblock %}
