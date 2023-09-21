@@ -117,5 +117,7 @@ def dashboard(request):
     # Extract month labels and total quantities for the bar chart
     month_labels = [item['month'].strftime('%Y-%m') for item in trend_data]
     total_quantities = [float(item['total_quantity']) for item in trend_data]    
+
+
     
     return render(request, 'dashboard.html',{'item_data': item_data,'chart_data': chart_data,'top_customer_sales_amount':top_customer_sales_amount,'month_labels': month_labels, 'total_quantities': total_quantities})

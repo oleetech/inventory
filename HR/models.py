@@ -4,15 +4,7 @@ from datetime import timedelta
 
 
 
-class District(models.Model):
-    name = models.CharField(max_length=255)
-    def __str__(self):
-        return self.name
-class PoliceStation(models.Model):
-    name = models.CharField(max_length=255)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name    
+
      
 class Department(models.Model):
     name = models.CharField(max_length=100)
@@ -28,21 +20,27 @@ class Employee(models.Model):
         ('O', 'Other'),
     )
 
+
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    fatherName = models.CharField(max_length=100, blank=True, null=True)
+    
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     birth_date = models.DateField()
     hire_date = models.DateField()
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100,blank=True, null=True)
+    designation = models.CharField(max_length=100,blank=True, null=True)
     id_no = models.PositiveIntegerField(default=1, unique=True)
-    salary = models.DecimalField(max_digits=10, decimal_places=2)
+    salary = models.DecimalField(max_digits=10, decimal_places=2,default=1)
+    joiningSalary = models.DecimalField(max_digits=10, decimal_places=2,default=1)
+    
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     active = models.BooleanField(default=False)  # New field for active status
-    district = models.ForeignKey(District, on_delete=models.CASCADE, null=True, blank=True)
-    police_station = models.ForeignKey(PoliceStation, on_delete=models.CASCADE, null=True, blank=True)
-    
-    address = models.TextField(blank=True, null=True)
+
+    localAddress = models.CharField(max_length=200,blank=True, null=True)
+    permanentAddress = models.CharField(max_length=200,blank=True, null=True)   
+    photo = models.ImageField(upload_to='employee_photos/',null=True, blank=True)     
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
 
@@ -53,26 +51,10 @@ class Employee(models.Model):
 
 
 
-class Skill(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-    def __str__(self):
-        return self.name
     
     
-class EmployeeSkill(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
-    def save(self, *args, **kwargs):
-        # Set the id_no field to the employee's id_no
-        if not self.id_no:
-            self.id_no = self.employee.id_no
-        super().save(*args, **kwargs)    
-    def __str__(self):
-        return f"{self.employee.first_name} {self.employee.last_name} - {self.skill.name}"
+
 
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
@@ -120,17 +102,7 @@ class Payroll(models.Model):
             self.id_no = self.employee.id_no
         super().save(*args, **kwargs)    
     
-class Document(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    document_type = models.CharField(max_length=50)
-    document_file = models.FileField(upload_to='employee_documents/')
-    upload_date = models.DateTimeField(auto_now_add=True)
-    id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
-    def save(self, *args, **kwargs):
-        # Set the id_no field to the employee's id_no
-        if not self.id_no:
-            self.id_no = self.employee.id_no
-        super().save(*args, **kwargs)    
+ 
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
@@ -203,8 +175,7 @@ class AttendanceLog(models.Model):
     remarks = models.TextField(blank=True)
     sync_status = models.CharField(max_length=20)
     
-    def __str__(self):
-        return f"{self.employee.name} - {self.date} - {self.time_in} to {self.time_out}"        
+  
     
     
 class OvertimeRecord(models.Model):
@@ -223,7 +194,17 @@ class OvertimeRecord(models.Model):
     
     
     
-    
+class Award(models.Model):
+    employee = models.ForeignKey('Employee', on_delete=models.CASCADE, related_name='awards')
+    title = models.CharField(max_length=100)
+    giftItem = models.CharField(max_length=100)
+    description = models.TextField()
+    dateReceived = models.DateField()
+    issuedBy = models.CharField(max_length=100)
+    awardBy = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.title    
     
     
     

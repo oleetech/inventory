@@ -1,0 +1,41 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+    <h1>Leave Balance Report</h1>
+
+
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Casual Leave Quantity</th>
+                <th>Medical Leave Quantity</th>
+                <th>Casual Leave Balance</th>
+                <th>Medical Leave Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if leave_data %}
+            {% for data in leave_data %}
+            <tr>
+                <td>{{ data.employee.first_name }} {{ data.employee.last_name }}</td>
+                <td>{{ data.casual_leave_quantity }}</td>
+                <td>{{ data.medical_leave_quantity }}</td>
+                <td>{{ data.casual_leave_balance }}</td>
+                <td>{{ data.medical_leave_balance }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+{% endblock %}

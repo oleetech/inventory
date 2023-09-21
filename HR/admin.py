@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee,EmployeeSkill,Department,Skill,District, PoliceStation,Attendance, LeaveRequest, Payroll, Document, Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,AttendanceLog,OvertimeRecord
+from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,AttendanceLog,OvertimeRecord
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        exclude = ['owner','district','police_station']  # You can exclude fields if needed
+        exclude = ['owner',]  # You can exclude fields if needed
 
         widgets = {
             # 'name': forms.TextInput(attrs={'readonly': 'readonly'}),
@@ -33,24 +33,9 @@ class EmployeeAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)         
         
         
-# class EmployeeSkillForm(forms.ModelForm):
-#     class Meta:
-#         model = EmployeeSkill
-#         exclude = ['owner']  # You can exclude fields if needed
 
-       
         
-# @admin.register(EmployeeSkill)                             
-# class EmployeeSkillAdmin(admin.ModelAdmin):   
-#     form = EmployeeForm  
-#     change_form_template = 'admin/Production/ProductionOrder/change_form.html'   
-           
-#     def save_model(self, request, obj, form, change):
 
-#         obj.owner = request.user if request.user.is_authenticated else None
-          
-#         super().save_model(request, obj, form, change)      
-        
         
 class DepartmentForm(forms.ModelForm):
     class Meta:
@@ -73,38 +58,12 @@ class DepartmentAdmin(admin.ModelAdmin):
           
         super().save_model(request, obj, form, change)      
         
-# class SkillForm(forms.ModelForm):
-#     class Meta:
-#         model = Skill
-#         exclude = ['owner']  # You can exclude fields if needed
 
-#         widgets = {
-#             # 'name': forms.TextInput(attrs={'readonly': 'readonly'}),
- 
-#         }         
-        
-# @admin.register(Skill)                             
-# class SkillAdmin(admin.ModelAdmin):   
-#     form = SkillForm  
-#     change_form_template = 'admin/Production/ProductionOrder/change_form.html'   
-           
-#     def save_model(self, request, obj, form, change):
-
-#         obj.owner = request.user if request.user.is_authenticated else None
-          
-#         super().save_model(request, obj, form, change)                
+            
         
 
           
-# class PoliceStationInline(admin.TabularInline):  # or admin.StackedInline
-#     model = PoliceStation
-#     extra = 0
- 
-           
-# @admin.register(District)
-# class DistrictAdmin(admin.ModelAdmin):
-#     list_display = ('name',)
-#     inlines = [PoliceStationInline]        
+
 
 # class AttendanceForm(forms.ModelForm):
 #     class Meta:
@@ -134,11 +93,7 @@ class PayrollAdmin(admin.ModelAdmin):
     list_filter = ('pay_date',)
     search_fields = ('employee__first_name', 'employee__last_name', 'pay_date')
 
-@admin.register(Document)
-class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'document_type', 'upload_date')
-    list_filter = ('document_type', 'upload_date')
-    search_fields = ('employee__first_name', 'employee__last_name', 'document_type')
+
 
 # @admin.register(Announcement)
 # class AnnouncementAdmin(admin.ModelAdmin):
@@ -151,11 +106,11 @@ class DocumentAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(EmployeeTraining)
-class EmployeeTrainingAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'training_type', 'date', 'duration')
-    list_filter = ('training_type', 'date')
-    search_fields = ('employee__first_name', 'employee__last_name', 'training_type')
+# @admin.register(EmployeeTraining)
+# class EmployeeTrainingAdmin(admin.ModelAdmin):
+#     list_display = ('employee', 'training_type', 'date', 'duration')
+#     list_filter = ('training_type', 'date')
+#     search_fields = ('employee__first_name', 'employee__last_name', 'training_type')
 
 @admin.register(EmployeePromotion)
 class EmployeePromotionAdmin(admin.ModelAdmin):
@@ -163,11 +118,11 @@ class EmployeePromotionAdmin(admin.ModelAdmin):
     list_filter = ('promotion_date', 'previous_role', 'new_role')
     search_fields = ('employee__first_name', 'employee__last_name', 'previous_role', 'new_role')
 
-@admin.register(TaskAssignment)
-class TaskAssignmentAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'task_name', 'deadline', 'status')
-    list_filter = ('deadline', 'status')
-    search_fields = ('employee__first_name', 'employee__last_name', 'task_name')
+# @admin.register(TaskAssignment)
+# class TaskAssignmentAdmin(admin.ModelAdmin):
+#     list_display = ('employee', 'task_name', 'deadline', 'status')
+#     list_filter = ('deadline', 'status')
+#     search_fields = ('employee__first_name', 'employee__last_name', 'task_name')
 
 @admin.register(AttendanceLog)
 class AttendanceLogAdmin(admin.ModelAdmin):

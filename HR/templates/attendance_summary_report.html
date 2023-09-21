@@ -1,0 +1,38 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    <h1>Date Filter</h1>
+    {% include 'form.html'%}
+
+    <table id="itemsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Total Days Present</th>
+                <th>Total Days Absent</th>
+                <th>Total Days Late</th>
+                <th>Total Days on Leave</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in attendance_summary %}
+            <tr>
+                <td>{{ employee.first_name }} {{ employee.last_name }}</td>
+                <td>{{ employee.total_days_present }}</td>
+                <td>{{ employee.total_days_absent }}</td>
+                <td>{{ employee.total_days_late }}</td>
+                <td>{{ employee.total_days_on_leave }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+{% endblock %}
