@@ -1,0 +1,20 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+ 
+<ul>
+    <li><a href="{%url 'upload_payroll' %}">upload_payroll</a></li>
+    <li><a href="{%url 'upload_attendance' %}">upload_attendance</a></li>
+    <li><a href="{%url 'upload_overtime_record' %}">upload_overtime_record</a></li>
+
+</ul>
+</div>
+
+</div>
+{% endblock %}

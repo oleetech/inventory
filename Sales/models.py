@@ -4,6 +4,8 @@ from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
 from datetime import date
 from django.contrib.auth.models import User
+from tinymce.models import HTMLField
+from django import forms
 
 
 
@@ -398,11 +400,31 @@ class ARInvoiceItem(models.Model):
         return f": {self.id}"          
     
     
-    
-    
-    
-    
-    
+class CustomerComplaint(models.Model):
+    docNo = models.PositiveIntegerField(default=1, unique=True)    
+    customerName = models.ForeignKey(BusinessPartner, on_delete=models.CASCADE, null=True, default=None)
+    salesOrder = models.ForeignKey(SalesOrderInfo, on_delete=models.CASCADE)
+    deliveryNo = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE,default=None,blank=True)
+    created = models.DateField(default=date.today, editable=True)
+    description = models.TextField() # Change This Line
+    status = models.CharField(max_length=20, choices=[('open', 'Open'), ('resolved', 'Resolved')])    
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+
+        verbose_name = 'Customer Complain '
+        verbose_name_plural = 'Customer Complain'    
+    def __str__(self):
+        return f" {self.docNo}"      
+class CustomerComplaintItem(models.Model):
+    created = models.DateField(default=date.today, editable=True)
+    order = models.ForeignKey(CustomerComplaint, on_delete=models.CASCADE, null=True, default=None)    
+    code = models.CharField(max_length=20,default='',null=True)
+    name = models.CharField(max_length=100,default='',null=True)  
+    uom = models.CharField(max_length=20,default='',null=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)         
+    solution = models.CharField(max_length=100,default='',null=True)  
+    symptom = models.CharField(max_length=100,default='',null=True)    
     
     
    

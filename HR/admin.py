@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee,EmployeeSkill,Department,Skill,District, PoliceStation,Attendance, LeaveRequest, Payroll, Document, Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment
+from .models import Employee,EmployeeSkill,Department,Skill,District, PoliceStation,Attendance, LeaveRequest, Payroll, Document, Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,AttendanceLog,OvertimeRecord
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -106,21 +106,21 @@ class DepartmentAdmin(admin.ModelAdmin):
 #     list_display = ('name',)
 #     inlines = [PoliceStationInline]        
 
-class AttendanceForm(forms.ModelForm):
-    class Meta:
-        model = Attendance
-        exclude = ['id_no'] 
+# class AttendanceForm(forms.ModelForm):
+#     class Meta:
+#         model = Attendance
+#         exclude = ['id_no'] 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
 
-@admin.register(Attendance)
-class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'date', 'status')
-    list_filter = ('date', 'status')
-    search_fields = ('employee__first_name', 'employee__last_name', 'date')
-    form = AttendanceForm
+# @admin.register(Attendance)
+# class AttendanceAdmin(admin.ModelAdmin):
+#     list_display = ('employee', 'date', 'status')
+#     list_filter = ('date', 'status')
+#     search_fields = ('employee__first_name', 'employee__last_name', 'date')
+#     form = AttendanceForm
 
 @admin.register(LeaveRequest)
 class LeaveRequestAdmin(admin.ModelAdmin):
@@ -169,6 +169,12 @@ class TaskAssignmentAdmin(admin.ModelAdmin):
     list_filter = ('deadline', 'status')
     search_fields = ('employee__first_name', 'employee__last_name', 'task_name')
 
+@admin.register(AttendanceLog)
+class AttendanceLogAdmin(admin.ModelAdmin):
+    pass
 
-
-
+@admin.register(OvertimeRecord)
+class OvertimeRecordAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'id_no', 'date', 'ot_hour')
+    list_filter = ('date',)
+    search_fields = ('employee__first_name', 'employee__last_name', 'id_no')

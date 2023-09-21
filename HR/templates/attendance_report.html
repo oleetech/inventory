@@ -1,0 +1,35 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+<h1>Upload Payroll </h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Generate Report</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Absent Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in attendance_report_data %}
+            <tr>
+                <td>{{ entry.employee_name }}</td>
+                <td>{{ entry.absent_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+{% endblock %}
