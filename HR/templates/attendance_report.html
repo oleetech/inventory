@@ -7,17 +7,15 @@
 <section class="section card mb-5">
 
     <div class="card-body">
-<h1>Upload Payroll </h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Generate Report</button>
-    </form>
-    <table>
+
+{% include 'form.html'%}
+    <table id="itemsTable" class="table table-bordered" >
         <thead>
             <tr>
                 <th>Employee Name</th>
                 <th>Absent Count</th>
+                <th>Present Count</th>
+                <th>Leave Count</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +23,8 @@
             <tr>
                 <td>{{ entry.employee_name }}</td>
                 <td>{{ entry.absent_count }}</td>
+                <td>{{ entry.present_count }}</td>
+                <td>{{ entry.leave_count }}</td>                
             </tr>
             {% endfor %}
         </tbody>

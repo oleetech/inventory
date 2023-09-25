@@ -2,15 +2,16 @@ from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse,HttpRequest,HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
-from .models import AttendanceLog,Attendance,Employee,OvertimeRecord,LeaveRequest,Payroll
-from django.db.models import Count, Sum,F
-from datetime import date,timedelta
+from .models import Attendance,Employee,OvertimeRecord,LeaveRequest,Payroll,Holiday
+from django.db.models import Count, Sum,F,Q,Case, When, IntegerField
+from datetime import date,timedelta,datetime
 from django.shortcuts import render, redirect
-from .forms import ExcelUploadForm,DateFilterForm,YearFilterForm,EmployeeIDDateFilterForm
-
+from .forms import ExcelUploadForm,DateFilterForm,YearFilterForm,EmployeeIDDateFilterForm,AttendanceUploadForm
+import csv
 import pandas as pd
 from django.db import models
 
+from collections import defaultdict
 
 
 # Create your views here.
@@ -48,40 +49,6 @@ def upload_payroll(request):
     return render(request, 'upload_payroll.html', {'form': form})
 
 
-def upload_attendance(request):
-    if request.method == 'POST':
-        form = ExcelUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Read the uploaded Excel file
-            excel_file = request.FILES['excel_file']
-            df = pd.read_excel(excel_file)
-
-            # Loop through the data and create AttendanceLog objects
-            for index, row in df.iterrows():
-                employee_id = row['employee_id']
-                date = row['date']
-                time_in = row['time_in']
-                time_out = row['time_out']
-                # Add more fields as needed
-
-                # Assuming employee_id uniquely identifies an employee
-                employee = Employee.objects.get(id_no=employee_id)
-
-                # Create an AttendanceLog object
-                attendance_log = AttendanceLog.objects.create(
-                    employee=employee,
-                    date=date,
-                    time_in=time_in,
-                    time_out=time_out,
-                
-                    # Add more fields as needed
-                )
-
-            return render(request, 'success_page.html')  # Redirect to a success page
-    else:
-        form = ExcelUploadForm()
-
-    return render(request, 'upload_attendance.html', {'form': form})
 
 
 def upload_overtime_record(request):
@@ -94,23 +61,26 @@ def upload_overtime_record(request):
 
             # Loop through the data and create overtime_record_log objects
             for index, row in df.iterrows():
-                employee_id = row['employee_id']
-                date = row['date']
-                ot_hour = row['ot_hour']
-
-                # Add more fields as needed
-
+                id_no = row['id_no']
+                date_with_time = row['date'].strftime('%Y-%m-%d')
+                othour = row['ot_hour']
+                # Convert the 'date_with_time' string to a datetime object
+                date = datetime.strptime(date_with_time, '%Y-%m-%d').date()
+               
                 # Assuming employee_id uniquely identifies an employee
-                employee = Employee.objects.get(id_no=employee_id)
-
+                employee = Employee.objects.get(id_no=id_no)
+                # Check if an Attendance record with the same date and employee already exists
+                existing_record = OvertimeRecord.objects.filter(date=date, employee=employee).first()
+                if not existing_record:            
+                # Create an Attendance record with intime and outtime
                 # Create an overtime_record_log object
-                overtime_record_log = OvertimeRecord.objects.create(
-                    employee=employee,
-                    date=date,
-                    ot_hour=ot_hour,
-                    id_no=employee_id,
-                    # Add more fields as needed
-                )
+                    overtime_record_log = OvertimeRecord.objects.create(
+                        employee=employee,
+                        date=date,
+                        othour=othour,
+                        id_no=id_no,
+                        # Add more fields as needed
+                    )
 
             return render(request, 'success_page.html')  # Redirect to a success page
     else:
@@ -118,71 +88,62 @@ def upload_overtime_record(request):
 
     return render(request, 'upload_overtime_record.html', {'form': form})
 
-# def attendance_report(request):
-#     if request.method == 'POST':
-#         form = DateFilterForm(request.POST)
-#         if form.is_valid():
-#             start_date = form.cleaned_data['start_date']
-#             end_date = form.cleaned_data['end_date']
-
-#             # Filter active employees
-#             active_employees = Employee.objects.filter(active=True)
-
-#             # Calculate absenteeism for each active employee
-#             attendance_report_data = []
-#             for employee in active_employees:
-#                 absences = Attendance.objects.filter(
-#                     employee=employee,
-#                     date__range=(start_date, end_date),
-#                     status='Absent'
-#                 ).count()
-#                 attendance_report_data.append({
-#                     'employee_name': f"{employee.first_name} {employee.last_name}",
-#                     'absent_count': absences
-#                 })
-
-#             return render(request, 'attendance_report.html', {
-#                 'attendance_report_data': attendance_report_data
-#             })
-#     else:
-#         form = DateFilterForm()
-
-#     return render(request, 'attendance_report.html', {'form': form})
-
-
-
-
-def attendance_summary_report(request):
-
-
+def attendance_report(request):
     if request.method == 'POST':
-        # If the form is submitted, validate the data.
         form = DateFilterForm(request.POST)
         if form.is_valid():
-            # Get the start_date and end_date from the form.
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
 
-            # Query to calculate attendance statistics for each employee within the specified time period
-            # and whose status is True.
-            attendance_summary = Employee.objects.filter(active=True).annotate(
-                total_days_present=Count('attendancelog', filter=models.Q(attendancelog__date__range=[start_date, end_date], attendancelog__status='Present')),
-                total_days_absent=Count('attendancelog', filter=models.Q(attendancelog__date__range=[start_date, end_date], attendancelog__status='Absent')),
-                total_days_late=Count('attendancelog', filter=models.Q(attendancelog__date__range=[start_date, end_date], attendancelog__late_arrival=True)),
-                total_days_on_leave=Count('attendancelog', filter=models.Q(attendancelog__date__range=[start_date, end_date], attendancelog__leave_type__isnull=False))
-            )
+            # Filter active employees
+            active_employees = Employee.objects.filter(active=True)
 
-            return render(request, 'attendance_summary_report.html', {'attendance_summary': attendance_summary, 'form': form})
-    # Initialize the form with default values.
-    form = DateFilterForm()
-    return render(request, 'attendance_summary_report.html', {'form': form})
+            # Calculate absenteeism for each active employee
+            attendance_report_data = []
+            for employee in active_employees:
+                absences = Attendance.objects.filter(
+                    employee=employee,
+                    date__range=(start_date, end_date),
+                    status='Absent'
+                ).count()
+                
+                present = Attendance.objects.filter(
+                    employee=employee,
+                    date__range=(start_date, end_date),
+                    status='Present'
+                ).count()       
+                
+                leave = Attendance.objects.filter(
+                    employee=employee,
+                    date__range=(start_date, end_date),
+                    status='Leave'
+                ).count() 
+                                         
+                attendance_report_data.append({
+                    'employee_name': f"{employee.first_name} {employee.last_name}",
+                    'absent_count': absences,
+                    'present_count':present,
+                    'leave_count':leave,                    
+                })
+
+            return render(request, 'attendance_report.html', {
+                'attendance_report_data': attendance_report_data
+            })
+    else:
+        form = DateFilterForm()
+
+    return render(request, 'attendance_report.html', {'form': form})
 
 
 
 
 
 
-# ...
+
+
+
+
+
 
 def leave_balance_report(request):
     # Initialize the form with default values.
@@ -281,13 +242,42 @@ def overtime_summary_report(request):
                 # Calculate total ot_hour within the date range
                 total_ot_hour = OvertimeRecord.objects.filter(
                     employee=employee, date__gte=start_date, date__lte=end_date
-                ).aggregate(Sum('ot_hour'))['ot_hour__sum'] or 0
+                ).aggregate(Sum('othour'))['othour__sum'] or 0
 
                 summary_data.append({
                     'employee': employee,
                     'total_ot_hour': total_ot_hour,
                 })
     return render(request, 'overtime_summary_report.html', {
+        'form': form,
+        'summary_data': summary_data,
+    })
+
+def overtime_summary_report_machine(request):
+    form = DateFilterForm(request.GET or None)
+
+    summary_data = []
+
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Get active employees
+            employees = Employee.objects.filter(active=True)
+
+            for employee in employees:
+                # Calculate total ot_hour within the date range
+                total_ot_hour = Attendance.objects.filter(
+                    employee=employee, date__gte=start_date, date__lte=end_date
+                ).aggregate(Sum('othour'))['othour__sum'] or 0
+
+                summary_data.append({
+                    'employee': employee,
+                    'total_ot_hour': total_ot_hour,
+                })
+    return render(request, 'overtime_summary_report_machine.html', {
         'form': form,
         'summary_data': summary_data,
     })
@@ -327,3 +317,101 @@ def employee_ot_hour_records_report(request):
         'total_ot_hours': total_ot_hours,
         
     })    
+def upload_attendance(request):
+    if request.method == 'POST':
+        form = AttendanceUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            text_file = form.cleaned_data['text_file']
+
+            # Process the uploaded text file
+            process_uploaded_file(text_file)
+
+            return render(request, 'success_page.html')  # Redirect to a success page
+    else:
+        form = AttendanceUploadForm()
+    return render(request, 'upload_attendance.html', {'form': form})
+
+def process_uploaded_file(text_file):
+    attendance_data = defaultdict(list)  # Use a defaultdict to group data by 'id_no' and 'date'
+
+    # Read the uploaded data and process it
+    lines = text_file.read().decode().splitlines()
+    lines = lines[1:]  # Remove the header line
+
+    for line in lines:
+        parts = line.strip().split()
+        id_number, date_str, time_str = parts[0], parts[1], parts[2] + ' ' + parts[3]  # Extract date and time parts
+
+        # Combine date and time as a single string
+        date_time_str = f"{date_str} {time_str}"
+
+        # Parse date and time, considering AM/PM format
+        date_time = datetime.strptime(date_time_str, '%m/%d/%Y %I:%M %p')
+
+        # Convert to 24-hour format and extract time as a string
+        date_time_24hr = date_time.strftime('%m/%d/%Y %H:%M')
+        time_str_24hr = date_time.strftime('%H:%M')
+
+        # Group data by 'id_no' and 'date'
+        key = (id_number, date_time.date())
+        attendance_data[key].append(date_time_24hr)
+
+    # Insert data into the Django Attendance model
+    for key, time_list in attendance_data.items():
+        id_number, date = key
+        if len(time_list) >= 1:
+            intime = min(time_list)  # Get the earliest time as 'intime'
+            outtime = max(time_list)  # Get the latest time as 'outtime'
+            
+            # Replace with code to fetch or create an Employee object based on id_number
+            try:
+                default_employee = Employee.objects.get(id_no=id_number)
+            except Employee.DoesNotExist:
+                # Handle the case where the Employee does not exist or create one
+                default_employee = Employee.objects.create(id_no=id_number)
+            # Check if an Attendance record with the same date and employee already exists
+            existing_attendance = Attendance.objects.filter(date=date, employee=default_employee).first()
+            if not existing_attendance:            
+            # Create an Attendance record with intime and outtime
+                Attendance.objects.create(
+                    id_no=id_number,
+                    date=date,
+                    intime=datetime.strptime(intime, '%m/%d/%Y %H:%M').time(),
+                    outtime=datetime.strptime(outtime, '%m/%d/%Y %H:%M').time(),
+                    employee=default_employee,
+                )
+def update_holidays_status_view(request):
+    if request.method == 'POST' and 'update_holidays_status_button' in request.POST:
+        # Get all Attendance records with status 'Holiday'
+        holiday_attendances = Attendance.objects.filter(status='Holiday')
+
+        for attendance in holiday_attendances:
+            date = attendance.date
+            previous_day = date - timedelta(days=1)
+            next_day = date + timedelta(days=1)
+
+            is_previous_day_absent = Attendance.objects.filter(
+                date=previous_day, status__in=['Present', 'Leave']
+            ).exists()
+
+            is_next_day_absent = Attendance.objects.filter(
+                date=next_day, status__in=['Present', 'Leave']
+            ).exists()
+
+            if is_previous_day_absent and is_next_day_absent:
+                # Update the status of the Attendance record to 'Absent'
+                attendance.status = 'Holiday'
+                attendance.save()
+                
+            else :    
+                attendance.status = 'Absent'
+                attendance.save()
+        # Redirect to a success page or back to the same page
+        return render(request, 'success_page.html')  # Redirect to a success page
+
+    return render(request, 'update_holidays_status.html')     
+
+
+
+
+

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import timedelta
+from datetime import datetime, timedelta, time
+from django.utils import timezone
 
 
 
@@ -58,14 +59,56 @@ class Employee(models.Model):
 
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    date = models.DateField()
-    status = models.CharField(max_length=10, choices=[('Present', 'Present'), ('Absent', 'Absent')])
+    date = models.DateField(default=timezone.now().date())
+    status = models.CharField(max_length=10, choices=[('Present', 'Present'), ('Absent', 'Absent'),('Leave', 'Leave'),('Holiday', 'Holiday')],default='Present')
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
+    intime = models.TimeField(default=time(0, 0),blank=True)
+    outtime = models.TimeField(default=time(0, 0),blank=True)  
+    holiday_marked_as_holiday = models.BooleanField(default=False)
+    othour = models.DurationField(default=timedelta(0))
+    class Meta:
+        unique_together = ('date', 'employee')        
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
         if not self.id_no:
             self.id_no = self.employee.id_no
+
+
+            
+            
+#Present absent
+            
+        # Convert intime and outtime to datetime objects with a fixed date (e.g., today's date)
+        intime_datetime = datetime.combine(self.date, self.intime)
+        outtime_datetime = datetime.combine(self.date, self.outtime)
+        # Calculate the duration
+        duration = outtime_datetime - intime_datetime
+        
+        # Calculate duty hours and OT hours based on conditions
+        if intime_datetime.time() < time(9, 0):  # Before 9 am
+            duty_hours = timedelta(hours=9)
+        elif intime_datetime.time() >= time(13, 0):  # After 1 pm
+            duty_hours = timedelta(hours=8)
+        else:
+            duty_hours = duration
+            
+        # Calculate overtime hours (othour)
+        if duration > duty_hours:
+            self.othour = duration - duty_hours
+        else:
+            self.othour = timedelta(0)
+                        
+                    
+
+                                                    
         super().save(*args, **kwargs)    
+ 
+        
+            
+class Holiday(models.Model):
+    date = models.DateField()
+    def __str__(self):
+        return f"{self.id}"            
 class LeaveRequest(models.Model):
     LEAVE_CHOICES = (
         ('casual_leave', 'Casual Leave'),
@@ -90,7 +133,9 @@ class LeaveRequest(models.Model):
             self.leave_duration = self.end_date - self.start_date + timedelta(days=1)            
             
             
-        super().save(*args, **kwargs)        
+        super().save(*args, **kwargs)       
+    class Meta:
+        unique_together = ('start_date', 'end_date','employee')           
 class Payroll(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     pay_date = models.DateField()
@@ -101,7 +146,8 @@ class Payroll(models.Model):
         if not self.id_no:
             self.id_no = self.employee.id_no
         super().save(*args, **kwargs)    
-    
+    class Meta:
+        unique_together = ('pay_date', 'employee')        
  
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
@@ -124,7 +170,8 @@ class EmployeeTraining(models.Model):
         if not self.id_no:
             self.id_no = self.employee.id_no
         super().save(*args, **kwargs)      
-    
+    class Meta:
+        unique_together = ('date', 'employee')       
 class EmployeePromotion(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     promotion_date = models.DateField()
@@ -138,7 +185,7 @@ class EmployeePromotion(models.Model):
         if not self.id_no:
             self.id_no = self.employee.id_no
         super().save(*args, **kwargs)        
-    
+  
 class TaskAssignment(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     task_name = models.CharField(max_length=100)
@@ -155,25 +202,7 @@ class TaskAssignment(models.Model):
         
         
         
-class AttendanceLog(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    date = models.DateField()
-    time_in = models.TimeField()
-    time_out = models.TimeField()
-    device_id = models.CharField(max_length=20)
-    verification_type = models.CharField(max_length=20)
-    verification_code = models.CharField(max_length=20)
-    status = models.CharField(max_length=20)
-    work_code = models.CharField(max_length=20)
-    department_id = models.CharField(max_length=20)
-    shift_id = models.CharField(max_length=20)
-    late_arrival = models.BooleanField(default=False)
-    early_departure = models.BooleanField(default=False)
-    overtime = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    holiday = models.BooleanField(default=False)
-    leave_type = models.CharField(max_length=20, blank=True, null=True)
-    remarks = models.TextField(blank=True)
-    sync_status = models.CharField(max_length=20)
+
     
   
     
@@ -182,7 +211,7 @@ class OvertimeRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     id_no = models.PositiveIntegerField(default=1, null=True, blank=True)
     date = models.DateField()
-    ot_hour = models.DecimalField(max_digits=5, decimal_places=2)
+    othour = models.DurationField(default=timedelta(0))
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
         if not self.id_no:
@@ -191,7 +220,8 @@ class OvertimeRecord(models.Model):
     def __str__(self):
         return f"Overtime Record for {self.employee.first_name} {self.employee.last_name} on {self.date}"    
     
-    
+    class Meta:
+        unique_together = ('date', 'employee')     
     
     
 class Award(models.Model):

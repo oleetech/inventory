@@ -8,6 +8,7 @@
 
     <div class="card-body">
         <h1>Upload Attendance Log </h1>
+        <a href="{% static 'files/attendanceuploadformate.txt' %}">attendanceuploadformate.txt</a> 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}

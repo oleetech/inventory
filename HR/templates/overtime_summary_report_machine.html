@@ -1,0 +1,35 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+
+
+
+        {% if summary_data %}
+        <table id="itemsTable" class="table table-bordered">        
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Total Overtime Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in summary_data %}
+                <tr>
+                    <td>{{ data.employee.first_name }} {{ data.employee.last_name }}</td>
+                    <td>{{ data.total_ot_hour }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+</div>
+
+</div>
+{% endblock %}

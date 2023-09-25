@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,AttendanceLog,OvertimeRecord
+from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -65,28 +65,38 @@ class DepartmentAdmin(admin.ModelAdmin):
           
 
 
-# class AttendanceForm(forms.ModelForm):
-#     class Meta:
-#         model = Attendance
-#         exclude = ['id_no'] 
+class AttendanceForm(forms.ModelForm):
+    class Meta:
+        model = Attendance
+        exclude = ['id_no'] 
 
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
 
-# @admin.register(Attendance)
-# class AttendanceAdmin(admin.ModelAdmin):
-#     list_display = ('employee', 'date', 'status')
-#     list_filter = ('date', 'status')
-#     search_fields = ('employee__first_name', 'employee__last_name', 'date')
-#     form = AttendanceForm
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'date', 'status')
+    list_filter = ('date', 'status')
+    search_fields = ('employee__first_name', 'employee__last_name', 'date')
+    form = AttendanceForm
+
+class LeaveRequestForm(forms.ModelForm):
+    class Meta:
+        model = LeaveRequest
+        exclude = ['id_no'] 
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
 
 @admin.register(LeaveRequest)
 class LeaveRequestAdmin(admin.ModelAdmin):
     list_display = ('employee', 'start_date', 'end_date', 'reason', 'status')
     list_filter = ('status',)
     search_fields = ('employee__first_name', 'employee__last_name', 'start_date', 'end_date')
-
+    form = LeaveRequestForm
+    
 @admin.register(Payroll)
 class PayrollAdmin(admin.ModelAdmin):
     list_display = ('employee', 'pay_date', 'amount')
@@ -124,12 +134,15 @@ class EmployeePromotionAdmin(admin.ModelAdmin):
 #     list_filter = ('deadline', 'status')
 #     search_fields = ('employee__first_name', 'employee__last_name', 'task_name')
 
-@admin.register(AttendanceLog)
-class AttendanceLogAdmin(admin.ModelAdmin):
-    pass
+
 
 @admin.register(OvertimeRecord)
 class OvertimeRecordAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'id_no', 'date', 'ot_hour')
+    list_display = ('employee',  'date', 'othour')
     list_filter = ('date',)
     search_fields = ('employee__first_name', 'employee__last_name', 'id_no')
+
+
+@admin.register(Holiday)
+class HolidayAdmin(admin.ModelAdmin):
+    pass

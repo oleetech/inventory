@@ -8,6 +8,8 @@
 
     <div class="card-body">
 <h1>Upload Ot Hour  </h1>
+<h1>File format will be </h1>
+<a href="{% static 'files/overtimeuploadformat.xlsx' %}">overtimeuploadformat.xlsx</a> 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
