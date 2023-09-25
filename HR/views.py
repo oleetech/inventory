@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from django.http import JsonResponse,HttpRequest,HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
-from .models import Attendance,Employee,OvertimeRecord,LeaveRequest,Payroll,Holiday
+from .models import Attendance,Employee,OvertimeRecord,LeaveRequest,Payroll,Holiday,Resignation,Lefty
 from django.db.models import Count, Sum,F,Q,Case, When, IntegerField
 from datetime import date,timedelta,datetime
 from django.shortcuts import render, redirect
@@ -308,7 +308,7 @@ def employee_ot_hour_records_report(request):
             
             
         # Calculate the total sum of ot_hour
-        total_ot_hours = ot_hour_records.aggregate(Sum('ot_hour'))['ot_hour__sum'] or 0
+        total_ot_hours = ot_hour_records.aggregate(Sum('othour'))['othour__sum'] or 0
         
     return render(request, 'employee_ot_hour_records_report.html', {
         'form': form,
@@ -452,3 +452,86 @@ def employees_without_present_records(request):
     else:
         form = DateFilterForm()
     return render(request, 'employees_without_present_records.html', {'form': form})
+
+def resignation_records_between_dates(request):
+    resignations = []
+    total_resignations = 0
+
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Filter Resignation records between the specified dates
+            resignations = Resignation.objects.filter(
+                resignation_date__range=[start_date, end_date]
+            )
+            total_resignations = resignations.count()
+
+    else:
+        form = DateFilterForm()
+
+    context = {
+        'form': form,
+        'resignations': resignations,
+        'total_resignations': total_resignations,
+    }
+
+    return render(request, 'resignation_records_between_dates.html', context)
+
+
+def lefty_records_between_dates(request):
+    lefties = []
+    total_lefties = 0
+
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Filter Lefty records between the specified dates
+            lefties = Lefty.objects.filter(
+                left_date__range=[start_date, end_date]
+            )
+            total_lefties = lefties.count()
+
+    else:
+        form = DateFilterForm()
+
+    context = {
+        'form': form,
+        'lefties': lefties,
+        'total_lefties': total_lefties,
+    }
+
+    return render(request, 'lefty_records_between_dates.html', context)
+
+
+def leave_request_records_between_dates(request):
+    leave_requests = []
+    total_leave_requests = 0
+
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Filter LeaveRequest records between the specified dates
+            leave_requests = LeaveRequest.objects.filter(
+                start_date__range=[start_date, end_date]
+            )
+            total_leave_requests = leave_requests.count()
+
+    else:
+        form = DateFilterForm()
+
+    context = {
+        'form': form,
+        'leave_requests': leave_requests,
+        'total_leave_requests': total_leave_requests,
+    }
+
+    return render(request, 'leave_request_records_between_dates.html', context)

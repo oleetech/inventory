@@ -1,0 +1,42 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+
+  <h3>Total leave: {{ total_leave_requests  }}</h3>
+
+  <table id="itemsTable" class="table table-bordered">   
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Leave Type</th>
+        <th>Reason</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for leave_request in leave_requests %}
+        <tr>
+          <td>{{ leave_request.employee }}</td>
+          <td>{{ leave_request.start_date }}</td>
+          <td>{{ leave_request.end_date }}</td>
+          <td>{{ leave_request.get_leave_type_display }}</td>
+          <td>{{ leave_request.reason }}</td>
+          <td>{{ leave_request.status }}</td>
+        </tr>
+ 
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+{% endblock %}

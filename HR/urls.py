@@ -17,6 +17,9 @@ urlpatterns = [
     path('attendance_report/', views.attendance_report, name='attendance_report'),
     path('present_records_between_date/', views.present_records_between_date, name='present_records_between_date'),
     path('employees_without_present_records/', views.employees_without_present_records, name='employees_without_present_records'),
+    path('resignation_records_between_dates/', views.resignation_records_between_dates, name='resignation_records_between_dates'),
+    path('lefty_records_between_dates/', views.lefty_records_between_dates, name='lefty_records_between_dates'),
+    path('leave_request_records_between_dates/', views.leave_request_records_between_dates, name='leave_request_records_between_dates'),
 
   
 

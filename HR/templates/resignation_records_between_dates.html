@@ -1,0 +1,43 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+
+  <h3>Total Resignations: {{ total_resignations }}</h3>
+
+  <table id="itemsTable" class="table table-bordered">   
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Resignation Date</th>
+        <th>Reason</th>
+        <th>Notice Period</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for resignation in resignations %}
+        <tr>
+          <td>{{ resignation.employee }}</td>
+          <td>{{ resignation.resignation_date }}</td>
+          <td>{{ resignation.reason }}</td>
+          <td>{{ resignation.notice_period }}</td>
+          <td>{{ resignation.status }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5">No resignation records found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+{% endblock %}

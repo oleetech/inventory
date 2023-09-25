@@ -1,0 +1,38 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+
+  <h3>Total lefties: {{ total_lefties }}</h3>
+
+  <table id="itemsTable" class="table table-bordered">   
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Left Date</th>
+        <th>Reason</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for lefty in lefties %}
+        <tr>
+          <td>{{ lefty.employee }}</td>
+          <td>{{ lefty.left_date }}</td>
+          <td>{{ lefty.reason }}</td>
+          <td>{{ lefty.status }}</td>
+        </tr>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</div>
+{% endblock %}
