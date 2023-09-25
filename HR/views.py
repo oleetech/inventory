@@ -415,3 +415,40 @@ def update_holidays_status_view(request):
 
 
 
+def present_records_between_date(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            present_records = Attendance.objects.filter(
+                date__range=[start_date, end_date],
+                status='Present'
+            )
+            # Calculate the total sum of 'Present' records
+            total_present = present_records.aggregate(total_present=Sum('id_no'))['total_present']
+                        
+            return render(request, 'present_records_between_date.html', {'present_records': present_records, 'total_present': total_present})
+    else:
+        form = DateFilterForm()
+    return render(request, 'present_records_between_date.html', {'form': form})
+
+
+def employees_without_present_records(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            
+            # Retrieve employees who do not have 'Present' records within the date range
+            employees_without_present_records = Employee.objects.exclude(
+                attendance__date__range=[start_date, end_date],
+                attendance__status='Present'
+            )
+            # Calculate the total count of 'id_no' for 'Absent' records
+            total_absent_id_no = employees_without_present_records.aggregate(total_absent_id_no=Count('id_no'))['total_absent_id_no']        
+            return render(request, 'employees_without_present_records.html', {'employees_without_present_records': employees_without_present_records, 'total_absent_id_no': total_absent_id_no})
+    else:
+        form = DateFilterForm()
+    return render(request, 'employees_without_present_records.html', {'form': form})

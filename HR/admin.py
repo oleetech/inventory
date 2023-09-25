@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday
+from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -146,3 +146,34 @@ class OvertimeRecordAdmin(admin.ModelAdmin):
 @admin.register(Holiday)
 class HolidayAdmin(admin.ModelAdmin):
     pass
+
+class ResignationForm(forms.ModelForm):
+    class Meta:
+        model = Resignation
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
+@admin.register(Resignation)
+class ResignationAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'resignation_date', 'reason', 'notice_period', 'status')
+    list_filter = ('status',)
+    search_fields = ('employee__first_name', 'employee__last_name', 'resignation_date')
+    
+    form = ResignationForm
+class LeftyForm(forms.ModelForm):
+    class Meta:
+        model = Lefty
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
+@admin.register(Lefty)
+class LeftyAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'left_date', 'reason',  'status')
+    list_filter = ('status',)
+    search_fields = ('employee__first_name', 'employee__last_name', 'left_date')    
+    form = LeftyForm
+    

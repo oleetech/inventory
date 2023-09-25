@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import models
-from .models import LeaveRequest,Attendance,Holiday,Employee,OvertimeRecord
+from .models import LeaveRequest,Attendance,Holiday,Employee,OvertimeRecord,Lefty
 from datetime import datetime, timedelta, time
 @receiver(post_save, sender=LeaveRequest)
 def create_leave_attendance(sender, instance, created, **kwargs):
@@ -53,17 +53,8 @@ def create_holiday_attendance(sender, instance, created, **kwargs):
                 )
                 
                 
-@receiver(post_save, sender=OvertimeRecord)
-def update_attendance_othour(sender, instance, **kwargs):
-    try:
-        # Try to get an Attendance record with matching id_no and date
-        attendance_record = Attendance.objects.get( id_no=instance.id_no, date=instance.date)
-        
-        # Update the othour field in Attendance with the value from OvertimeRecord
-        attendance_record.othour = instance.othour
-        attendance_record.save()
-    except Attendance.DoesNotExist:
-        pass  # No matching Attendance record found, do nothing     
-    
-# Connect the signal handler function to the post_save signal for LeaveRequest
-post_save.connect(update_attendance_othour, sender=OvertimeRecord)            
+@receiver(post_save, sender=Lefty)
+def update_employee_active_status(sender, instance, **kwargs):
+    if instance.status == 'Approved':
+        instance.employee.active = False  # Set the employee's active status to False
+        instance.employee.save()

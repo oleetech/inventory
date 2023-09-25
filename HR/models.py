@@ -29,7 +29,7 @@ class Employee(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     birth_date = models.DateField()
     hire_date = models.DateField()
-    department = models.CharField(max_length=100,blank=True, null=True)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
     designation = models.CharField(max_length=100,blank=True, null=True)
     id_no = models.PositiveIntegerField(default=1, unique=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2,default=1)
@@ -59,7 +59,7 @@ class Employee(models.Model):
 
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    date = models.DateField(default=timezone.now().date())
+    date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=10, choices=[('Present', 'Present'), ('Absent', 'Absent'),('Leave', 'Leave'),('Holiday', 'Holiday')],default='Present')
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
     intime = models.TimeField(default=time(0, 0),blank=True)
@@ -76,7 +76,7 @@ class Attendance(models.Model):
 
             
             
-#Present absent
+#OtHour
             
         # Convert intime and outtime to datetime objects with a fixed date (e.g., today's date)
         intime_datetime = datetime.combine(self.date, self.intime)
@@ -240,4 +240,30 @@ class Award(models.Model):
     
     
     
-    
+class Resignation(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    resignation_date = models.DateField(default=timezone.now)
+    reason = models.TextField(blank=True, null=True)
+    notice_period = models.PositiveIntegerField(default=30)  # You can change the default notice period as needed
+    status = models.CharField(max_length=10, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Pending')
+
+    def __str__(self):
+        return f"Resignation - {self.employee}"
+
+    class Meta:
+        verbose_name = 'Resignation'
+        verbose_name_plural = 'Resignations'    
+        
+        
+class Lefty(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    left_date = models.DateField(default=timezone.now)
+    reason = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=10, choices=[('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')], default='Approved')
+
+    def __str__(self):
+        return f"Lefty - {self.employee}"
+
+    class Meta:
+        verbose_name = 'Lefty'
+        verbose_name_plural = 'Lefties'        

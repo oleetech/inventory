@@ -1,0 +1,38 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+    {% if employees_without_present_records %}
+    <table id="itemsTable" class="table table-bordered">   
+                    <thead>
+                <tr>
+                    <th> Name</th>
+                    <th>Id No</th>
+                    <th>Department</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in employees_without_present_records %}
+                    <tr>
+                        <td>{{ employee.first_name }}</td>
+                    
+                        <td>{{ employee.id_no }}</td>
+                        <td>{{ employee.department.name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No employees without "Present" records found.</p>
+    {% endif %}
+
+</div>
+
+</div>
+{% endblock %}

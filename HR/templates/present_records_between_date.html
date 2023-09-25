@@ -1,0 +1,38 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="section card mb-5">
+
+    <div class="card-body">
+    {% include 'form.html'%}
+<h2>Total Present: {{ total_present }}</h2>
+<p></p>
+
+<table id="itemsTable" class="table table-bordered">   
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Date</th>
+            <th>Status</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in present_records %}
+            <tr>
+                <td>{{ record.employee }}</td>
+                <td>{{ record.date }}</td>
+                <td>{{ record.status }}</td>
+                
+            </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+</div>
+{% endblock %}

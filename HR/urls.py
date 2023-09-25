@@ -15,6 +15,8 @@ urlpatterns = [
     path('update_holidays_status_view/', views.update_holidays_status_view, name='update_holidays_status_view'),
     
     path('attendance_report/', views.attendance_report, name='attendance_report'),
+    path('present_records_between_date/', views.present_records_between_date, name='present_records_between_date'),
+    path('employees_without_present_records/', views.employees_without_present_records, name='employees_without_present_records'),
 
   
 
