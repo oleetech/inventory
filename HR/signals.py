@@ -5,7 +5,7 @@ from .models import LeaveRequest,Attendance,Holiday,Employee,OvertimeRecord,Left
 from datetime import datetime, timedelta, time
 @receiver(post_save, sender=LeaveRequest)
 def create_leave_attendance(sender, instance, created, **kwargs):
-    if created:
+    if instance.status == 'Approved':
         # Create corresponding Attendance records for the date range of the LeaveRequest
         date_range = [instance.start_date, instance.end_date]
         for date in date_range:
