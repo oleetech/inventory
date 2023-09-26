@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty
+from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -183,4 +183,56 @@ class LeftyAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     search_fields = ('employee__first_name', 'employee__last_name', 'left_date')    
     form = LeftyForm
+    
+    
+    
+class ShiftForm(forms.ModelForm):
+    class Meta:
+        model = Shift
+        fields = '__all__'
+
+
+@admin.register(Shift)
+class ShiftAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start_time', 'end_time')
+    search_fields = ('name', 'start_time', 'end_time')
+
+    form = ShiftForm
+    
+@admin.register(EmployeeDocument)
+class EmployeeDocumentAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'document_name', 'document_type', 'upload_date')
+    list_filter = ('document_type', 'upload_date')
+    search_fields = ('employee__first_name', 'document_name')  
+    
+@admin.register(EmployeeLoan)    
+class EmployeeLoanAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'loan_type', 'loan_amount', 'get_due_amount','is_complete')
+    list_filter = ('loan_type', 'start_date', 'end_date')
+    search_fields = ('employee__user__first_name', 'employee__user__last_name', 'loan_type')
+
+    def get_due_amount(self, obj):
+        return obj.get_due_amount()
+
+    get_due_amount.short_description = 'Due Amount'
+@admin.register(LoanRepayment)
+class LoanRepaymentAdmin(admin.ModelAdmin):
+    list_display = ('loan', 'repayment_amount', 'repayment_date', 'get_received_amount')
+    list_filter = ('repayment_date',)
+    search_fields = ('loan__employee__user__first_name', 'loan__employee__user__last_name')
+
+    def get_received_amount(self, obj):
+        return obj.loan.loan_amount - obj.loan.get_due_amount()
+
+    get_received_amount.short_description = 'Received Amount'      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     

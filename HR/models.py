@@ -13,7 +13,15 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Shift(models.Model):
+    name = models.CharField(max_length=100)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
 
+    def __str__(self):
+        return self.name
+    
 class Employee(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -43,10 +51,20 @@ class Employee(models.Model):
     permanentAddress = models.CharField(max_length=200,blank=True, null=True)   
     photo = models.ImageField(upload_to='employee_photos/',null=True, blank=True)     
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
+    
     class Meta:
 
         verbose_name = 'Employee Master Data'
         verbose_name_plural = 'Employee Master Data'
+        
+    def save(self, *args, **kwargs):
+        # If the shift is not set explicitly, set it to the first Shift object
+        if not self.shift:
+            self.shift = Shift.objects.first()
+
+        super(Employee, self).save(*args, **kwargs)
+                
     def __str__(self):
         return f"{self.id_no}"  
 
@@ -66,12 +84,17 @@ class Attendance(models.Model):
     outtime = models.TimeField(default=time(0, 0),blank=True)  
     holiday_marked_as_holiday = models.BooleanField(default=False)
     othour = models.DurationField(default=timedelta(0))
+    shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
+    
     class Meta:
         unique_together = ('date', 'employee')        
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
         if not self.id_no:
             self.id_no = self.employee.id_no
+        # If the shift is not set explicitly, set it based on the employee's shift
+        if not self.shift and self.employee:
+            self.shift = self.employee.shift            
 
 
             
@@ -104,7 +127,8 @@ class Attendance(models.Model):
         super().save(*args, **kwargs)    
  
         
-            
+
+                
 class Holiday(models.Model):
     date = models.DateField(default=timezone.now)
     def __str__(self):
@@ -270,4 +294,81 @@ class Lefty(models.Model):
 
     class Meta:
         verbose_name = 'Lefty'
-        verbose_name_plural = 'Lefties'        
+        verbose_name_plural = 'Lefties'   
+        
+        
+class EmployeeDocument(models.Model):
+    EMPLOYEE_DOCUMENT_TYPES = (
+        ('Resume', 'Resume'),
+        ('Contract', 'Contract'),
+        ('ID Card', 'ID Card'),
+        ('Other', 'Other'),
+    )
+
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  # Associate the document with an employee (User model in this case)
+    document_name = models.CharField(max_length=100)
+    document_type = models.CharField(max_length=20, choices=EMPLOYEE_DOCUMENT_TYPES)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    document_file = models.FileField(upload_to='employee_documents/')
+
+    def __str__(self):
+        return self.document_name  
+    
+    
+class EmployeeLoan(models.Model):
+    EMPLOYEE_LOAN_TYPES = (
+        ('Personal', 'Personal Loan'),
+        ('Home', 'Home Loan'),
+        ('Car', 'Car Loan'),
+        ('Education', 'Education Loan'),
+        ('Other', 'Other Loan'),
+    )
+    APPROVAL_STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    )
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    loan_type = models.CharField(max_length=20, choices=EMPLOYEE_LOAN_TYPES)
+    loan_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    approval_status = models.CharField(max_length=20, choices=APPROVAL_STATUS_CHOICES, default='Pending')
+    repayment_terms = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_complete = models.BooleanField(default=False)
+
+    def update_loan_status(self):
+        total_repayment_amount = sum(repayment.repayment_amount for repayment in self.loanrepayment_set.all())
+        if total_repayment_amount >= self.loan_amount:
+            self.is_complete = True
+        else:
+            self.is_complete = False
+        self.save()
+            
+    def get_due_amount(self):
+        repayments = LoanRepayment.objects.filter(loan=self)
+        total_repayments = sum(repayment.repayment_amount for repayment in repayments)
+        return self.loan_amount - total_repayments
+    def __str__(self):
+        return f"{self.employee} - {self.loan_type} Loan"
+    class Meta:
+
+        verbose_name = 'Employee Loan Pay'
+        verbose_name_plural = 'Employee Loan Pay'       
+
+class LoanRepayment(models.Model):
+    loan = models.ForeignKey(EmployeeLoan, on_delete=models.CASCADE)
+    repayment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    repayment_date = models.DateField()
+    
+    def save(self, *args, **kwargs):
+        super(LoanRepayment, self).save(*args, **kwargs)
+        self.loan.update_loan_status()
+            
+    def __str__(self):
+        return f"Repayment for {self.loan} on {self.repayment_date}"           
+    
+    class Meta:
+
+        verbose_name = 'Employee Loan Received'
+        verbose_name_plural = 'Employee Loan Received'    
