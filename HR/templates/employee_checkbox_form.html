@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #id_employees {
+      height: 200px; /* Adjust the height as needed */
+      overflow-y: scroll;
+    }
+  </style>
+</head>
+<body>
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
+
+
+

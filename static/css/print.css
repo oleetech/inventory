@@ -1,0 +1,70 @@
+/* Style the card container */
+body{background-color: #000;}
+.col-md-3{
+    float: left;
+    width: 25%;
+    margin:  20px;
+}
+.card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 280px;
+    height: 350px;
+ 
+}
+
+/* Style the card header */
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    padding: 10px;
+}
+
+/* Style the card body */
+.card-body {
+    padding: 20px;
+}
+
+/* Style the image container */
+.text-center {
+    text-align: center;
+}
+
+/* Style the employee name */
+.card-body h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+/* Style the other employee information */
+.card-body p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Style the signature and issuer */
+.signature-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Style the signature line */
+.signature-line {
+    border-top: 1px solid #000;
+    margin-top: 10px;
+}
+
+/* Center align text within the signature line */
+.signature-text {
+    display: inline-block;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+/* Style the date format */
+.date-format {
+    font-size: 12px;
+    font-style: italic;
+}

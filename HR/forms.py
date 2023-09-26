@@ -1,5 +1,13 @@
 from django import forms
 from .models import Employee,Attendance
+
+class EmployeeSelectForm(forms.Form):
+    employees = forms.ModelMultipleChoiceField(
+        queryset=Employee.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+    
 class ExcelUploadForm(forms.Form):
     excel_file = forms.FileField()
     

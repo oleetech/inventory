@@ -6,7 +6,7 @@ from .models import Attendance,Employee,OvertimeRecord,LeaveRequest,Payroll,Holi
 from django.db.models import Count, Sum,F,Q,Case, When, IntegerField
 from datetime import date,timedelta,datetime
 from django.shortcuts import render, redirect
-from .forms import ExcelUploadForm,DateFilterForm,YearFilterForm,EmployeeIDDateFilterForm,AttendanceUploadForm
+from .forms import ExcelUploadForm,DateFilterForm,YearFilterForm,EmployeeIDDateFilterForm,AttendanceUploadForm,EmployeeSelectForm
 import csv
 import pandas as pd
 from django.db import models
@@ -708,3 +708,18 @@ def job_card_summary(request):
         form = DateFilterForm()
 
     return render(request, 'job_card_summary.html', {'form': form})
+
+
+def select_employees(request):
+    if request.method == 'POST':
+        form = EmployeeSelectForm(request.POST)
+        if form.is_valid():
+            selected_employees = form.cleaned_data['employees']
+            selected_ids = selected_employees.values_list('id_no', flat=True)
+            selected_employee_data = Employee.objects.filter(id_no__in=selected_ids)
+
+            return render(request, 'selected_employees.html', {'selected_employee_data': selected_employee_data})
+    else:
+        form = EmployeeSelectForm()
+
+    return render(request, 'employee_checkbox_form.html', {'form': form})

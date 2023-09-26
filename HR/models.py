@@ -48,7 +48,7 @@ class Employee(models.Model):
         verbose_name = 'Employee Master Data'
         verbose_name_plural = 'Employee Master Data'
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.id_no}"  
 
 
 

@@ -1,0 +1,61 @@
+
+{% extends 'baseprint.html' %}
+{% block title %}Sales Order {{ sales_order_info.docNo }} {% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/print.css'%}" media="print">
+
+
+
+{% endblock %}
+{% block content %}
+
+
+
+<div class="row">
+
+
+    {% for employee in selected_employee_data %}
+
+    <div class="col-md-3">
+        <div class="card bg-light p-2">
+            <div class="card-body bg-white">
+            {% if employee.photo %}
+            <div class="text-center">
+                <img src="{{ employee.photo.url }}" alt="{{ employee.id_no }} Photo" width="100px" height="100px">
+
+            </div>
+        {% else %}
+        <div class="text-center">        
+        <img src="{% static '/images/passport-4.png'  %}" alt="{{ employee.id_no }} Photo" width="100px" height="100px">
+    </div>        
+        {% endif %}
+
+            নাম  :  {{ employee.first_name }}   {{ employee.last_name }} <br>
+
+            কার্ড নং  : {{ employee.id_no }} <br>
+
+            পদবি  : {{ employee.designation }} <br>
+            সেকশন : {{ employee.department.name }} <br>
+            যোগদানের তারিখ : {{ employee.hire_date }} <br>
+            <br>
+            <br>
+                স্বাক্ষর  
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         
+                কর্তৃপক্ষ   
+        
+            </div> 
+          </div> 
+    </div>
+
+
+
+    {% endfor %}
+</div>
+</div>
+
+</div>
+{% endblock %}

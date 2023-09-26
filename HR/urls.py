@@ -23,6 +23,9 @@ urlpatterns = [
 
     path('job_card/', views.job_card, name='job_card'),
     path('job_card_summary/', views.job_card_summary, name='job_card_summary'),
+    
+    #print id card
+    path('select_employees/', views.select_employees, name='select_employees'),
   
 
 
