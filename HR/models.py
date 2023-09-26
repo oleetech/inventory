@@ -108,7 +108,11 @@ class Attendance(models.Model):
 class Holiday(models.Model):
     date = models.DateField()
     def __str__(self):
-        return f"{self.id}"            
+        return f"{self.id}"     
+    
+
+    
+               
 class LeaveRequest(models.Model):
     LEAVE_CHOICES = (
         ('casual_leave', 'Casual Leave'),

@@ -21,6 +21,8 @@ urlpatterns = [
     path('lefty_records_between_dates/', views.lefty_records_between_dates, name='lefty_records_between_dates'),
     path('leave_request_records_between_dates/', views.leave_request_records_between_dates, name='leave_request_records_between_dates'),
 
+    path('job_card/', views.job_card, name='job_card'),
+    path('job_card_summary/', views.job_card_summary, name='job_card_summary'),
   
 
 

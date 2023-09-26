@@ -535,3 +535,174 @@ def leave_request_records_between_dates(request):
     }
 
     return render(request, 'leave_request_records_between_dates.html', context)
+from operator import itemgetter
+
+def job_card(request):
+    if request.method == 'POST':
+        form = EmployeeIDDateFilterForm(request.POST)
+        if form.is_valid():
+            id_no = form.cleaned_data['id_no']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            
+            # Initialize counters for 'P', 'A', and 'H'
+            present_count = 0
+            absent_count = 0
+            holiday_count = 0
+            leave_count = 0
+            weekend_count = 0            
+            # Create a list to store the results
+            results = []
+
+            # Loop through the dates in the specified range
+            current_date = start_date
+            while current_date <= end_date:
+                try:
+                    # Query the Attendance model to get the corresponding attendance record
+                    attendance = Attendance.objects.get(employee__id_no=id_no, date=current_date)
+
+                    # attendance.status
+                    if attendance.status == 'Present':
+                        status = 'P'  # Present
+                        present_count += 1
+                    elif attendance.status == 'Leave':
+                        status = 'L'  # Leave
+                        leave_count += 1
+                    else:
+                        # Check if the date is a holiday
+                        is_holiday = Holiday.objects.filter(date=current_date).exists()
+                        if is_holiday:
+                            # Check if the previous day is a holiday
+                            previous_day = current_date - timedelta(days=1)
+                            is_previous_day_intime = Attendance.objects.get(employee__id_no=id_no, date=previous_day)                         
+                            status = 'H'  # Holiday
+                            holiday_count += 1
+                        elif current_date.weekday() == 4:
+                            status = 'W'  # Weekend
+                            weekend_count += 1                                  
+                        else:
+                            status = 'A'  # Absent
+                            absent_count += 1
+
+                    # Append the result to the list
+                    results.append({
+                        'id_no': id_no,
+                        'date': current_date,
+                        'intime': attendance.intime,
+                        'outtime': attendance.outtime,
+                        'status': status,
+                    })
+
+                except Attendance.DoesNotExist:
+                    # Check if the date is a holiday
+                    is_holiday = Holiday.objects.filter(date=current_date).exists()
+                    if is_holiday:
+               
+                            status = 'H'  # Holiday
+                            holiday_count += 1
+                    elif current_date.weekday() == 4:
+                        status = 'W'  # Holiday   
+                        weekend_count += 1                                                     
+                    else:
+                        status = 'A'  # Absent
+                        absent_count += 1
+
+                    # Append the result to the list
+                    results.append({
+                        'id_no': id_no,
+                        'date': current_date,
+                        'intime': None,
+                        'outtime': None,
+                        'status': status,
+                    })
+
+                # Move to the next date
+                current_date += timedelta(days=1)
+
+            # Calculate the total counts
+            total_counts = {
+                'Present': present_count,
+                'Absent': absent_count,
+                'Holiday': holiday_count,
+                'Leave':leave_count,
+                'Weeked': weekend_count 
+            }
+
+            return render(request, 'job_card.html', {'results': results, 'total_counts': total_counts})
+    else:
+        form = EmployeeIDDateFilterForm()
+
+    return render(request, 'job_card.html', {'form': form})
+
+
+from django.db.models import Count
+
+def job_card_summary(request):
+    if request.method == 'POST':
+        form = DateFilterForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+
+            # Step 1: Get the IDs of active employees
+            active_employee_ids = Employee.objects.filter(active=True).values_list('id_no', flat=True)
+
+            # Step 2: Filter the Attendance queryset for active employees and the date range
+            attendance_queryset = Attendance.objects.filter(
+                employee__id_no__in=active_employee_ids, date__range=(start_date, end_date)
+            )
+
+            # Create a dictionary to store the summary for each active employee
+            employee_summary = {}
+
+            # Step 3: Calculate the summary for each active employee
+            for id_no in active_employee_ids:
+                # Initialize counters for 'Present', 'Absent', 'Weekend', and 'Leave' for each employee
+                present_count = 0
+                absent_count = 0
+                weekend_count = 0
+                leave_count = 0
+
+                # Loop through the dates in the specified range
+                current_date = start_date
+                while current_date <= end_date:
+                    try:
+                        # Query the Attendance queryset to get the corresponding attendance record
+                        attendance = attendance_queryset.get(employee__id_no=id_no, date=current_date)
+
+                        # Check if intime exists or status is 'Leave'
+                        if attendance.intime or attendance.status == 'Leave':
+                            present_count += 1
+                        else:
+                            # Check if the date is a weekend
+                            if current_date.weekday() == 4: # 
+                                weekend_count += 1
+                            else:
+                                absent_count += 1
+
+                    except Attendance.DoesNotExist:
+                        # Check if the date is a weekend
+                        if current_date.weekday() == 4:  # 5=Saturday, 6=Sunday
+                            weekend_count += 1
+                        else:
+                            absent_count += 1
+
+                    current_date += timedelta(days=1)
+
+                # Calculate leave count by subtracting present count from the total days
+                total_days = (end_date - start_date).days + 1
+                leave_count = total_days - (present_count + weekend_count + absent_count)
+
+                # Store the summary in the dictionary
+                employee_summary[id_no] = {
+                    'Present': present_count,
+                    'Absent': absent_count,
+                    'Weekend': weekend_count,
+                    'Leave': leave_count,
+                }
+
+            return render(request, 'job_card_summary.html', {'employee_summary': employee_summary})
+    else:
+        form = DateFilterForm()
+
+    return render(request, 'job_card_summary.html', {'form': form})

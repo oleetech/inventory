@@ -28,29 +28,29 @@ def create_leave_attendance(sender, instance, created, **kwargs):
 # Connect the signal handler function to the post_save signal for LeaveRequest
 post_save.connect(create_leave_attendance, sender=LeaveRequest)
 
-@receiver(post_save, sender=Holiday)
-def create_holiday_attendance(sender, instance, created, **kwargs):
-    if created:
-        # Get all active employees
-        active_employees = Employee.objects.filter(active=True)
+# @receiver(post_save, sender=Holiday)
+# def create_holiday_attendance(sender, instance, created, **kwargs):
+#     if created:
+#         # Get all active employees
+#         active_employees = Employee.objects.filter(active=True)
 
-        # Create corresponding Attendance records for each active employee on the holiday date
-        for employee in active_employees:
-            # Check if an Attendance record already exists for this date and employee
-            existing_attendance = Attendance.objects.filter(
-                date=instance.date,
-                employee=employee,
-            ).first()
-            if not existing_attendance:
-                # Create a new Attendance record with status "Holiday"
-                Attendance.objects.create(
-                    employee=employee,
-                    date=instance.date,
-                    status="Holiday",
-                    id_no=employee.id_no,
-                    intime=time(0, 0),  # Set intime to midnight
-                    outtime=time(0, 0),  # Set outtime to midnight                         
-                )
+#         # Create corresponding Attendance records for each active employee on the holiday date
+#         for employee in active_employees:
+#             # Check if an Attendance record already exists for this date and employee
+#             existing_attendance = Attendance.objects.filter(
+#                 date=instance.date,
+#                 employee=employee,
+#             ).first()
+#             if not existing_attendance:
+#                 # Create a new Attendance record with status "Holiday"
+#                 Attendance.objects.create(
+#                     employee=employee,
+#                     date=instance.date,
+#                     status="Holiday",
+#                     id_no=employee.id_no,
+#                     intime=time(0, 0),  # Set intime to midnight
+#                     outtime=time(0, 0),  # Set outtime to midnight                         
+#                 )
                 
                 
 @receiver(post_save, sender=Lefty)

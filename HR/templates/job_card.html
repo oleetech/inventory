@@ -1,0 +1,53 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section card mb-5">
+    <div class="card-body">
+        <h2>Job Card </h2>
+
+        {% include 'form.html' %}
+        
+        <div class="row">
+            {% if total_counts %}
+                <div class="card col-md-4">
+                    <div class="card-body bg-light">
+                        Present: {{ total_counts.Present }}<br>
+                        Absent: {{ total_counts.Absent }}<br>
+                        Holiday: {{ total_counts.Holiday }} <br>
+                        Leave: {{ total_counts.Leave }}  <br>
+                        Weekend: {{ total_counts.Weeked }}  
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Add more employee information as needed -->
+        
+        {% if results %}
+            <table id="itemsTable" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Intime</th>
+                    <th>Outtime</th>
+                    <th>Status</th>
+                </thead>        </tr>
+
+                {% for result in results %}
+                    <tr>
+                        <td>{{ result.date|date:"d-m-Y" }}</td>
+                        <td>{{ result.intime }}</td>
+                        <td>{{ result.outtime }}</td>
+                        <td>{{ result.status }}</td>
+                    </tr>
+                {% endfor %}
+
+
+            </table>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+

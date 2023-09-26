@@ -54,6 +54,7 @@ class SalesOrderInfo(models.Model):
     sales_employee = models.ForeignKey(SalesEmployee, on_delete=models.CASCADE, default=1)  # Set the default to an existing SalesEmployee or a specific ID
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     remarks = models.CharField(max_length=250,default='',blank=True)
+    edd = models.DateField(default=timezone.now)
 
     class Meta:
 

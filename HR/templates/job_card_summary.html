@@ -1,0 +1,40 @@
+{% extends 'basereport.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section card mb-5">
+    <div class="card-body">
+        <h2>Job Card </h2>
+
+        {% include 'form.html' %}
+  
+
+  
+  
+
+        <table id="itemsTable" class="table table-bordered">
+
+    <thead>
+      <tr>
+        <th>ID No</th>
+        <th>Present</th>
+        <th>Absent</th>
+        <th>Weekend</th>
+        <th>Leave</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for id_no, summary in employee_summary.items %}
+        <tr>
+          <td>{{ id_no }}</td>
+          <td>{{ summary.Present }}</td>
+          <td>{{ summary.Absent }}</td>
+          <td>{{ summary.Weekend }}</td>
+          <td>{{ summary.Leave }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</section>
+{% endblock %}
