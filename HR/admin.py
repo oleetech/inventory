@@ -134,14 +134,21 @@ class EmployeePromotionAdmin(admin.ModelAdmin):
 #     list_filter = ('deadline', 'status')
 #     search_fields = ('employee__first_name', 'employee__last_name', 'task_name')
 
+class OvertimeRecordForm(forms.ModelForm):
+    class Meta:
+        model = OvertimeRecord
+        exclude = ['id_no'] 
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
 
 @admin.register(OvertimeRecord)
 class OvertimeRecordAdmin(admin.ModelAdmin):
     list_display = ('employee',  'date', 'othour')
     list_filter = ('date',)
     search_fields = ('employee__first_name', 'employee__last_name', 'id_no')
-
+    form = OvertimeRecordForm
 
 @admin.register(Holiday)
 class HolidayAdmin(admin.ModelAdmin):

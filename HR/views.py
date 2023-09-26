@@ -61,11 +61,11 @@ def upload_overtime_record(request):
 
             # Loop through the data and create overtime_record_log objects
             for index, row in df.iterrows():
-                id_no = row['id_no']
+                id_no = row['employee_id']
                 date_with_time = row['date'].strftime('%Y-%m-%d')
                 othour = row['ot_hour']
                 # Convert the 'date_with_time' string to a datetime object
-                date = datetime.strptime(date_with_time, '%Y-%m-%d').date()
+                date = datetime.strptime(date_with_time, '%Y-%m-%d')
                
                 # Assuming employee_id uniquely identifies an employee
                 employee = Employee.objects.get(id_no=id_no)
@@ -671,8 +671,10 @@ def job_card_summary(request):
                         attendance = attendance_queryset.get(employee__id_no=id_no, date=current_date)
 
                         # Check if intime exists or status is 'Leave'
-                        if attendance.intime or attendance.status == 'Leave':
-                            present_count += 1
+                        if attendance.status == 'Present': 
+                           present_count += 1                            
+                        elif  attendance.status == 'Leave':
+                            leave_count += 1
                         else:
                             # Check if the date is a weekend
                             if current_date.weekday() == 4: # 

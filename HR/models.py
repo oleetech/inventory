@@ -106,7 +106,7 @@ class Attendance(models.Model):
         
             
 class Holiday(models.Model):
-    date = models.DateField()
+    date = models.DateField(default=timezone.now)
     def __str__(self):
         return f"{self.id}"     
     
@@ -119,8 +119,8 @@ class LeaveRequest(models.Model):
         ('medical_leave', 'Medical Leave'),
     )    
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField(default=timezone.now)
     leave_type = models.CharField(max_length=20, choices=LEAVE_CHOICES, default='casual_leave')  # Set the default value
     leave_duration = models.DurationField(blank=True, null=True)
     
@@ -142,7 +142,7 @@ class LeaveRequest(models.Model):
         unique_together = ('start_date', 'end_date','employee')           
 class Payroll(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    pay_date = models.DateField()
+    pay_date = models.DateField(default=timezone.now)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
     def save(self, *args, **kwargs):
@@ -163,7 +163,7 @@ class EmployeeTraining(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     
     training_type = models.CharField(max_length=100)
-    date = models.DateField()
+    date = models.DateField(default=timezone.now)
     duration = models.PositiveIntegerField()
     trainer = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
@@ -178,7 +178,7 @@ class EmployeeTraining(models.Model):
         unique_together = ('date', 'employee')       
 class EmployeePromotion(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    promotion_date = models.DateField()
+    promotion_date = models.DateField(default=timezone.now)
     previous_role = models.CharField(max_length=100)
     new_role = models.CharField(max_length=100)
     salary_change = models.DecimalField(max_digits=10, decimal_places=2)
@@ -194,7 +194,7 @@ class TaskAssignment(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     task_name = models.CharField(max_length=100)
     description = models.TextField()
-    deadline = models.DateField()
+    deadline = models.DateField(default=timezone.now)
     status = models.CharField(max_length=15, choices=[('Pending', 'Pending'), ('Completed', 'Completed')])              
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
     def save(self, *args, **kwargs):
@@ -214,8 +214,8 @@ class TaskAssignment(models.Model):
 class OvertimeRecord(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     id_no = models.PositiveIntegerField(default=1, null=True, blank=True)
-    date = models.DateField()
-    othour = models.DurationField(default=timedelta(0))
+    date = models.DateField(default=timezone.now)
+    othour = models.PositiveIntegerField(default=0, null=True, blank=True)
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
         if not self.id_no:
@@ -233,7 +233,7 @@ class Award(models.Model):
     title = models.CharField(max_length=100)
     giftItem = models.CharField(max_length=100)
     description = models.TextField()
-    dateReceived = models.DateField()
+    dateReceived = models.DateField(default=timezone.now)
     issuedBy = models.CharField(max_length=100)
     awardBy = models.CharField(max_length=100)
 
