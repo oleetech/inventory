@@ -36,7 +36,7 @@
 {% endblock %}
 {% endif %}
 
-{% block content %}<div id="content-main" class='card p-4'>
+{% block content %}<div id="content-main" class='card  p-4'>
   <div class="card-header">
     {{ opts.verbose_name }}
   </div>  
@@ -50,7 +50,7 @@
       {% change_form_object_tools %}
     {% endblock %}
 
-    <li><a href="javascript:window.print();" class="print-button historylink">Print</a></li>
+    {% comment %} <li><a href="javascript:window.print();" class="print-button historylink">Print</a></li> {% endcomment %}
 
 
 

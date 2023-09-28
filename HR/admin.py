@@ -45,7 +45,7 @@ class EmployeeDocumentInline(admin.TabularInline):
     model = EmployeeDocument
     extra = 0     
              
-@admin.register(EmployeeDocument)
+# @admin.register(EmployeeDocument)
 class EmployeeDocumentAdmin(admin.ModelAdmin):
     list_display = ('employee', 'document_name', 'document_type', 'upload_date')
     list_filter = ('document_type', 'upload_date')
