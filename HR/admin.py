@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee,Department,Attendance, LeaveRequest, Payroll,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
+from .models import Employee,Department,Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -97,11 +97,7 @@ class LeaveRequestAdmin(admin.ModelAdmin):
     search_fields = ('employee__first_name', 'employee__last_name', 'start_date', 'end_date')
     form = LeaveRequestForm
     
-@admin.register(Payroll)
-class PayrollAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'pay_date', 'amount')
-    list_filter = ('pay_date',)
-    search_fields = ('employee__first_name', 'employee__last_name', 'pay_date')
+
 
 
 
@@ -228,11 +224,56 @@ class LoanRepaymentAdmin(admin.ModelAdmin):
     
     
     
+class PayrollItemAdminForm(forms.ModelForm):
+    class Meta:
+        model = PayrollItem
+        exclude = ['id_no','department','created','docNo'] 
+class PayrollItemInline(admin.TabularInline):
+    model = PayrollItem
+    form = PayrollItemAdminForm
+    extra = 0            
     
-    
-    
-    
-    
-    
+    def save(self, *args, **kwargs):
+        # Set the id_no field to the employee's id_no
+        if not self.id_no:
+            self.id_no = self.employee.id_no
+            
+        if not self.department:
+            self.department = self.payroll.department     
+            
+        if not self.created:
+            self.created = self.payroll.created    
+        if not self.docNo:
+            self.docNo = self.payroll.docNo                               
+        super().save(*args, **kwargs)    
+    class Meta:
+        unique_together = ('created', 'employee')   
+            
+class PayrollAdminForm(forms.ModelForm):
+    class Meta:
+        model = Payroll
+        fields = '__all__'   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_quotation = Payroll.objects.order_by('-docNo').first()
+            if last_quotation:
+                next_quotation_number = last_quotation.docNo + 1
+            else:
+                next_quotation_number = 1
+
+            self.initial['docNo'] = next_quotation_number    
+@admin.register(Payroll)
+class PayrollAdmin(admin.ModelAdmin):
+    form = PayrollAdminForm
+    inlines = [PayrollItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'         
+    class Media:
+        js = ('js/payroll.js',)
+        defer = True
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }     
     
     

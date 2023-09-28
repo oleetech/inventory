@@ -80,8 +80,8 @@ class Attendance(models.Model):
     date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=10, choices=[('Present', 'Present'), ('Absent', 'Absent'),('Leave', 'Leave'),('Holiday', 'Holiday')],default='Present')
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
-    intime = models.TimeField(default=time(0, 0),blank=True)
-    outtime = models.TimeField(default=time(0, 0),blank=True)  
+    intime = models.TimeField(default=time(8, 0),blank=True)
+    outtime = models.TimeField(default=time(17, 0),blank=True)  
     holiday_marked_as_holiday = models.BooleanField(default=False)
     othour = models.DurationField(default=timedelta(0))
     shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
@@ -165,17 +165,25 @@ class LeaveRequest(models.Model):
     class Meta:
         unique_together = ('start_date', 'end_date','employee')           
 class Payroll(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    pay_date = models.DateField(default=timezone.now)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True) 
+    created = models.DateField(default=timezone.now)
+    docNo = models.PositiveIntegerField(default=1, unique=True)
+    totalAmount = models.DecimalField(max_digits=15, decimal_places=4, null=True, blank=True,default=0)
+    
+    def __str__(self):
+        return f" {self.docNo}"    
+    
+class PayrollItem(models.Model):    
+    payroll = models.ForeignKey(Payroll, on_delete=models.CASCADE, null=True, default=None)             
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)      
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
-    def save(self, *args, **kwargs):
-        # Set the id_no field to the employee's id_no
-        if not self.id_no:
-            self.id_no = self.employee.id_no
-        super().save(*args, **kwargs)    
-    class Meta:
-        unique_together = ('pay_date', 'employee')        
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True) 
+    created = models.DateField(default=timezone.now)    
+    docNo = models.PositiveIntegerField(default=1, unique=False)
+    def __str__(self):
+        return f" {self.docNo}"    
+     
  
 class Announcement(models.Model):
     title = models.CharField(max_length=100)

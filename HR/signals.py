@@ -24,6 +24,8 @@ def create_leave_attendance(sender, instance, created, **kwargs):
                     intime=time(0, 0),  # Set intime to midnight
                     outtime=time(0, 0),  # Set outtime to midnight                    
                 )
+                
+                
 
 # Connect the signal handler function to the post_save signal for LeaveRequest
 post_save.connect(create_leave_attendance, sender=LeaveRequest)
