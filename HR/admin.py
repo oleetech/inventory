@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
+from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,OvertimeRecordinfo,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -37,7 +37,21 @@ class DesignationAdmin(admin.ModelAdmin):
             'all': ('css/bootstrap.min.css','css/admin_styles.css','css/dataTables.min.css'),
         }  
 
+class EmployeeDocumentForm(forms.ModelForm):
+    class Meta:
+        model = EmployeeDocument  
+        fields = '__all__'  # Use '__all__' to include all fields  
+class EmployeeDocumentInline(admin.TabularInline):
+    model = EmployeeDocument
+    extra = 0     
+             
+@admin.register(EmployeeDocument)
+class EmployeeDocumentAdmin(admin.ModelAdmin):
+    list_display = ('employee', 'document_name', 'document_type', 'upload_date')
+    list_filter = ('document_type', 'upload_date')
+    search_fields = ('employee__first_name', 'document_name')
 
+           
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -52,7 +66,8 @@ class EmployeeForm(forms.ModelForm):
 class EmployeeAdmin(admin.ModelAdmin):
   
     form = EmployeeForm  
-    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html' 
+    inlines=[EmployeeDocumentInline]    
     class Media: 
         js = ('js/employee.js','bootstrap.bundle.min.js','js/dataTables.min.js')
         defer = True  # Add the defer attribute          
@@ -63,14 +78,15 @@ class EmployeeAdmin(admin.ModelAdmin):
 
         obj.owner = request.user if request.user.is_authenticated else None
         # If the shift is not set explicitly, set it to the first Shift object
-        if not self.shift:
-            self.shift = Shift.objects.first()
+        if not obj.shift:
+            obj.shift = Shift.objects.first()
                       
-        super().save_model(request, obj, form, change)         
+        super().save_model(request, obj, form, change)   
+              
         
         
 
-        
+       
 
         
 class DepartmentForm(forms.ModelForm):
@@ -101,6 +117,14 @@ class DepartmentAdmin(admin.ModelAdmin):
           
 
 
+'''
+     _      _     _                        _                               
+    / \    | |_  | |_    ___   _ __     __| |   __ _   _ __     ___    ___ 
+   / _ \   | __| | __|  / _ \ | '_ \   / _` |  / _` | | '_ \   / __|  / _ \
+  / ___ \  | |_  | |_  |  __/ | | | | | (_| | | (_| | | | | | | (__  |  __/
+ /_/   \_\  \__|  \__|  \___| |_| |_|  \__,_|  \__,_| |_| |_|  \___|  \___|
+                                                                           
+'''
 
 
  
@@ -108,7 +132,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
-        exclude = ['id_no','date','shift','holiday_marked_as_holiday','othour'] 
+        exclude = ['id_no','date','shift','holiday_marked_as_holiday','othour','department'] 
         unique_together = ('date', 'employee')   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -131,7 +155,38 @@ class AttendanceinfoAdmin(admin.ModelAdmin):
     form = AttendanceinfoForm
     inlines = [AttendanceInline]
         
-        
+
+class OvertimeRecordForm(forms.ModelForm):
+    class Meta:
+        model = OvertimeRecord
+        exclude = ['id_no'] 
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
+class OvertimeRecordInline(admin.TabularInline):
+    model = OvertimeRecord
+    form = OvertimeRecordForm
+    extra = 0 
+@admin.register(OvertimeRecord)
+class OvertimeRecordAdmin(admin.ModelAdmin):
+    list_display = ('employee',  'date', 'othour')
+    list_filter = ('date',)
+    search_fields = ('employee__first_name', 'employee__last_name', 'id_no')
+    form = OvertimeRecordForm
+    
+class OvertimeRecordinfoForm(forms.ModelForm):
+    class Meta:
+        model = OvertimeRecordinfo  
+        fields = '__all__'  # Use '__all__' to include all fields
+
+@admin.register(OvertimeRecordinfo)
+class OvertimeRecordinfoAdmin(admin.ModelAdmin):
+    list_display = ('date',)
+    # Add other fields you want to display for the Attendanceinfo model
+    form = OvertimeRecordinfoForm
+    inlines = [OvertimeRecordInline]    
+            
 class LeaveRequestForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
@@ -177,21 +232,7 @@ class LeaveRequestAdmin(admin.ModelAdmin):
 #     list_filter = ('deadline', 'status')
 #     search_fields = ('employee__first_name', 'employee__last_name', 'task_name')
 
-class OvertimeRecordForm(forms.ModelForm):
-    class Meta:
-        model = OvertimeRecord
-        exclude = ['id_no'] 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
-
-@admin.register(OvertimeRecord)
-class OvertimeRecordAdmin(admin.ModelAdmin):
-    list_display = ('employee',  'date', 'othour')
-    list_filter = ('date',)
-    search_fields = ('employee__first_name', 'employee__last_name', 'id_no')
-    form = OvertimeRecordForm
 
 @admin.register(Holiday)
 class HolidayAdmin(admin.ModelAdmin):
@@ -242,12 +283,7 @@ class ShiftAdmin(admin.ModelAdmin):
 
     form = ShiftForm
     
-@admin.register(EmployeeDocument)
-class EmployeeDocumentAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'document_name', 'document_type', 'upload_date')
-    list_filter = ('document_type', 'upload_date')
-    search_fields = ('employee__first_name', 'document_name')  
-    
+  
 @admin.register(EmployeeLoan)    
 class EmployeeLoanAdmin(admin.ModelAdmin):
     list_display = ('employee', 'loan_type', 'loan_amount', 'get_due_amount','is_complete')

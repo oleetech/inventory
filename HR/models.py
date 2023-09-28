@@ -90,8 +90,7 @@ class Employee(models.Model):
     permanentAddress = models.CharField(max_length=200,blank=True, null=True)   
     photo = models.ImageField(upload_to='employee_photos/',null=True, blank=True)     
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
-    
+    shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True, default=None)    
     class Meta:
         verbose_name = 'Employee Master Data'
         verbose_name_plural = 'Employee Master Data'
@@ -115,7 +114,10 @@ class Employee(models.Model):
 
 class Attendanceinfo(models.Model):
     date = models.DateField(default=timezone.now)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
     
+    def __str__(self):
+        return f'{self.date}'    
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     attendance=models.ForeignKey(Attendanceinfo, on_delete=models.CASCADE, null=True, default=None)  
@@ -127,6 +129,7 @@ class Attendance(models.Model):
     holiday_marked_as_holiday = models.BooleanField(default=False)
     othour = models.DurationField(default=timedelta(0))
     shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
     
 
      
@@ -136,7 +139,9 @@ class Attendance(models.Model):
             self.id_no = self.employee.id_no
         # If the shift is not set explicitly, set it based on the employee's shift
         if not self.shift and self.employee:
-            self.shift = self.employee.shift            
+            self.shift = self.employee.shift    
+        if not self.department :
+            self.department = self.employee.department                      
 
 
             
@@ -169,8 +174,40 @@ class Attendance(models.Model):
         super().save(*args, **kwargs)    
  
         
-
-                
+    def __str__(self):
+        return f'{self.id_no}' 
+class OvertimeRecordinfo(models.Model):
+    date = models.DateField(default=timezone.now)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
+    
+    def __str__(self):
+        return f'{self.date}'    
+    
+class OvertimeRecord(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    overtimeinfo=models.ForeignKey(OvertimeRecordinfo, on_delete=models.CASCADE, null=True, default=None,blank=True)  
+    
+    id_no = models.PositiveIntegerField(default=1, null=True, blank=True)
+    date = models.DateField(default=timezone.now)
+    othour = models.PositiveIntegerField(default=0, null=True, blank=True)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True,default=Department.objects.first())
+    
+    def save(self, *args, **kwargs):
+        # Set the id_no field to the employee's id_no
+        if not self.id_no:
+            self.id_no = self.employee.id_no
+        if not self.date:
+            self.date = self.employee.date   
+        if not self.department :
+            self.department = self.overtimeinfo.department       
+                           
+        super().save(*args, **kwargs)   
+    def __str__(self):
+        return f"Overtime Record for {self.employee.first_name} {self.employee.last_name} on {self.date}"    
+    
+    class Meta:
+        unique_together = ('date', 'employee')     
+                    
 class Holiday(models.Model):
     date = models.DateField(default=timezone.now)
     def __str__(self):
@@ -255,14 +292,7 @@ class EmployeeTraining(models.Model):
 class EmployeePromotion(models.Model):
     docNo = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=timezone.now)    
-
-
-
-
-    
-    
-
-              
+             
 class EmployeePromotionItem(models.Model):  
     promotion = models.ForeignKey(EmployeePromotion, on_delete=models.CASCADE, null=True, default=None)             
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
@@ -311,24 +341,7 @@ class TaskAssignment(models.Model):
 
     
   
-    
-    
-class OvertimeRecord(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    id_no = models.PositiveIntegerField(default=1, null=True, blank=True)
-    date = models.DateField(default=timezone.now)
-    othour = models.PositiveIntegerField(default=0, null=True, blank=True)
-    def save(self, *args, **kwargs):
-        # Set the id_no field to the employee's id_no
-        if not self.id_no:
-            self.id_no = self.employee.id_no
-        super().save(*args, **kwargs)   
-    def __str__(self):
-        return f"Overtime Record for {self.employee.first_name} {self.employee.last_name} on {self.date}"    
-    
-    class Meta:
-        unique_together = ('date', 'employee')     
-    
+
     
 class Award(models.Model):
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE, related_name='awards')
