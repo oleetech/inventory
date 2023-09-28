@@ -3,17 +3,47 @@ from django.contrib.auth.models import User
 from datetime import datetime, timedelta, time
 from django.utils import timezone
 
+'''
+  ____                 _                           _     _                 
+ |  _ \    ___   ___  (_)   __ _   _ __     __ _  | |_  (_)   ___    _ __  
+ | | | |  / _ \ / __| | |  / _` | | '_ \   / _` | | __| | |  / _ \  | '_ \ 
+ | |_| | |  __/ \__ \ | | | (_| | | | | | | (_| | | |_  | | | (_) | | | | |
+ |____/   \___| |___/ |_|  \__, | |_| |_|  \__,_|  \__| |_|  \___/  |_| |_|
+                           |___/                                           
 
+'''
 
-
-     
-class Department(models.Model):
+class Designation(models.Model):
     name = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
     
+    
+'''
+  ____                                  _                                _   
+ |  _ \    ___   _ __     __ _   _ __  | |_   _ __ ___     ___   _ __   | |_ 
+ | | | |  / _ \ | '_ \   / _` | | '__| | __| | '_ ` _ \   / _ \ | '_ \  | __|
+ | |_| | |  __/ | |_) | | (_| | | |    | |_  | | | | | | |  __/ | | | | | |_ 
+ |____/   \___| | .__/   \__,_| |_|     \__| |_| |_| |_|  \___| |_| |_|  \__|
+                |_|                                                          
+'''     
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+'''
+  ____    _       _    __   _   
+ / ___|  | |__   (_)  / _| | |_ 
+ \___ \  | '_ \  | | | |_  | __|
+  ___) | | | | | | | |  _| | |_ 
+ |____/  |_| |_| |_| |_|    \__|
+                                
+'''    
 class Shift(models.Model):
     name = models.CharField(max_length=100)
     start_time = models.TimeField()
@@ -21,7 +51,16 @@ class Shift(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+'''
+  _____                       _                               
+ | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___ 
+ |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \
+ | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/
+ |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___|
+                     |_|                  |___/               
+
+'''    
 class Employee(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -54,17 +93,9 @@ class Employee(models.Model):
     shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
     
     class Meta:
-
         verbose_name = 'Employee Master Data'
         verbose_name_plural = 'Employee Master Data'
-        
-    def save(self, *args, **kwargs):
-        # If the shift is not set explicitly, set it to the first Shift object
-        if not self.shift:
-            self.shift = Shift.objects.first()
-
-        super(Employee, self).save(*args, **kwargs)
-                
+            
     def __str__(self):
         return f"{self.id_no}"  
 
@@ -73,10 +104,21 @@ class Employee(models.Model):
 
     
     
+'''
+     _      _     _                        _                               
+    / \    | |_  | |_    ___   _ __     __| |   __ _   _ __     ___    ___ 
+   / _ \   | __| | __|  / _ \ | '_ \   / _` |  / _` | | '_ \   / __|  / _ \
+  / ___ \  | |_  | |_  |  __/ | | | | | (_| | | (_| | | | | | | (__  |  __/
+ /_/   \_\  \__|  \__|  \___| |_| |_|  \__,_|  \__,_| |_| |_|  \___|  \___|
+                                                                           
+'''
 
-
+class Attendanceinfo(models.Model):
+    date = models.DateField(default=timezone.now)
+    
 class Attendance(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    attendance=models.ForeignKey(Attendanceinfo, on_delete=models.CASCADE, null=True, default=None)  
     date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=10, choices=[('Present', 'Present'), ('Absent', 'Absent'),('Leave', 'Leave'),('Holiday', 'Holiday')],default='Present')
     id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
@@ -86,8 +128,8 @@ class Attendance(models.Model):
     othour = models.DurationField(default=timedelta(0))
     shift = models.ForeignKey(Shift, on_delete=models.SET_NULL, null=True, blank=True,default=None)
     
-    class Meta:
-        unique_together = ('date', 'employee')        
+
+     
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
         if not self.id_no:
@@ -207,21 +249,49 @@ class EmployeeTraining(models.Model):
             self.id_no = self.employee.id_no
         super().save(*args, **kwargs)      
     class Meta:
-        unique_together = ('date', 'employee')       
+        unique_together = ('date', 'employee')   
+        
+         
 class EmployeePromotion(models.Model):
+    docNo = models.PositiveIntegerField(default=1, unique=True)
+    created = models.DateField(default=timezone.now)    
+
+
+
+
+    
+    
+
+              
+class EmployeePromotionItem(models.Model):  
+    promotion = models.ForeignKey(EmployeePromotion, on_delete=models.CASCADE, null=True, default=None)             
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    promotion_date = models.DateField(default=timezone.now)
-    previous_role = models.CharField(max_length=100)
-    new_role = models.CharField(max_length=100)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)  
+    promotion_date = models.DateField(default=timezone.now) 
+    previous_role = models.ForeignKey(Designation, on_delete=models.CASCADE, null=True, default=Designation.objects.first(), related_name='previous_promotions')
+    new_role = models.ForeignKey(Designation, on_delete=models.CASCADE, null=True, default=Designation.objects.first(), related_name='new_promotions')
     salary_change = models.DecimalField(max_digits=10, decimal_places=2)
     reason = models.TextField()    
-    id_no = models.PositiveIntegerField(default=1, null=True,blank=True)
+    id_no = models.PositiveIntegerField(default=1, null=True,blank=True)        
+
+    created = models.DateField(default=timezone.now)    
+    docNo = models.PositiveIntegerField(default=1, unique=False)
+    
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
         if not self.id_no:
             self.id_no = self.employee.id_no
-        super().save(*args, **kwargs)        
-  
+            
+            
+        if not self.created:
+            self.created = self.promotion.created    
+        if not self.docNo:
+            self.docNo = self.promotion.docNo   
+            
+        super().save(*args, **kwargs)      
+    def __str__(self):
+        return f" {self.docNo}"  
+        
 class TaskAssignment(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     task_name = models.CharField(max_length=100)

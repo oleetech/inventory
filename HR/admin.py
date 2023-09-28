@@ -1,11 +1,44 @@
 from django.contrib import admin
-from .models import Employee,Department,Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
+from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
 from django import forms
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 
 # Register your models here.
+
+class DesignationForm(forms.ModelForm):
+    class Meta:
+        model = Designation
+        exclude = ['owner',]  # You can exclude fields if needed
+
+        widgets = {
+            # 'name': forms.TextInput(attrs={'readonly': 'readonly'}),
+ 
+        }  
+
+
+
+@admin.register(Designation)                             
+class DesignationAdmin(admin.ModelAdmin):
+
+    form = DesignationForm  
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'   
+    def save_model(self, request, obj, form, change):
+
+        obj.owner = request.user if request.user.is_authenticated else None
+          
+        super().save_model(request, obj, form, change) 
+        
+    class Media: 
+        js = ('bootstrap.bundle.min.js','js/dataTables.min.js')
+        defer = True  # Add the defer attribute          
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css','css/dataTables.min.css'),
+        }  
+
+
+
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
@@ -29,7 +62,10 @@ class EmployeeAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
 
         obj.owner = request.user if request.user.is_authenticated else None
-          
+        # If the shift is not set explicitly, set it to the first Shift object
+        if not self.shift:
+            self.shift = Shift.objects.first()
+                      
         super().save_model(request, obj, form, change)         
         
         
@@ -65,22 +101,37 @@ class DepartmentAdmin(admin.ModelAdmin):
           
 
 
+
+
+ 
+
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
-        exclude = ['id_no'] 
-
+        exclude = ['id_no','date','shift','holiday_marked_as_holiday','othour'] 
+        unique_together = ('date', 'employee')   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
+admin.site.register(Attendance)
 
-@admin.register(Attendance)
-class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'date', 'status')
-    list_filter = ('date', 'status')
-    search_fields = ('employee__first_name', 'employee__last_name', 'date')
+class AttendanceInline(admin.TabularInline):
+    model = Attendance
     form = AttendanceForm
+    extra = 0  
+class AttendanceinfoForm(forms.ModelForm):
+    class Meta:
+        model = Attendanceinfo  
+        fields = '__all__'  # Use '__all__' to include all fields
 
+@admin.register(Attendanceinfo)
+class AttendanceinfoAdmin(admin.ModelAdmin):
+    list_display = ('date',)
+    # Add other fields you want to display for the Attendanceinfo model
+    form = AttendanceinfoForm
+    inlines = [AttendanceInline]
+        
+        
 class LeaveRequestForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
@@ -118,11 +169,7 @@ class LeaveRequestAdmin(admin.ModelAdmin):
 #     list_filter = ('training_type', 'date')
 #     search_fields = ('employee__first_name', 'employee__last_name', 'training_type')
 
-@admin.register(EmployeePromotion)
-class EmployeePromotionAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'promotion_date', 'previous_role', 'new_role', 'salary_change')
-    list_filter = ('promotion_date', 'previous_role', 'new_role')
-    search_fields = ('employee__first_name', 'employee__last_name', 'previous_role', 'new_role')
+
 
 # @admin.register(TaskAssignment)
 # class TaskAssignmentAdmin(admin.ModelAdmin):
@@ -277,3 +324,69 @@ class PayrollAdmin(admin.ModelAdmin):
         }     
     
     
+'''
+  _____                       _                                 ____                                       _     _                 
+ | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___  |  _ \   _ __    ___    _ __ ___     ___   | |_  (_)   ___    _ __  
+ |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \ | |_) | | '__|  / _ \  | '_ ` _ \   / _ \  | __| | |  / _ \  | '_ \ 
+ | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/ |  __/  | |    | (_) | | | | | | | | (_) | | |_  | | | (_) | | | | |
+ |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___| |_|     |_|     \___/  |_| |_| |_|  \___/   \__| |_|  \___/  |_| |_|
+                     |_|                  |___/                                                                                    
+
+'''    
+
+class EmployeePromotionItemAdminForm(forms.ModelForm):
+    class Meta:
+        model = EmployeePromotionItem
+        exclude = ['id_no','created','docNo','promotion_date'] 
+class EmployeePromotionItemInline(admin.TabularInline):
+    model = EmployeePromotionItem
+    form = EmployeePromotionItemAdminForm
+    extra = 0            
+    
+    def save(self, *args, **kwargs):
+        # Set the id_no field to the employee's id_no
+        if not self.id_no:
+            self.id_no = self.employee.id_no
+ 
+            
+        if not self.created:
+            self.created = self.promotion.created    
+        if not self.docNo:
+            self.docNo = self.promotion.docNo                               
+        super().save(*args, **kwargs)    
+    class Meta:
+        unique_together = ('created', 'employee')   
+            
+class EmployeePromotionAdminForm(forms.ModelForm):
+    class Meta:
+        model = EmployeePromotion
+        fields = '__all__'   
+        
+        widgets = {
+            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
+
+        }
+                
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk:
+            last_quotation = EmployeePromotion.objects.order_by('-docNo').first()
+            if last_quotation:
+                next_quotation_number = last_quotation.docNo + 1
+            else:
+                next_quotation_number = 1
+
+            self.initial['docNo'] = next_quotation_number    
+            
+@admin.register(EmployeePromotion)
+class EmployeePromotionAdmin(admin.ModelAdmin):
+    form = EmployeePromotionAdminForm
+    inlines = [EmployeePromotionItemInline]
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'         
+    class Media:
+        js = ('js/payroll.js',)
+        defer = True
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }  

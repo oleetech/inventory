@@ -40,6 +40,8 @@
   <div class="card-header">
     {{ opts.verbose_name }}
   </div>  
+
+
 {% block object-tools %}
 {% if change and not is_popup %}
   <ul class="object-tools">
@@ -75,7 +77,7 @@
 
 {% comment %} top area {% endcomment %}
 {% block field_sets %}
-
+<div class="card-body">
 
         {% for fieldset in adminform %}
             {% if fieldset.name %}<h2>{{ fieldset.name }}</h2>{% endif %}
@@ -125,7 +127,7 @@
         {% endfor %}
  
 
-
+      </div>
 {% endblock %}
 
 {% comment %} top area {% endcomment %}
@@ -160,4 +162,5 @@
 
 </div>
 </form></div>
+
 {% endblock %}
