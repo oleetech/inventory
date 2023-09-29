@@ -186,7 +186,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
-        exclude = ['id_no','date','shift','holiday_marked_as_holiday','othour','department','attendance'] 
+        exclude = ['id_no','shift','holiday_marked_as_holiday','othour','department','attendance'] 
         unique_together = ('date', 'employee')   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -586,7 +586,7 @@ def job_card(request):
                     else:
                         # Check if the date is a holiday
                         is_holiday = Holiday.objects.filter(date=current_date).exists()
-                        if is_holiday:
+                        if is_holiday and (is_previous_day_present or is_next_day_present)    :
                             status = 'H'  # Holiday
                             holiday_count += 1
                         else:
@@ -614,7 +614,7 @@ def job_card(request):
                     # Check if the date is a holiday
                     is_holiday = Holiday.objects.filter(date=current_date).exists()
 
-                    if is_holiday:
+                    if is_holiday and  (is_previous_day_present or is_next_day_present):
                         status = 'H'  # Holiday
                         holiday_count += 1
                     elif current_date.weekday() == 4 and is_previous_day_present or is_next_day_present:
@@ -711,7 +711,7 @@ def job_card_summary(request):
                         else:
                             # Check if the date is a holiday
                             is_holiday = Holiday.objects.filter(date=current_date).exists()
-                            if is_holiday:
+                            if is_holiday and (is_previous_day_present or is_next_day_present):
                                 status = 'H'  # Holiday
                                 holiday_count += 1 
                             else:
@@ -727,7 +727,7 @@ def job_card_summary(request):
                         is_next_day_present = attendance_queryset.filter(employee__id_no=id_no, date=next_day, status='Present').exists()
                         is_holiday = Holiday.objects.filter(date=current_date).exists()
 
-                        if is_holiday:
+                        if is_holiday and(is_previous_day_present or is_next_day_present):
                             status = 'H'  # Holiday
                             holiday_count += 1 
                         elif current_date.weekday() == 4 and (is_previous_day_present or is_next_day_present):
