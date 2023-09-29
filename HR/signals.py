@@ -22,7 +22,8 @@ def create_leave_attendance(sender, instance, created, **kwargs):
                     status="Leave",
                     id_no=instance.employee.id_no,
                     intime=time(0, 0),  # Set intime to midnight
-                    outtime=time(0, 0),  # Set outtime to midnight                    
+                    outtime=time(0, 0),  # Set outtime to midnight     
+                    department= instance.employee.department,              
                 )
                 
                 

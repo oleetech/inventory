@@ -537,6 +537,8 @@ def leave_request_records_between_dates(request):
     return render(request, 'leave_request_records_between_dates.html', context)
 from operator import itemgetter
 
+
+
 def job_card(request):
     if request.method == 'POST':
         form = EmployeeIDDateFilterForm(request.POST)
@@ -545,7 +547,7 @@ def job_card(request):
             start_date = form.cleaned_data['start_date']
             end_date = form.cleaned_data['end_date']
             
-            # Initialize counters for 'P', 'A', and 'H'
+            # Initialize counters for 'P', 'A', 'H', 'L', and 'W'
             present_count = 0
             absent_count = 0
             holiday_count = 0
@@ -556,34 +558,41 @@ def job_card(request):
 
             # Loop through the dates in the specified range
             current_date = start_date
+# ...
             while current_date <= end_date:
                 try:
                     # Query the Attendance model to get the corresponding attendance record
                     attendance = Attendance.objects.get(employee__id_no=id_no, date=current_date)
 
-                    # attendance.status
+                    # Calculate previous_day and next_day
+                    previous_day = current_date - timedelta(days=1)
+                    next_day = current_date + timedelta(days=1)
+
+                    # Query the Attendance model for the previous and next days
+                    is_previous_day_present = Attendance.objects.filter(employee__id_no=id_no, date=previous_day, status='Present').exists()
+                    is_next_day_present = Attendance.objects.filter(employee__id_no=id_no, date=next_day, status='Present').exists()
+
+
                     if attendance.status == 'Present':
                         status = 'P'  # Present
                         present_count += 1
                     elif attendance.status == 'Leave':
                         status = 'L'  # Leave
                         leave_count += 1
+
+                    elif current_date.weekday() == 4 and is_previous_day_present or is_next_day_present:
+                        status = 'W'  # Weekend
+                        weekend_count += 1                            
                     else:
                         # Check if the date is a holiday
                         is_holiday = Holiday.objects.filter(date=current_date).exists()
                         if is_holiday:
-                            # Check if the previous day is a holiday
-                            previous_day = current_date - timedelta(days=1)
-                            is_previous_day_intime = Attendance.objects.get(employee__id_no=id_no, date=previous_day)                         
                             status = 'H'  # Holiday
                             holiday_count += 1
-                        elif current_date.weekday() == 4:
-                            status = 'W'  # Weekend
-                            weekend_count += 1                                  
                         else:
                             status = 'A'  # Absent
-                            absent_count += 1
-
+                            absent_count += 1                            
+                            
                     # Append the result to the list
                     results.append({
                         'id_no': id_no,
@@ -594,15 +603,26 @@ def job_card(request):
                     })
 
                 except Attendance.DoesNotExist:
+                    # Calculate previous_day and next_day
+                    previous_day = current_date - timedelta(days=1)
+                    next_day = current_date + timedelta(days=1)
+
+                    # Query the Attendance model for the previous and next days
+                    is_previous_day_present = Attendance.objects.filter(employee__id_no=id_no, date=previous_day, status='Present').exists()
+                    is_next_day_present = Attendance.objects.filter(employee__id_no=id_no, date=next_day, status='Present').exists()
+
                     # Check if the date is a holiday
                     is_holiday = Holiday.objects.filter(date=current_date).exists()
+
                     if is_holiday:
-               
-                            status = 'H'  # Holiday
-                            holiday_count += 1
-                    elif current_date.weekday() == 4:
-                        status = 'W'  # Holiday   
-                        weekend_count += 1                                                     
+                        status = 'H'  # Holiday
+                        holiday_count += 1
+                    elif current_date.weekday() == 4 and is_previous_day_present or is_next_day_present:
+                        status = 'W'  # Weekend
+                        weekend_count += 1
+                        
+
+                                                
                     else:
                         status = 'A'  # Absent
                         absent_count += 1
@@ -618,14 +638,16 @@ def job_card(request):
 
                 # Move to the next date
                 current_date += timedelta(days=1)
+# ...
+
 
             # Calculate the total counts
             total_counts = {
                 'Present': present_count,
                 'Absent': absent_count,
                 'Holiday': holiday_count,
-                'Leave':leave_count,
-                'Weeked': weekend_count 
+                'Leave': leave_count,
+                'Weekend': weekend_count 
             }
 
             return render(request, 'job_card.html', {'results': results, 'total_counts': total_counts})
@@ -633,6 +655,7 @@ def job_card(request):
         form = EmployeeIDDateFilterForm()
 
     return render(request, 'job_card.html', {'form': form})
+
 
 
 from django.db.models import Count
@@ -657,50 +680,76 @@ def job_card_summary(request):
 
             # Step 3: Calculate the summary for each active employee
             for id_no in active_employee_ids:
-                # Initialize counters for 'Present', 'Absent', 'Weekend', and 'Leave' for each employee
+                # Initialize counters for 'Present', 'Absent', 'Weekend', 'Leave', and 'Holiday' for each employee
                 present_count = 0
                 absent_count = 0
                 weekend_count = 0
                 leave_count = 0
-
+                holiday_count = 0
                 # Loop through the dates in the specified range
                 current_date = start_date
                 while current_date <= end_date:
                     try:
                         # Query the Attendance queryset to get the corresponding attendance record
-                        attendance = attendance_queryset.get(employee__id_no=id_no, date=current_date)
+                        # Calculate previous_day and next_day
+                        previous_day = current_date - timedelta(days=1)
+                        next_day = current_date + timedelta(days=1)
 
+                        # Query the Attendance model for the previous and next days
+                        is_previous_day_present = attendance_queryset.filter(employee__id_no=id_no, date=previous_day, status='Present').exists()
+                        is_next_day_present = attendance_queryset.filter(employee__id_no=id_no, date=next_day, status='Present').exists()
+
+                        attendance = attendance_queryset.get(employee__id_no=id_no, date=current_date)
                         # Check if intime exists or status is 'Leave'
                         if attendance.status == 'Present': 
-                           present_count += 1                            
+                            present_count += 1 
                         elif  attendance.status == 'Leave':
-                            leave_count += 1
+                            leave_count += 1 
+                        elif current_date.weekday() == 4 and (is_previous_day_present or is_next_day_present):
+                            status = 'W'  # Weekend
+                            weekend_count += 1
                         else:
-                            # Check if the date is a weekend
-                            if current_date.weekday() == 4: # 
-                                weekend_count += 1
+                            # Check if the date is a holiday
+                            is_holiday = Holiday.objects.filter(date=current_date).exists()
+                            if is_holiday:
+                                status = 'H'  # Holiday
+                                holiday_count += 1 
                             else:
+                                status = 'A'  # Absent
                                 absent_count += 1
 
                     except Attendance.DoesNotExist:
-                        # Check if the date is a weekend
-                        if current_date.weekday() == 4:  # 5=Saturday, 6=Sunday
+                        previous_day = current_date - timedelta(days=1)
+                        next_day = current_date + timedelta(days=1)
+
+                        # Query the Attendance model for the previous and next days
+                        is_previous_day_present = attendance_queryset.filter(employee__id_no=id_no, date=previous_day, status='Present').exists()
+                        is_next_day_present = attendance_queryset.filter(employee__id_no=id_no, date=next_day, status='Present').exists()
+                        is_holiday = Holiday.objects.filter(date=current_date).exists()
+
+                        if is_holiday:
+                            status = 'H'  # Holiday
+                            holiday_count += 1 
+                        elif current_date.weekday() == 4 and (is_previous_day_present or is_next_day_present):
+                            status = 'W'  # Weekend
                             weekend_count += 1
                         else:
+                            status = 'A'  # Absent
                             absent_count += 1
 
                     current_date += timedelta(days=1)
 
                 # Calculate leave count by subtracting present count from the total days
                 total_days = (end_date - start_date).days + 1
-                leave_count = total_days - (present_count + weekend_count + absent_count)
+                total_leave = total_days - (present_count + weekend_count + absent_count + holiday_count)
 
                 # Store the summary in the dictionary
                 employee_summary[id_no] = {
                     'Present': present_count,
                     'Absent': absent_count,
                     'Weekend': weekend_count,
-                    'Leave': leave_count,
+                    'Leave': total_leave,
+                    'Holiday': holiday_count,
                 }
 
             return render(request, 'job_card_summary.html', {'employee_summary': employee_summary})

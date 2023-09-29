@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,OvertimeRecordinfo,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment
+from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,OvertimeRecordinfo,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment,NomineeInformation,EducationInformation, ExperienceInformation,PersonalFileChecklist
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -85,10 +85,64 @@ class EmployeeAdmin(admin.ModelAdmin):
               
         
         
+class NomineeInformationForm(forms.ModelForm):
+    class Meta:
+        model = NomineeInformation
+        fields = '__all__'
+@admin.register(NomineeInformation)        
+class NomineeInformationAdmin(admin.ModelAdmin):
+    form = NomineeInformationForm
 
-       
 
-        
+class EducationInformationForm(forms.ModelForm):
+    class Meta:
+        model = EducationInformation
+        fields = '__all__'  # You can specify the fields you want to include here
+
+class ExperienceInformationForm(forms.ModelForm):
+    class Meta:
+        model = ExperienceInformation
+        fields = '__all__'  # You can specify the fields you want to include here
+class ExperienceInformationInline(admin.TabularInline):
+    model = ExperienceInformation
+    extra = 0    
+@admin.register(EducationInformation)           
+class EducationInformationAdmin(admin.ModelAdmin):
+    form = EducationInformationForm  # Use the custom form
+    list_display = ['employee', 'degree', 'institution', 'completion_year']
+    list_filter = ['employee', 'completion_year']
+    search_fields = ['employee__username', 'degree', 'institution']
+    list_per_page = 20
+    inlines = [ExperienceInformationInline]
+    class Media:
+
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }     
+    
+class ExperienceInformationAdmin(admin.ModelAdmin):
+    form = ExperienceInformationForm  # Use the custom form
+    list_display = ['employee', 'position', 'company', 'start_date', 'end_date']
+    list_filter = ['employee', 'start_date']
+    search_fields = ['employee__username', 'position', 'company']
+    list_per_page = 20
+
+class PersonalFileChecklistForm(forms.ModelForm):
+    class Meta:
+        model = PersonalFileChecklist
+        fields = '__all__'
+@admin.register(PersonalFileChecklist)         
+class PersonalFileChecklistAdmin(admin.ModelAdmin):
+    form = PersonalFileChecklistForm
+    change_form_template = 'admin/Production/ProductionOrder/change_form.html'  
+    list_display = ['employee', 'photo', 'cv', 'bdc', 'eduCertificate', 'expCertificate']  # Add other fields as needed
+    list_filter = ['employee']  # Add other fields for filtering
+    search_fields = ['employee__username']  # Add other fields for searching
+    class Media:
+
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }            
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
@@ -132,12 +186,17 @@ class DepartmentAdmin(admin.ModelAdmin):
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
-        exclude = ['id_no','date','shift','holiday_marked_as_holiday','othour','department'] 
+        exclude = ['id_no','date','shift','holiday_marked_as_holiday','othour','department','attendance'] 
         unique_together = ('date', 'employee')   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['employee'].widget = forms.Select(choices=Employee.objects.values_list('id', 'id_no'))
-admin.site.register(Attendance)
+@admin.register(Attendance)
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('date',)
+    # Add other fields you want to display for the Attendanceinfo model
+    form = AttendanceForm
+
 
 class AttendanceInline(admin.TabularInline):
     model = Attendance

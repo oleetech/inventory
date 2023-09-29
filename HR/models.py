@@ -68,24 +68,58 @@ class Employee(models.Model):
         ('O', 'Other'),
     )
 
+    BLOOD_GROUP_CHOICES = [
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+    ]
+
+    RELIGION_CHOICES = [
+        ('Christianity', 'Christianity'),
+        ('Islam', 'Islam'),
+        ('Hinduism', 'Hinduism'),
+        ('Buddhism', 'Buddhism'),
+        ('Sikhism', 'Sikhism'),
+        ('Judaism', 'Judaism'),
+        ('Other', 'Other'),
+    ]
+
+    MARITAL_STATUS_CHOICES = [
+        ('Single', 'Single'),
+        ('Married', 'Married'),
+        ('Divorced', 'Divorced'),
+        ('Widowed', 'Widowed'),
+    ]
+
+
 
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     fatherName = models.CharField(max_length=100, blank=True, null=True)
+    motherName = models.CharField(max_length=100, blank=True, null=True)
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
     
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     birth_date = models.DateField()
     hire_date = models.DateField()
-    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
     designation = models.CharField(max_length=100,blank=True, null=True)
     id_no = models.PositiveIntegerField(default=1, unique=True)
     salary = models.DecimalField(max_digits=10, decimal_places=2,default=1)
     joiningSalary = models.DecimalField(max_digits=10, decimal_places=2,default=1)
+    nid = models.CharField(max_length=30, blank=True, null=True)
     
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     active = models.BooleanField(default=False)  # New field for active status
-
+    bloodGroup = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES,blank=True, null=True)
+    religion = models.CharField(max_length=20, choices=RELIGION_CHOICES,blank=True, null=True)
+    # Define the marital_status field with choices
+    maritalStatus = models.CharField(max_length=10, choices=MARITAL_STATUS_CHOICES,blank=True, null=True)
     localAddress = models.CharField(max_length=200,blank=True, null=True)
     permanentAddress = models.CharField(max_length=200,blank=True, null=True)   
     photo = models.ImageField(upload_to='employee_photos/',null=True, blank=True)     
@@ -97,12 +131,101 @@ class Employee(models.Model):
             
     def __str__(self):
         return f"{self.id_no}"  
+class NomineeInformation(models.Model):
 
 
+    RELATIONSHIP_CHOICES = (
+        ('Spouse', 'Spouse'),
+        ('Child', 'Child'),
+        ('Parent', 'Parent'),
+        ('Sibling', 'Sibling'),
+        ('Other', 'Other'),
+    )
 
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100)
+    nid = models.CharField(max_length=30, blank=True, null=True)
+    relationship = models.CharField(max_length=10, choices=RELATIONSHIP_CHOICES)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    def __str__(self):
+        return f"{self.employee.id_no}"     
+'''
+  _____                       _                                 ____                                                      _   
+ | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___  |  _ \    ___     ___   _   _   _ __ ___     ___   _ __   | |_ 
+ |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \ | | | |  / _ \   / __| | | | | | '_ ` _ \   / _ \ | '_ \  | __|
+ | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/ | |_| | | (_) | | (__  | |_| | | | | | | | |  __/ | | | | | |_ 
+ |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___| |____/   \___/   \___|  \__,_| |_| |_| |_|  \___| |_| |_|  \__|
+                     |_|                  |___/                                                                               
+
+'''
+class EmployeeDocument(models.Model):
+    EMPLOYEE_DOCUMENT_TYPES = (
+        ('Resume', 'Resume'),
+        ('Contract', 'Contract'),
+        ('ID Card', 'ID Card'),
+        ('Other', 'Other'),
+    )
+
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  # Associate the document with an employee (User model in this case)
+    document_name = models.CharField(max_length=100)
+    document_type = models.CharField(max_length=20, choices=EMPLOYEE_DOCUMENT_TYPES)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    document_file = models.FileField(upload_to='employee_documents/')
+
+    def __str__(self):
+        return self.document_name  
 
     
-    
+class EducationInformation(models.Model):
+    # Existing fields
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)    
+    degree = models.CharField(max_length=100)
+    institution = models.CharField(max_length=200)
+    completion_year = models.PositiveIntegerField()  
+    def __str__(self):
+        return f'{self.employee.id_no}'      
+class ExperienceInformation(models.Model):
+    # Existing fields
+    position = models.CharField(max_length=100)
+    company = models.CharField(max_length=200)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    education_info = models.ForeignKey(EducationInformation, on_delete=models.CASCADE, related_name='experiences')
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)    
+    def save(self, *args, **kwargs):
+  
+        if not self.employee :
+            self.employee = self.education_info.employee  
+            
+        super().save(*args, **kwargs)  
+        
+        
+class PersonalFileChecklist(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  
+    photo = models.BooleanField(default=False)
+    cv = models.BooleanField(default=False)
+    bdc = models.BooleanField(default=False)
+    eduCertificate = models.BooleanField(default=False)
+    expCertificate = models.BooleanField(default=False)
+    ageverification = models.BooleanField(default=False)
+    testreport = models.BooleanField(default=False)
+    jobdetails = models.BooleanField(default=False)
+    referenceConfermation = models.BooleanField(default=False)
+    nominidoc = models.BooleanField(default=False)
+    chairmancertificate = models.BooleanField(default=False)
+    backgroundchecklist = models.BooleanField(default=False)
+    appoinmentletter = models.BooleanField(default=False)
+    confirmationletter = models.BooleanField(default=False)
+    officeidcardcopy = models.BooleanField(default=False)
+    incrementlettercopy = models.BooleanField(default=False)
+    leaverecord = models.BooleanField(default=False)
+    signaturecopy = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Checklist for {self.employee}"
+
+    class Meta:
+        verbose_name_plural = "Personal File Checklists"                              
 '''
      _      _     _                        _                               
     / \    | |_  | |_    ___   _ __     __| |   __ _   _ __     ___    ___ 
@@ -140,10 +263,10 @@ class Attendance(models.Model):
         # If the shift is not set explicitly, set it based on the employee's shift
         if not self.shift and self.employee:
             self.shift = self.employee.shift    
-        if not self.department :
+        if not self.department and    not self.department:
             self.department = self.employee.department                      
 
-
+  
             
             
 #OtHour
@@ -176,6 +299,18 @@ class Attendance(models.Model):
         
     def __str__(self):
         return f'{self.id_no}' 
+    
+    
+'''
+   ___                          _     _                      ____                                     _ 
+  / _ \  __   __   ___   _ __  | |_  (_)  _ __ ___     ___  |  _ \    ___    ___    ___    _ __    __| |
+ | | | | \ \ / /  / _ \ | '__| | __| | | | '_ ` _ \   / _ \ | |_) |  / _ \  / __|  / _ \  | '__|  / _` |
+ | |_| |  \ V /  |  __/ | |    | |_  | | | | | | | | |  __/ |  _ <  |  __/ | (__  | (_) | | |    | (_| |
+  \___/    \_/    \___| |_|     \__| |_| |_| |_| |_|  \___| |_| \_\  \___|  \___|  \___/  |_|     \__,_|
+                                                                                                        
+
+'''    
+    
 class OvertimeRecordinfo(models.Model):
     date = models.DateField(default=timezone.now)
     department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
@@ -190,7 +325,7 @@ class OvertimeRecord(models.Model):
     id_no = models.PositiveIntegerField(default=1, null=True, blank=True)
     date = models.DateField(default=timezone.now)
     othour = models.PositiveIntegerField(default=0, null=True, blank=True)
-    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True,default=Department.objects.first())
+    department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True)
     
     def save(self, *args, **kwargs):
         # Set the id_no field to the employee's id_no
@@ -207,7 +342,16 @@ class OvertimeRecord(models.Model):
     
     class Meta:
         unique_together = ('date', 'employee')     
-                    
+
+'''
+  _   _           _   _       _                 
+ | | | |   ___   | | (_)   __| |   __ _   _   _ 
+ | |_| |  / _ \  | | | |  / _` |  / _` | | | | |
+ |  _  | | (_) | | | | | | (_| | | (_| | | |_| |
+ |_| |_|  \___/  |_| |_|  \__,_|  \__,_|  \__, |
+                                          |___/ 
+
+'''                    
 class Holiday(models.Model):
     date = models.DateField(default=timezone.now)
     def __str__(self):
@@ -215,7 +359,15 @@ class Holiday(models.Model):
     
 
     
-               
+'''
+  _                                     ____                                        _   
+ | |       ___    __ _  __   __   ___  |  _ \    ___    __ _   _   _    ___   ___  | |_ 
+ | |      / _ \  / _` | \ \ / /  / _ \ | |_) |  / _ \  / _` | | | | |  / _ \ / __| | __|
+ | |___  |  __/ | (_| |  \ V /  |  __/ |  _ <  |  __/ | (_| | | |_| | |  __/ \__ \ | |_ 
+ |_____|  \___|  \__,_|   \_/    \___| |_| \_\  \___|  \__, |  \__,_|  \___| |___/  \__|
+                                                          |_|                           
+
+'''               
 class LeaveRequest(models.Model):
     LEAVE_CHOICES = (
         ('casual_leave', 'Casual Leave'),
@@ -242,7 +394,17 @@ class LeaveRequest(models.Model):
             
         super().save(*args, **kwargs)       
     class Meta:
-        unique_together = ('start_date', 'end_date','employee')           
+        unique_together = ('start_date', 'end_date','employee')  
+        
+'''
+  ____                                   _   _ 
+ |  _ \    __ _   _   _   _ __    ___   | | | |
+ | |_) |  / _` | | | | | | '__|  / _ \  | | | |
+ |  __/  | (_| | | |_| | | |    | (_) | | | | |
+ |_|      \__,_|  \__, | |_|     \___/  |_| |_|
+                  |___/                        
+
+'''                 
 class Payroll(models.Model):
     department = models.ForeignKey(Department,on_delete=models.CASCADE,blank=True, null=True) 
     created = models.DateField(default=timezone.now)
@@ -263,13 +425,28 @@ class PayrollItem(models.Model):
     def __str__(self):
         return f" {self.docNo}"    
      
- 
+'''
+     _                                                                                       ____  
+    / \     _ __    _ __     ___    _   _   _ __     ___    ___   _ __ ___     ___   _ __   | ___| 
+   / _ \   | '_ \  | '_ \   / _ \  | | | | | '_ \   / __|  / _ \ | '_ ` _ \   / _ \ | '_ \  |___ \ 
+  / ___ \  | | | | | | | | | (_) | | |_| | | | | | | (__  |  __/ | | | | | | |  __/ | | | |  ___) |
+ /_/   \_\ |_| |_| |_| |_|  \___/   \__,_| |_| |_|  \___|  \___| |_| |_| |_|  \___| |_| |_| |____/ 
+                                                                                                   
+
+''' 
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     publish_date = models.DateTimeField(auto_now_add=True)
     
-    
+'''
+  _____                       _                                 _____                  _           _                 
+ | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___  |_   _|  _ __    __ _  (_)  _ __   (_)  _ __     __ _ 
+ |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \   | |   | '__|  / _` | | | | '_ \  | | | '_ \   / _` |
+ | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/   | |   | |    | (_| | | | | | | | | | | | | | | (_| |
+ |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___|   |_|   |_|     \__,_| |_| |_| |_| |_| |_| |_|  \__, |
+                     |_|                  |___/                                                                |___/ 
+'''    
 class EmployeeTraining(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     
@@ -288,7 +465,15 @@ class EmployeeTraining(models.Model):
     class Meta:
         unique_together = ('date', 'employee')   
         
-         
+'''
+  _____                       _                                 ____                                       _     _                 
+ | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___  |  _ \   _ __    ___    _ __ ___     ___   | |_  (_)   ___    _ __  
+ |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \ | |_) | | '__|  / _ \  | '_ ` _ \   / _ \  | __| | |  / _ \  | '_ \ 
+ | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/ |  __/  | |    | (_) | | | | | | | | (_) | | |_  | | | (_) | | | | |
+ |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___| |_|     |_|     \___/  |_| |_| |_|  \___/   \__| |_|  \___/  |_| |_|
+                     |_|                  |___/                                                                                    
+
+'''         
 class EmployeePromotion(models.Model):
     docNo = models.PositiveIntegerField(default=1, unique=True)
     created = models.DateField(default=timezone.now)    
@@ -321,7 +506,15 @@ class EmployeePromotionItem(models.Model):
         super().save(*args, **kwargs)      
     def __str__(self):
         return f" {self.docNo}"  
-        
+'''
+  _____                 _         _                  _                                              _   
+ |_   _|   __ _   ___  | | __    / \     ___   ___  (_)   __ _   _ __    _ __ ___     ___   _ __   | |_ 
+   | |    / _` | / __| | |/ /   / _ \   / __| / __| | |  / _` | | '_ \  | '_ ` _ \   / _ \ | '_ \  | __|
+   | |   | (_| | \__ \ |   <   / ___ \  \__ \ \__ \ | | | (_| | | | | | | | | | | | |  __/ | | | | | |_ 
+   |_|    \__,_| |___/ |_|\_\ /_/   \_\ |___/ |___/ |_|  \__, | |_| |_| |_| |_| |_|  \___| |_| |_|  \__|
+                                                         |___/                                          
+
+'''       
 class TaskAssignment(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     task_name = models.CharField(max_length=100)
@@ -341,7 +534,15 @@ class TaskAssignment(models.Model):
 
     
   
+'''
+     _                                    _ 
+    / \    __      __   __ _   _ __    __| |
+   / _ \   \ \ /\ / /  / _` | | '__|  / _` |
+  / ___ \   \ V  V /  | (_| | | |    | (_| |
+ /_/   \_\   \_/\_/    \__,_| |_|     \__,_|
+                                            
 
+'''
     
 class Award(models.Model):
     employee = models.ForeignKey('Employee', on_delete=models.CASCADE, related_name='awards')
@@ -358,7 +559,15 @@ class Award(models.Model):
     
     
     
-    
+'''
+  ____                 _                           _     _                 
+ |  _ \    ___   ___  (_)   __ _   _ __     __ _  | |_  (_)   ___    _ __  
+ | |_) |  / _ \ / __| | |  / _` | | '_ \   / _` | | __| | |  / _ \  | '_ \ 
+ |  _ <  |  __/ \__ \ | | | (_| | | | | | | (_| | | |_  | | | (_) | | | | |
+ |_| \_\  \___| |___/ |_|  \__, | |_| |_|  \__,_|  \__| |_|  \___/  |_| |_|
+                           |___/                                           
+
+'''    
 class Resignation(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     resignation_date = models.DateField(default=timezone.now)
@@ -373,7 +582,15 @@ class Resignation(models.Model):
         verbose_name = 'Resignation'
         verbose_name_plural = 'Resignations'    
         
-        
+'''
+  _               __   _           
+ | |       ___   / _| | |_   _   _ 
+ | |      / _ \ | |_  | __| | | | |
+ | |___  |  __/ |  _| | |_  | |_| |
+ |_____|  \___| |_|    \__|  \__, |
+                             |___/ 
+
+'''        
 class Lefty(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     left_date = models.DateField(default=timezone.now)
@@ -388,23 +605,16 @@ class Lefty(models.Model):
         verbose_name_plural = 'Lefties'   
         
         
-class EmployeeDocument(models.Model):
-    EMPLOYEE_DOCUMENT_TYPES = (
-        ('Resume', 'Resume'),
-        ('Contract', 'Contract'),
-        ('ID Card', 'ID Card'),
-        ('Other', 'Other'),
-    )
 
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  # Associate the document with an employee (User model in this case)
-    document_name = models.CharField(max_length=100)
-    document_type = models.CharField(max_length=20, choices=EMPLOYEE_DOCUMENT_TYPES)
-    upload_date = models.DateTimeField(auto_now_add=True)
-    document_file = models.FileField(upload_to='employee_documents/')
+'''
+  _____                       _                                 _                             
+ | ____|  _ __ ___    _ __   | |   ___    _   _    ___    ___  | |       ___     __ _   _ __  
+ |  _|   | '_ ` _ \  | '_ \  | |  / _ \  | | | |  / _ \  / _ \ | |      / _ \   / _` | | '_ \ 
+ | |___  | | | | | | | |_) | | | | (_) | | |_| | |  __/ |  __/ | |___  | (_) | | (_| | | | | |
+ |_____| |_| |_| |_| | .__/  |_|  \___/   \__, |  \___|  \___| |_____|  \___/   \__,_| |_| |_|
+                     |_|                  |___/                                               
 
-    def __str__(self):
-        return self.document_name  
-    
+'''    
     
 class EmployeeLoan(models.Model):
     EMPLOYEE_LOAN_TYPES = (
@@ -446,7 +656,15 @@ class EmployeeLoan(models.Model):
 
         verbose_name = 'Employee Loan Pay'
         verbose_name_plural = 'Employee Loan Pay'       
+'''
+  _                               ____                                                              _   
+ | |       ___     __ _   _ __   |  _ \    ___   _ __     __ _   _   _   _ __ ___     ___   _ __   | |_ 
+ | |      / _ \   / _` | | '_ \  | |_) |  / _ \ | '_ \   / _` | | | | | | '_ ` _ \   / _ \ | '_ \  | __|
+ | |___  | (_) | | (_| | | | | | |  _ <  |  __/ | |_) | | (_| | | |_| | | | | | | | |  __/ | | | | | |_ 
+ |_____|  \___/   \__,_| |_| |_| |_| \_\  \___| | .__/   \__,_|  \__, | |_| |_| |_|  \___| |_| |_|  \__|
+                                                |_|              |___/                                  
 
+'''
 class LoanRepayment(models.Model):
     loan = models.ForeignKey(EmployeeLoan, on_delete=models.CASCADE)
     repayment_amount = models.DecimalField(max_digits=10, decimal_places=2)
