@@ -368,16 +368,17 @@ h1, h2, h3, h4, h5, h6 {
 # Intro Section
 --------------------------------------------------------------*/
 #intro {
-  width: 100%;
+  max-width: 100%;
+  min-width: 300px;
   position: relative;
   background: url("../img/intro-bg.png") center bottom no-repeat;
   background-size: cover;
-  padding: 200px 0 120px 0;
+  padding: 90px 80px 60px !important;
 }
 
 @media (max-width: 991px) {
   #intro {
-    padding: 140px 0 60px 0;
+    padding: 60px 50px 40px 0;
   }
 }
 

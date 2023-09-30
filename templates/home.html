@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>OleeTech </title>
+  <title>Rebelsoft </title>
   <meta content="" name="descriptison">
   <meta content="" name="keywords">
 
@@ -27,7 +27,9 @@
 
   <!-- Template Main CSS File -->
   <link href="{% static 'assets/css/style.css' %}"rel="stylesheet">
-
+<style>
+  #services ul li {list-style: none;}
+</style>
   <!-- =======================================================
   * Template Name: OleeTech - v2.1.0
   * Template URL: https://bootstrapmade.com/OleeTech-bootstrap-business-template/
@@ -76,26 +78,17 @@
 
   <!-- ======= Intro Section ======= -->
   <section id="intro" class="clearfix">
-    <div class="container" data-aos="fade-up">
-      <iframe width="1200" height="455" src="https://www.youtube.com/embed/dgWPeuxBFrg?si=lFRQrvRMYPp6DMUz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <div class="container-fluid" data-aos="fade-up">
+    
+        {% if intro_section.background_image %}
 
-      <div class="intro-img" data-aos="zoom-out" data-aos-delay="200">
-        {% comment %} {% if intro_section.background_image %}
+        <img src="{{ intro_section.background_image.url }}" alt="Background Image" style="max-height: 600px;width:100%">
+          
+          {% else %}
+            <img src="{% static 'images/logo.jpg' %}"  alt="" class="img-fluid">
+            {% endif %}         
 
-    <img src="{{ intro_section.background_image.url }}" alt="Background Image">
-      
-      {% else %}
-        <img src="{% static 'assets/img/intro-img.svg' %}" alt="" class="img-fluid">
-        {% endif %} {% endcomment %}
-      </div>
 
-      {% comment %} <div class="intro-info" data-aos="zoom-in" data-aos-delay="100">
-        {{ intro_section.intro_text |safe }}
-        <div>
-          <a href="#about" class="btn-get-started scrollto">Get Started</a>
-          <a href="#services" class="btn-services scrollto">Our Services</a>
-        </div> {% endcomment %}
-      </div>
 
     </div>
   </section><!-- End Intro Section -->
@@ -107,12 +100,14 @@
       <div class="container" data-aos="fade-up">
 
         <header class="section-header">
-          <h3>About Us
+          <h3>আমাদের সম্পর্কে  
+
           </h3>
-          <p>{{ about_us.text|safe }}</p>
+
         </header>
 
-
+       
+        <p>{{ about_us.text|safe }}</p>
 
 
 
@@ -124,8 +119,8 @@
       <div class="container" data-aos="fade-up">
 
         <header class="section-header">
-          <h3>Modules</h3>
-          <p>Fully Automotion business transection and gives  analytics data.</p>
+          <h3>মডিউল সমূহ </h3>
+        
         </header>
 
         <div class="row justify-content-center">
@@ -133,15 +128,77 @@
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="100">
             <div class="box">
               <div class="icon"><i class="ion-ios-analytics-outline" style="color: #ff689b;"></i></div>
-              <h4 class="title"><a href="">Inventory</a></h4>
-              <p class="description">Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
+              <h4 class="title"><a href=""> ইনভেন্টরি | Inventory</a></h4>
+              <!-- <p class="description">ইনভেন্টরি মডিউল ব্যবসা প্রতিষ্ঠানের পন্য সংগ্রহ ও স্টক সম্পর্কিত বিভিন্ন কাজে ব্যবহৃত হয়ে থাকে </p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i> পন্য প্রদান ও গ্রহণ
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>  স্টক ম্যানেজমেন্ট
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পণ্য আদান প্রদানের রেকর্ড 
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  প্রোডাকশন অর্ডার অনুযায়ী পণ্য প্রদান 
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  ইনভেন্টরি রিপোর্টিং
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পন্য ইনভেন্টরি 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>
             </div>
           </div>
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
             <div class="box">
               <div class="icon"><i class="ion-ios-bookmarks-outline" style="color: #e9bf06;"></i></div>
               <h4 class="title"><a href="">Purchase</a></h4>
-              <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata</p>
+              <!-- <p class="description">Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat tarad limino ata</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পন্য ক্রয়
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  সরবরাহকারী ম্যানেজমেন্ট
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  স্টক ম্যানেজমেন্ট
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পেমেন্ট প্রক্রিয়া
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পেমেন্ট রেকর্ড  এবং বুককিপিং
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  সরবরাহকারীর মূল্য পরিসংখ্যান
+                </li>
+               
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>            
             </div>
           </div>
 
@@ -149,46 +206,305 @@
             <div class="box">
               <div class="icon"><i class="ion-ios-paper-outline" style="color: #3fcdc7;"></i></div>
               <h4 class="title"><a href="">Sales</a></h4>
-              <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p>
+              <!-- <p class="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  গ্রাহকের অর্ডার রেকর্ড 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                পন্যের প্রদানের রেকর্ড 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                গ্রাহকের পন্যের ফেরত প্রক্রিয়া
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  বিক্রয় মূল্য এবং পন্যের বিবরণ  
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পেমেন্ট রেকর্ড 
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস
+                </li>
+
+              </ul>
             </div>
           </div>
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
             <div class="box">
               <div class="icon"><i class="ion-ios-speedometer-outline" style="color:#41cf2e;"></i></div>
               <h4 class="title"><a href="">Production</a></h4>
-              <p class="description">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+              <!-- <p class="description">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  প্রোডাক্শন প্ল্যানিং
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  ম্যানুফ্যাকচারিং প্রক্রিয়া
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  প্রোডাক্ট কোডিং ও বিবরণ
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  প্রোডাক্ট শিপমেন্ট
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  উৎপাদন রিপোর্টিং
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+
+              </ul>
             </div>
           </div>
 
-          <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="100">
-            <div class="box">
-              <div class="icon"><i class="ion-ios-world-outline" style="color: #d6ff22;"></i></div>
-              <h4 class="title"><a href="">Banking</a></h4>
-              <p class="description">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque</p>
-            </div>
-          </div>
+
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
             <div class="box">
               <div class="icon"><i class="ion-ios-clock-outline" style="color: #4680ff;"></i></div>
               <h4 class="title"><a href="">Business Partner </a></h4>
-              <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p>
+
+              <!-- <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  গ্রাহক সংরক্ষণ:
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  সরবরাহকারী সংরক্ষণ: 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  গ্রাহকের সার্বিক অবস্থা পর্যবেক্ষণ 
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  সরবরাহকারীর সার্বিক অবস্থা পর্যবেক্ষণ 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+
+              </ul>
             </div>
           </div>
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
             <div class="box">
               <div class="icon"><i class="ion-ios-clock-outline" style="color: #4680ff;"></i></div>
               <h4 class="title"><a href="">Finance </a></h4>
-              <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p>
+              <!-- <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  লেনদেন এবং ব্যালেন্স স্টেটমেন্ট সংরক্ষণ করা
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  লেনদেন পরিচালনা:
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  বিনিয়োগ পরিচালনা:
+
+                </li>
+                
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  আর্থিক রিপোর্টিং:
+
+                </li>
+
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>
             </div>
           </div>
+
+
           <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
             <div class="box">
               <div class="icon"><i class="ion-ios-clock-outline" style="color: #4680ff;"></i></div>
               <h4 class="title"><a href="">Human Resource </a></h4>
-              <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p>
+              <!-- <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের তথ্য সংরক্ষণ :
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের  হাজিরা সংরক্ষণ: 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  ওভারটাইম রেকর্ড 
+
+                </li>
+                
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের ছুটির  রেকর্ড 
+
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের বেতন প্রবৃদ্ধি
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের লোন ম্যানেজমেন্ট 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের অডিট ডকুমেন্ট ম্যানেজমেন্ট 
+
+                </li>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কর্মচারীদের অব্যাহতির প্রক্রিয়া ম্যানেজমেন্ট 
+
+                </li>
+
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>
             </div>
           </div>    
+          <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
+            <div class="box">
+              <div class="icon"><i class="ion-ios-clock-outline" style="color: #4680ff;"></i></div>
+              <h4 class="title"><a href="">Services</a></h4>
+              <!-- <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  মেশিন লিস্ট :
+                </li>
 
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  মেশিন মেইনটেন্যান্স রেকর্ড ম্যানেজমেন্ট : 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  মেশিন ডাউন টাইম রেকর্ড ম্যানেজমেন্ট  
+
+                </li>
+                
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কাস্টমার কমপ্লেইন ম্যানেজমেন্ট 
+
+                </li>
+
+
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>
+            </div>
+          </div>  
+          <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="200">
+            <div class="box">
+              <div class="icon"><i class="ion-ios-clock-outline" style="color: #4680ff;"></i></div>
+              <h4 class="title"><a href="">Qyality Control</a></h4>
+              <!-- <p class="description">Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কোয়ালিটি চেক :
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কোয়ালিটি ডিফেক্ট ক্যাটেগরি  : 
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কোয়ালিটি ডিফেক্ট ট্র্যাকিং   
+
+                </li>
+                
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  কোয়ালিটি অডিট 
+
+                </li>
+
+
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>
+            </div>
+          </div>  
+
+          <div class="col-md-6 col-lg-5" data-aos="zoom-in" data-aos-delay="100">
+            <div class="box">
+              <div class="icon"><i class="ion-ios-world-outline" style="color: #d6ff22;"></i></div>
+              <h4 class="title"><a href="">Banking</a></h4>
+              <!-- <p class="description">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque</p> -->
+              <ul>
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পেমেন্ট গ্রহণ করা 
+
+                </li>
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  পেমেন্ট প্রদান করা 
+                </li>
+
+
+                <li>
+                  <i class="fa fa-check-circle text-primary" aria-hidden="true"></i>
+                  অ্যানালাইসিস রিপোর্ট 
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -417,7 +733,7 @@
 
       </div>
     </section><!-- End Portfolio Section --> {% endcomment %}
-
+    {% comment %}
     <!-- ======= Testimonials Section ======= -->
     <section id="testimonials" class="section-bg">
       <div class="container" data-aso="zoom-in">
@@ -483,7 +799,7 @@
 
       </div>
     </section><!-- End Testimonials Section -->
-
+    {% endcomment %}
     {% comment %} <!-- ======= Team Section ======= -->
     <section id="team">
       <div class="container" data-aos="fade-up">
@@ -636,7 +952,7 @@
       </div>
 
     </section><!-- End Clients Section -->
-
+    {% comment %}
     <!-- ======= Contact Section ======= -->
     <section id="contact">
       <div class="container-fluid" data-aos="fade-up">
@@ -703,11 +1019,12 @@
 
       </div>
     </section><!-- End Contact Section -->
-
+    {% endcomment %}
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
   <footer id="footer">
+    {% comment %}
     <div class="footer-top">
       <div class="container">
         <div class="row">
@@ -759,10 +1076,10 @@
         </div>
       </div>
     </div>
-
+    {% endcomment %}
     <div class="container">
       <div class="copyright">
-        &copy; Copyright <strong>OleeTech</strong>. All Rights Reserved
+        &copy; Copyright <strong>Rebelsoft</strong>. All Rights Reserved
       </div>
       <div class="credits">
         <!--
@@ -771,7 +1088,7 @@
         Licensing information: https://bootstrapmade.com/license/
         Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=OleeTech
       -->
-        Designed by <a href="https://oleeahmmed.com/">OleeTech</a>
+        Designed by <a href="https://rebelsoftt.com/">Rebelsoft</a>
       </div>
     </div>
   </footer><!-- End Footer -->

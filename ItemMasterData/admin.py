@@ -374,3 +374,6 @@ class LedgerEntryAdmin(admin.ModelAdmin):
                 obj.docNo = 1
 
         super().save_model(request, obj, form, change)
+        
+        
+

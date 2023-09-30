@@ -219,3 +219,6 @@ class LedgerEntry(models.Model):
     transaction_type = models.CharField(max_length=100, choices=TRANSACTION_CHOICES)
     docNo = models.PositiveIntegerField(unique=False,default=1)    
       
+
+    
+ 

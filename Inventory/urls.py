@@ -35,6 +35,8 @@ urlpatterns = [
     path('sales/',include('Sales.urls')),    
     path('itemMasterData/',include('ItemMasterData.urls')),     
     path('Purchasing/',include('Purchasing.urls')),   
+    path('Services/',include('Services.urls')),   
+    path('QCSM/',include('QCSM.urls')),   
  
     path('report/',include('Report.urls')),  
     path('report/PrintDocument/', include('PrintDocument.urls')), 

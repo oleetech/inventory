@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'Banking',
     'HR',
     'Financials',
-
+    'Services',
+    'QCSM',
 ]
 TINYMCE_DEFAULT_CONFIG = {
     'height': 400,

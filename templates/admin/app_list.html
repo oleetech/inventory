@@ -1,25 +1,28 @@
 {% load i18n %}
 {% load static %}
+
 {% if app_list  %}
-<div class="accordion w3-white w3-border gradient-border 	">
+<div class="accordion w3-white w3-border gradient-border 	" data-aos-delay="200">
 
   {% for app in app_list %}
     <button onclick="myFunction('Demo{{ forloop.counter }}')" class="w3-button w3-block w3-left-align" >
       
-      <div class=" w3-border-bottom	" > 
+      <div class=" w3-border-bottom	"  > 
   
         <img src="{% static 'icons/menu.png' %}" alt="Item">
    
         
         
-        {{ app.name }}</div>
+        {{ app.name }} <div style="float: right;"><i class="fa fa-caret-down" aria-hidden="true"></i></div> </div>
     </button>
 
-    <div id="Demo{{ forloop.counter }}" class="w3-container w3-hide">
+    <div id="Demo{{ forloop.counter }}" class="w3-container w3-hide" style="margin:0px 15px; padding:10px 5px;border:1px solid grey;border-radius:5px;">
       {% for model in app.models %}
-        <div class="model-container w3-block card w3-padding-small w3-border-left w3-border-blue" style="margin-top:1px;">
+        <div class="model-container w3-block  w3-padding-small w3-border-left w3-border-blue" style="margin-top:1px;background: linear-gradient(90deg, #0e1c26, #2a454b, #294861) !important;font-weight:bold;
+ 
+        ">
 
-          <a class='' href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a>
+          <a class='' style='color:white !important;' href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>{{ model.name }}</a>
 
           <!-- {% if model.add_url %}
             <a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a>
@@ -42,3 +45,6 @@
 {% else %}
   <p>{% translate 'You don’t have permission to view or edit anything.' %}</p>
 {% endif %}
+<link href="{% static 'assets/vendor/font-awesome/css/font-awesome.min.css' %}"rel="stylesheet">
+<link href="{% static 'assets/vendor/aos/aos.css' %}"rel="stylesheet">
+<script src="{% static 'assets/vendor/aos/aos.js' %}"></script>

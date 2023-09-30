@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 from django_select2.forms import ModelSelect2Widget
-from .models import SalesOrderInfo, SalesOrderItem,DeliveryInfo,DeliveryItem,AdditionalDeliveryData,ChallanReceivedDeliveryData,CustomerComplaint,CustomerComplaintItem
+from .models import SalesOrderInfo, SalesOrderItem,DeliveryInfo,DeliveryItem,AdditionalDeliveryData,ChallanReceivedDeliveryData
 from BusinessPartners.models import BusinessPartner
 from ItemMasterData.models import Item
 
@@ -439,52 +439,7 @@ class ARInvoiceInfoAdmin(admin.ModelAdmin):
         obj.owner = request.user if request.user.is_authenticated else None              
         super().save_model(request, obj, form, change)
         
-class CustomerComplaintAdminForm(forms.ModelForm):
-    class Meta:
-        model = CustomerComplaint
-        fields = ['status','docNo','customerName','deliveryNo','created','salesOrder','description']
-        widgets = {
-            'docNo': forms.TextInput(attrs={'readonly': 'readonly'}),
 
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if not self.instance.pk:
-            last_doc = CustomerComplaint.objects.order_by('-docNo').first()
-            if last_doc:
-                next_doc_number= last_doc.docNo + 1
-            else:
-                next_doc_number = 1
-
-            self.initial['docNo'] = next_doc_number        
-class CustomerComplaintItemForm(forms.ModelForm):
-    class Meta:
-        model = CustomerComplaintItem
-        fields = ['code','name','solution','symptom']   
-
-class CustomerComplaintItemInline(admin.TabularInline):
-    model = CustomerComplaintItem
-    form = CustomerComplaintItemForm
-    extra = 1       
-        
-@admin.register(CustomerComplaint)
-class CustomerComplaintAdmin(admin.ModelAdmin):
-    form = CustomerComplaintAdminForm
-    change_form_template = 'admin/Production/ProductionOrder/change_form.html'     
-    inlines = [CustomerComplaintItemInline]
-
-    class Media:
-        js = ('js/customercomplain.js',)
-        defer = True
-        css = {
-            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
-        } 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user if request.user.is_authenticated else None              
-        super().save_model(request, obj, form, change)        
         
         
-        
-        
+   
