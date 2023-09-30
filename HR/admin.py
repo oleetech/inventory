@@ -43,15 +43,56 @@ class EmployeeDocumentForm(forms.ModelForm):
         fields = '__all__'  # Use '__all__' to include all fields  
 class EmployeeDocumentInline(admin.TabularInline):
     model = EmployeeDocument
-    extra = 0     
-             
+    extra = 0  
+    
+    
 # @admin.register(EmployeeDocument)
 class EmployeeDocumentAdmin(admin.ModelAdmin):
     list_display = ('employee', 'document_name', 'document_type', 'upload_date')
     list_filter = ('document_type', 'upload_date')
     search_fields = ('employee__first_name', 'document_name')
-
+    
            
+class EducationInformationForm(forms.ModelForm):
+    class Meta:
+        model = EducationInformation
+        fields = '__all__'  # You can specify the fields you want to include here
+
+class EducationInformationInline(admin.TabularInline):
+    model = EducationInformation
+    extra = 0  # Set this to the desired number of empty forms to display    
+
+# @admin.register(EducationInformation)           
+class EducationInformationAdmin(admin.ModelAdmin):
+    form = EducationInformationForm  # Use the custom form
+    list_display = ['employee', 'degree', 'institution', 'completion_year']
+    list_filter = ['employee', 'completion_year']
+    search_fields = ['employee__username', 'degree', 'institution']
+    list_per_page = 20
+
+    class Media:
+
+        css = {
+            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
+        }     
+  
+    
+           
+
+
+class ExperienceInformationForm(forms.ModelForm):
+    class Meta:
+        model = ExperienceInformation
+        fields = '__all__'  # You can specify the fields you want to include here    
+class ExperienceInformationInline(admin.TabularInline):
+    model = ExperienceInformation
+    extra = 0            
+class ExperienceInformationAdmin(admin.ModelAdmin):
+    form = ExperienceInformationForm  # Use the custom form
+    list_display = ['employee', 'position', 'company', 'start_date', 'end_date']
+    list_filter = ['employee', 'start_date']
+    search_fields = ['employee__username', 'position', 'company']
+    list_per_page = 20           
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -67,7 +108,7 @@ class EmployeeAdmin(admin.ModelAdmin):
   
     form = EmployeeForm  
     change_form_template = 'admin/Production/ProductionOrder/change_form.html' 
-    inlines=[EmployeeDocumentInline]    
+    inlines=[EducationInformationInline,ExperienceInformationInline,EmployeeDocumentInline]    
     class Media: 
         js = ('js/employee.js','bootstrap.bundle.min.js','js/dataTables.min.js')
         defer = True  # Add the defer attribute          
@@ -94,38 +135,8 @@ class NomineeInformationAdmin(admin.ModelAdmin):
     form = NomineeInformationForm
 
 
-class EducationInformationForm(forms.ModelForm):
-    class Meta:
-        model = EducationInformation
-        fields = '__all__'  # You can specify the fields you want to include here
-
-class ExperienceInformationForm(forms.ModelForm):
-    class Meta:
-        model = ExperienceInformation
-        fields = '__all__'  # You can specify the fields you want to include here
-class ExperienceInformationInline(admin.TabularInline):
-    model = ExperienceInformation
-    extra = 0    
-@admin.register(EducationInformation)           
-class EducationInformationAdmin(admin.ModelAdmin):
-    form = EducationInformationForm  # Use the custom form
-    list_display = ['employee', 'degree', 'institution', 'completion_year']
-    list_filter = ['employee', 'completion_year']
-    search_fields = ['employee__username', 'degree', 'institution']
-    list_per_page = 20
-    inlines = [ExperienceInformationInline]
-    class Media:
-
-        css = {
-            'all': ('css/bootstrap.min.css','css/admin_styles.css'),
-        }     
     
-class ExperienceInformationAdmin(admin.ModelAdmin):
-    form = ExperienceInformationForm  # Use the custom form
-    list_display = ['employee', 'position', 'company', 'start_date', 'end_date']
-    list_filter = ['employee', 'start_date']
-    search_fields = ['employee__username', 'position', 'company']
-    list_per_page = 20
+
 
 class PersonalFileChecklistForm(forms.ModelForm):
     class Meta:
@@ -207,7 +218,7 @@ class AttendanceinfoForm(forms.ModelForm):
         model = Attendanceinfo  
         fields = '__all__'  # Use '__all__' to include all fields
 
-@admin.register(Attendanceinfo)
+# @admin.register(Attendanceinfo)
 class AttendanceinfoAdmin(admin.ModelAdmin):
     list_display = ('date',)
     # Add other fields you want to display for the Attendanceinfo model
