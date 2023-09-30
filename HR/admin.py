@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,OvertimeRecordinfo,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment,NomineeInformation,EducationInformation, ExperienceInformation,PersonalFileChecklist
+from .models import Designation,Employee,Department,Attendanceinfo, Attendance, LeaveRequest, Payroll,PayrollItem,  Announcement,EmployeeTraining, EmployeePromotion, EmployeePromotionItem,TaskAssignment,OvertimeRecord,OvertimeRecordinfo,Holiday,Resignation,Lefty,Shift,EmployeeDocument,EmployeeLoan, LoanRepayment,NomineeInformation,EducationInformation, ExperienceInformation,PersonalFileChecklist,EmployeeBankInfo
 from django import forms
 from django.db import models
 from django.urls import reverse
@@ -94,6 +94,36 @@ class ExperienceInformationAdmin(admin.ModelAdmin):
     search_fields = ['employee__username', 'position', 'company']
     list_per_page = 20           
 
+
+class EmployeeBankInfoAdminForm(forms.ModelForm):
+    class Meta:
+        model = EmployeeBankInfo
+        fields = '__all__'
+        
+class EmployeeBankInfoInline(admin.StackedInline):
+    model = EmployeeBankInfo
+    extra = 0
+    
+# @admin.register(EmployeeBankInfo)
+class EmployeeBankInfoAdmin(admin.ModelAdmin):
+    form = EmployeeBankInfoAdminForm
+    list_display = ('employee', 'bank_name', 'account_number')
+    # Add any other desired configurations for the admin model
+    
+class NomineeInformationForm(forms.ModelForm):
+    class Meta:
+        model = NomineeInformation
+        fields = '__all__'
+        
+class NomineeInformationInline(admin.StackedInline):
+    model = NomineeInformation
+    extra = 0
+            
+# @admin.register(NomineeInformation)        
+class NomineeInformationAdmin(admin.ModelAdmin):
+    form = NomineeInformationForm
+    
+                
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
@@ -108,7 +138,7 @@ class EmployeeAdmin(admin.ModelAdmin):
   
     form = EmployeeForm  
     change_form_template = 'admin/Production/ProductionOrder/change_form.html' 
-    inlines=[EducationInformationInline,ExperienceInformationInline,EmployeeDocumentInline]    
+    inlines=[EducationInformationInline,ExperienceInformationInline,EmployeeDocumentInline,EmployeeBankInfoInline,NomineeInformationInline]    
     class Media: 
         js = ('js/employee.js','bootstrap.bundle.min.js','js/dataTables.min.js')
         defer = True  # Add the defer attribute          
@@ -126,13 +156,7 @@ class EmployeeAdmin(admin.ModelAdmin):
               
         
         
-class NomineeInformationForm(forms.ModelForm):
-    class Meta:
-        model = NomineeInformation
-        fields = '__all__'
-@admin.register(NomineeInformation)        
-class NomineeInformationAdmin(admin.ModelAdmin):
-    form = NomineeInformationForm
+
 
 
     

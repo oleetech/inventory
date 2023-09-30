@@ -199,7 +199,20 @@ class ExperienceInformation(models.Model):
             
         super().save(*args, **kwargs)  
         
-        
+class EmployeeBankInfo(models.Model):
+    BANK_CHOICES = (
+    ('Bank A', 'Bank A'),
+    ('Bank B', 'Bank B'),
+    ('Bank C', 'Bank C'),
+    ('Bank D', 'Bank D'),
+    # Add more banks as needed
+)
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, related_name='bank_info')
+    account_number = models.CharField(max_length=20)
+    bank_name = models.CharField(max_length=50, choices=BANK_CHOICES)     
+    
+    def __str__(self):
+        return f" {self.employee.name}"       
 class PersonalFileChecklist(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  
     photo = models.BooleanField(default=False)
