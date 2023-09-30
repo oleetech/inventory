@@ -33,6 +33,16 @@ document.addEventListener("DOMContentLoaded", function() {
     if (submitRow) {
         // Get all the input elements with type="submit" inside the container
         var submitButtons = submitRow.querySelectorAll('input[type="submit"]');
+        var saveAndAddAnotherButton = document.querySelector('input[name="_addanother"]');
+        var saveAndContinueEditingButton = document.querySelector('input[name="_continue"]');
+        
+        if (saveAndAddAnotherButton) {
+            saveAndAddAnotherButton.style.display = "none";
+        }
+        
+        if (saveAndContinueEditingButton) {
+            saveAndContinueEditingButton.style.display = "none";
+        }
 
         // Loop through each input element and add your custom class
         // Loop through each input element and add your custom classes
@@ -43,8 +53,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 'btn-elegant',
                 'btn-rounded',
                 'waves-effect',
-                'waves-light'
+                'waves-light',
+                'gradient-border'
             );
+
+        // Set the background color here using your gradient
+        button.style.background = 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 0%, rgba(0,212,255,1) 75%)';
+        button.style.color = 'white'; // Set text color to contrast with the background
+    // Center-align the text
+        button.style.textAlign = 'center';
         });
     }
 
@@ -66,6 +83,8 @@ document.addEventListener("DOMContentLoaded", function() {
         deletelink.style.padding = '10px'; // Change '10px' to your desired padding
 
     }
+
+
 
 
     // Select the table you want to add a class to

@@ -124,7 +124,7 @@ fieldset.module h2
 
 
 .gradient-border {
-    --borderWidth: 3px;
+    --borderWidth: 6px;
     background: #1d1f20;
     position: relative;
     border-radius: var(--borderWidth);
@@ -164,7 +164,7 @@ fieldset.module h2
       background-position: 0% 50%;
     }
   }
-
+/* submit button */
 
 
 
