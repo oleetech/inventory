@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<section class="container section card mb-5 " style="color:black !important">
+<section class="container-fluid section card mb-5 " style="color:black !important">
 
 
 {% if not request.POST %}
@@ -20,7 +20,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6 " style=" "">
+    <div class="col-md-4 " style=" "">
         <p>
              <b> Customer Name : </b>  {{ sales_order_info.customerName }} 
         </p>
@@ -28,8 +28,8 @@
             <b>Address: </b>  {{ sales_order_info.address }}
         </p>
     </div>
-
-    <div class="col-md-6  " style=" "">
+    <div class="col-md-4"></div>
+    <div class="col-md-4  " style=" ">
         <p>
              <b> Created : </b>{{ sales_order_info.created }}  
         </p>
@@ -49,7 +49,7 @@
 </div>
 <table id="itemsTable"   class="table table-bordered border border-dark" style="color:black !important" >
     <thead>
-        <tr>
+        <tr style="border: 1px solid #000 !important;">
             <th>No</th>                 
             <th>Item Description</th>        
             <th>Name</th>

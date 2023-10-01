@@ -3,6 +3,7 @@ from django import forms
 from django.db import models
 from django.db.models import Sum
 
+from django.forms import formset_factory
 
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -134,6 +135,18 @@ class SalesOrderInfoAdmin(admin.ModelAdmin):
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
         } 
     def save_model(self, request, obj, form, change):
+        
+        # Check if the main form is valid
+        if not form.is_valid():
+            self.message_user(request, "Main form is not valid.")
+            return
+
+        # Check if the inline formset data from request.POST is valid and not empty
+        formset_data = request.POST.getlist('salesorderitem_set-TOTAL_FORMS')
+        if not all(int(count) > 0 for count in formset_data):
+            self.message_user(request, "SalesOrderItemInline is not valid or empty.")
+            return
+        
         if not obj.address:
             if obj.customerName :
                 obj.address = obj.customerName.address

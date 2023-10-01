@@ -30,10 +30,9 @@ class Transaction(models.Model):
     
     
 class JournalEntry(models.Model):
-    transaction_type = models.CharField(max_length=10, choices=[('debit', 'Debit'), ('credit', 'Credit')])
     account = models.ForeignKey(ChartOfAccounts, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=15, decimal_places=4)
     date = models.DateField()
 
     def __str__(self):
-        return f"{self.date} - {self.account} - {self.transaction_type} - {self.amount}"
+        return f"{self.date} - {self.account} - {self.amount}"

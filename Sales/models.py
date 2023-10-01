@@ -68,7 +68,7 @@ class SalesOrderItem(models.Model):
     created = models.DateField(default=date.today, editable=True)
     order = models.ForeignKey(SalesOrderInfo, on_delete=models.CASCADE, null=True, default=None) 
     docNo = models.PositiveIntegerField(default=1, unique=False)  
-    code = models.CharField(max_length=20,default='',null=True)
+    code = models.CharField(max_length=20)
     name = models.CharField(max_length=100,default='',null=True)    
     description = models.CharField(max_length=255,default='',null=True,blank=True)    
 
