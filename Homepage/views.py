@@ -34,7 +34,7 @@ def home(request):
 def dashboard(request):
     
     
-    # Fetch the first 3 items
+    # Fetch the  items
     items = Item.objects.all()
 
     # Calculate instock values for each item and create a list of (item, instock_value) tuples

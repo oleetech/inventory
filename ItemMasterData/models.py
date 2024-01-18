@@ -26,7 +26,7 @@ class ItemGroup(models.Model):
 class Item(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
-    description = models.TextField()
+    description = models.TextField(default='',blank=True)
     unit = models.ForeignKey(Unit, on_delete=models.SET_DEFAULT, default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

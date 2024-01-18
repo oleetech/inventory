@@ -1,11 +1,10 @@
 from django.db import models
 from ItemMasterData.models import Item
 from GeneralSettings.models import Unit,Department
-from datetime import date
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from Sales.models import SalesOrderItem
-
+from django.utils import timezone
 '''
   ____    _   _   _      ___     __     __  __           _                   _           _       
  | __ )  (_) | | | |    / _ \   / _|   |  \/  |   __ _  | |_    ___   _ __  (_)   __ _  | |  ___ 
@@ -59,10 +58,10 @@ class Production(models.Model):
     uom =  models.CharField(max_length=100,default='',null=True)    
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
     salesOrder = models.PositiveIntegerField(default=1)
-    created = models.DateField(default=date.today, editable=True)
-    order_date = models.DateField(default=date.today)
-    start_date = models.DateField(default=date.today)
-    due_date = models.DateField(default=date.today)
+    created = models.DateField(default=timezone.now, editable=True)
+    order_date = models.DateField(default=timezone.now)
+    start_date = models.DateField(default=timezone.now)
+    due_date = models.DateField(default=timezone.now)
     docno = models.PositiveIntegerField(unique=True,default=1)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     remarks = models.CharField(max_length=250,default='',blank=True)
@@ -84,7 +83,7 @@ class ProductionComponent(models.Model):
     name = models.CharField(max_length=100,default='',null=True)
     uom =  models.CharField(max_length=100,default='',null=True)
     quantity = models.DecimalField(max_digits=10, decimal_places=4)
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     
     def save(self, *args, **kwargs):
         if self.salesOrder:
@@ -110,7 +109,7 @@ class ProductionComponent(models.Model):
 
 class ProductionReceipt(models.Model):
     docno = models.PositiveIntegerField(unique=True,default=1)
-    created = models.DateField(default=date.today)
+    created = models.DateField(default=timezone.now)
 
     department = models.ForeignKey(
         Department,
@@ -158,7 +157,7 @@ class ProductionReceiptItem(models.Model):
     ctnno = models.CharField(max_length=100,default='',null=True)    
     remarks = models.CharField(max_length=100,default='') 
     department = models.CharField(max_length=50,default='1')
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     
     def save(self, *args, **kwargs):
         if self.receiptNumber:

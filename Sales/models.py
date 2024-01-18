@@ -65,7 +65,7 @@ class SalesOrderInfo(models.Model):
         return f"{self.docNo}"
 
 class SalesOrderItem(models.Model):
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     order = models.ForeignKey(SalesOrderInfo, on_delete=models.CASCADE, null=True, default=None) 
     docNo = models.PositiveIntegerField(default=1, unique=False)  
     code = models.CharField(max_length=20)
@@ -142,7 +142,7 @@ class DeliveryInfo(models.Model):
 class DeliveryItem(models.Model):   
     docNo = models.PositiveIntegerField(unique=False,default=1)    
     delivery = models.ForeignKey(DeliveryInfo, on_delete=models.CASCADE)
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     orderNo = models.PositiveIntegerField(default=0)    
     receiptNo =  models.PositiveIntegerField(default=0)
     lineNo =  models.PositiveIntegerField(default=0) 
@@ -171,7 +171,7 @@ class DeliveryItem(models.Model):
         return f"{self.delivery}"     
 class AdditionalDeliveryData(models.Model):
     delivery_info = models.OneToOneField(DeliveryInfo, on_delete=models.CASCADE,unique=True)
-    delivertobuyerdate = models.DateField(default=date.today, editable=True)
+    delivertobuyerdate = models.DateField(default=timezone.now, editable=True)
 
     def __str__(self):
         return f"{self.delivery_info.docNo}"
@@ -190,7 +190,7 @@ class AdditionalDeliveryData(models.Model):
         
 class ChallanReceivedDeliveryData(models.Model):
     delivery_info = models.OneToOneField(DeliveryInfo, on_delete=models.CASCADE,unique=True)
-    challanreceiveddate = models.DateField(default=date.today, editable=True)
+    challanreceiveddate = models.DateField(default=timezone.now, editable=True)
 
     def __str__(self):
         return f"{self.delivery_info.docNo}"
@@ -248,7 +248,7 @@ class SalesQuotetionInfo(models.Model):
     
 
 class SalesQuotetionItem(models.Model):
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     order = models.ForeignKey(SalesQuotetionInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -312,7 +312,7 @@ class ReturnInfo(models.Model):
     
 
 class ReturnItem(models.Model):
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     order = models.ForeignKey(ReturnInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
@@ -369,7 +369,7 @@ class ARInvoiceInfo(models.Model):
     
 
 class ARInvoiceItem(models.Model):
-    created = models.DateField(default=date.today, editable=True)
+    created = models.DateField(default=timezone.now, editable=True)
     order = models.ForeignKey(ARInvoiceInfo, on_delete=models.CASCADE, null=True, default=None)    
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)    
