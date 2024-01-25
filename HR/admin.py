@@ -177,7 +177,8 @@ class PersonalFileChecklistAdmin(admin.ModelAdmin):
 
         css = {
             'all': ('css/bootstrap.min.css','css/admin_styles.css'),
-        }            
+        }    
+                
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department

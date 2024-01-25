@@ -32,6 +32,7 @@ class Transaction(models.Model):
 class JournalEntry(models.Model):
     account = models.ForeignKey(ChartOfAccounts, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=15, decimal_places=4)
+
     date = models.DateField()
 
     def __str__(self):

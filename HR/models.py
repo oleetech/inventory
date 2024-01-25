@@ -131,6 +131,9 @@ class Employee(models.Model):
             
     def __str__(self):
         return f"{self.id_no}"  
+    
+    
+    
 class NomineeInformation(models.Model):
 
 
@@ -212,7 +215,10 @@ class EmployeeBankInfo(models.Model):
     bank_name = models.CharField(max_length=50, choices=BANK_CHOICES)     
     
     def __str__(self):
-        return f" {self.employee.name}"       
+        return f" {self.employee.name}"    
+    
+    
+       
 class PersonalFileChecklist(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)  
     photo = models.BooleanField(default=False)
