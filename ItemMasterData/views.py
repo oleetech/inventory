@@ -45,6 +45,31 @@ def item_name(request):
         except Item.DoesNotExist:
             return JsonResponse({'error': 'Item not found'})
 
-    return JsonResponse({'error': 'Invalid request method'})    
+    return JsonResponse({'error': 'Invalid request method'})   
 
-  
+
+
+from django.views import View
+class AutocompleteView(View):
+    def get(self, request):
+        search_term = request.GET.get('term', '')
+        items = Item.objects.filter(name__icontains=search_term)
+        data = [{'name': item.name, 'code': item.code} for item in items]
+        return JsonResponse(data, safe=False) 
+'''
+  ____                 _       _____                                                               _      
+ |  _ \    ___   ___  | |_    |  ___|  _ __    __ _   _ __ ___     ___  __      __   ___    _ __  | | __  
+ | |_) |  / _ \ / __| | __|   | |_    | '__|  / _` | | '_ ` _ \   / _ \ \ \ /\ / /  / _ \  | '__| | |/ /  
+ |  _ <  |  __/ \__ \ | |_    |  _|   | |    | (_| | | | | | | | |  __/  \ V  V /  | (_) | | |    |   <   
+ |_| \_\  \___| |___/  \__|   |_|     |_|     \__,_| |_| |_| |_|  \___|   \_/\_/    \___/  |_|    |_|\_\  
+                                                                                                          
+
+'''
+from rest_framework import viewsets
+from .models import Item
+from .serializers import ItemSerializer
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    

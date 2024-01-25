@@ -361,19 +361,19 @@ class IssueForProductionInfoAdmin(admin.ModelAdmin):
             'all': ('css/bootstrap.min.css','css/admin_styles.css','css/bootstrap.min.css'),
         }         
         
-@admin.register(LedgerEntry)         
-class LedgerEntryAdmin(admin.ModelAdmin):  
+# @admin.register(LedgerEntry)         
+# class LedgerEntryAdmin(admin.ModelAdmin):  
      
-    def save_model(self, request, obj, form, change):
-        if not obj.pk:  # Check if this is a new instance
-            # Get the last inserted docno
-            last_ledger_entry = LedgerEntry.objects.order_by('-docNo').first()
-            if last_ledger_entry:
-                obj.docNo = last_ledger_entry.docNo + 1
-            else:
-                obj.docNo = 1
+#     def save_model(self, request, obj, form, change):
+#         if not obj.pk:  # Check if this is a new instance
+#             # Get the last inserted docno
+#             last_ledger_entry = LedgerEntry.objects.order_by('-docNo').first()
+#             if last_ledger_entry:
+#                 obj.docNo = last_ledger_entry.docNo + 1
+#             else:
+#                 obj.docNo = 1
 
-        super().save_model(request, obj, form, change)
+#         super().save_model(request, obj, form, change)
         
         
 

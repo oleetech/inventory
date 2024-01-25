@@ -20,13 +20,18 @@ class Warehouse(models.Model):
 class ItemGroup(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+    class Meta:
+    # Add any other fields you need
+        verbose_name = ' Item Group'
+        verbose_name_plural = '0 Item Group'    
+            
     def __str__(self):
         return self.name
     
 class Item(models.Model):
     code = models.CharField(max_length=20,default='',null=True)
     name = models.CharField(max_length=100,default='',null=True)
-    description = models.TextField()
+    description = models.TextField(default='',blank=True)
     unit = models.ForeignKey(Unit, on_delete=models.SET_DEFAULT, default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -35,8 +40,8 @@ class Item(models.Model):
 
     class Meta:
     # Add any other fields you need
-        verbose_name = 'Item Master Data'
-        verbose_name_plural = 'Item Master Data'    
+        verbose_name = ' Item Master Data'
+        verbose_name_plural = '1 Item Master Data'    
     def __str__(self):
         return self.name
 
@@ -47,8 +52,12 @@ class Stock(models.Model):
     quantity = models.DecimalField(max_digits=10, decimal_places=4,default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateField(default=date.today, editable=True)    
-    docNo = models.PositiveIntegerField(unique=False,default=1)    
-    
+    docNo = models.PositiveIntegerField(unique=False,default=1)  
+      
+    class Meta:
+    # Add any other fields you need
+        verbose_name = '  Stock '
+        verbose_name_plural = '3 Item Stock'        
     def save_model(self, request, obj, form, change):
 
         obj.owner = request.user if request.user.is_authenticated else None
@@ -70,7 +79,7 @@ class ItemReceiptinfo(models.Model):
     class Meta:
     
         verbose_name = 'Goods Receipt'
-        verbose_name_plural = 'Goods Receipt'
+        verbose_name_plural = '4 Goods Receipt'
     def __str__(self):
         return " {}".format(self.docno)
 
@@ -86,6 +95,8 @@ class ItemReceipt(models.Model):
     priceTotal = models.DecimalField(max_digits=10, decimal_places=4,null=True, blank=True, default=0)
     
     department = models.CharField(max_length=50,default='1')    
+    
+    
     def save(self, *args, **kwargs):      
         if self.created:            
             self.created = self.item_info.created
@@ -118,7 +129,7 @@ class ItemDeliveryinfo(models.Model):
     class Meta:
         
         verbose_name = 'Goods Delivery'
-        verbose_name_plural = 'Goods Delivery'
+        verbose_name_plural = '5 Goods Delivery'
     def __str__(self):
         return " {}".format(self.docno)
 
@@ -159,7 +170,7 @@ class IssueForProductionInfo(models.Model):
     class Meta:
 
         verbose_name = ' Issue For Production'
-        verbose_name_plural = 'Issue  For  Production'   
+        verbose_name_plural = '6 Issue  For  Production'   
         
         
     def save(self, *args, **kwargs):
